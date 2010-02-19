@@ -1,0 +1,149 @@
+#summary FreeBSD ZFS ARC Summary
+#labels FreeBSD,arc_summary.pl,ZFS,zpool
+
+= Introduction =
+
+FreeBSD ZFS ARC Summary Report.
+
+= Details =
+
+*Example output:*
+
+<pre>
+
+System Summary                          Fri Feb 19 13:01:08 2010
+
+FreeBSD 7.3-STABLE #0 r204012M Thu Feb 18 01:43:42 EST 2010 root
+
+Kernel Version:                                 703100 (osreldate)
+
+Hardware Platform:                              i386
+Processor Architecture:                         i386
+
+Storage pool Version:                           13
+Filesystem Version:                             3
+
+Physical Memory:                                1009.91M
+Page Size:                                      4096
+
+Kernel Memory Usage
+TOTAL:                                          305.62M
+DATA:                                   97.21%  297.08M
+TEXT:                                   2.79%   8.54M
+
+ 1:01PM  up  6:27, 4 users, load averages: 0.07, 0.23, 0.44
+
+
+ARC Summary
+
+        Meta Limit:                             120.00M
+        Meta Used:                      99.98%  119.97M
+
+        Throttle Count:                         0
+
+ARC Size:
+        Current Size:                           277.64M (arcsize)
+        Target Size (Adaptive):                 480.00M (c)
+        Min Size (Hard Limit):                  80.00M (arc_min)
+        Max Size (Hard Limit):                  480.00M (arc_max)
+
+ARC Size Breakdown:
+        Recently Used Cache Size:       28.43%  136.44M (p)
+        Frequently Used Cache Size:     71.57%  343.56M (c-p)
+
+ARC Efficiency:
+        Cache Access Total:                     230931
+        Cache Hit Ratio:                82.20%  189815
+        Cache Miss Ratio:               17.80%  41116
+        Actual Hit Ratio:               79.99%  184712
+
+        Data Demand Efficiency:         98.70%
+        Data Prefetch Efficiency:       63.72%
+
+        CACHE HITS BY CACHE LIST:
+          Anonymous:                    1.64%   3121
+          Most Recently Used:           12.35%  23450 (mru)
+          Most Frequently Used:         84.96%  161262 (mfu)
+          Most Recently Used Ghost:     0.69%   1304 (mru_ghost)
+          Most Frequently Used Ghost:   0.36%   678 (mfu_ghost)
+
+        CACHE HITS BY DATA TYPE:
+          Demand Data:                  71.51%  135731
+          Prefetch Data:                0.25%   476
+          Demand Metadata:              25.56%  48526
+          Prefetch Metadata:            2.68%   5082
+
+        CACHE MISSES BY DATA TYPE:
+          Demand Data:                  4.35%   1787
+          Prefetch Data:                0.66%   271
+          Demand Metadata:              89.82%  36932
+          Prefetch Metadata:            5.17%   2126
+
+
+L2 ARC Summary
+
+        Low Memory Aborts:                      0
+        Bad Checksums:                          0
+        IO Errors:                              0
+        R/W Clashes:                            0
+        Free on Write:                          5
+
+L2 ARC Size:
+        Current Size:                           147.05M
+        Header Size:                    0.00%   0.00M
+
+L2 ARC Evicts:
+        Lock Retries:                           0
+        Upon Reading:                           0
+
+L2 ARC Breakdown:
+        Access Total:                           484
+        Hit Ratio:                      100.00% 484
+        Miss Ratio:                     0.00%   0
+        Feeds:                                  23130
+
+        Writes:
+          Sent Total:                           854
+          Done Ratio:                   100.00% 854
+          Error Ratio:                  0.00%   0
+
+
+ZFS Tunable (sysctl):
+        kern.maxusers=512
+        vfs.zfs.arc_meta_limit=125829120
+        vfs.zfs.arc_meta_used=125802072
+        vfs.zfs.mdcomp_disable=0
+        vfs.zfs.arc_min=83886080
+        vfs.zfs.arc_max=503316480
+        vfs.zfs.zfetch.array_rd_sz=1048576
+        vfs.zfs.zfetch.block_cap=256
+        vfs.zfs.zfetch.min_sec_reap=2
+        vfs.zfs.zfetch.max_streams=8
+        vfs.zfs.prefetch_disable=0
+        vfs.zfs.recover=0
+        vfs.zfs.txg.synctime=5
+        vfs.zfs.txg.timeout=30
+        vfs.zfs.scrub_limit=10
+        vfs.zfs.vdev.cache.bshift=16
+        vfs.zfs.vdev.cache.size=10485760
+        vfs.zfs.vdev.cache.max=16384
+        vfs.zfs.vdev.aggregation_limit=131072
+        vfs.zfs.vdev.ramp_rate=2
+        vfs.zfs.vdev.time_shift=6
+        vfs.zfs.vdev.min_pending=4
+        vfs.zfs.vdev.max_pending=35
+        vfs.zfs.cache_flush_disable=0
+        vfs.zfs.zil_disable=0
+        vfs.zfs.version.zpl=3
+        vfs.zfs.version.vdev_boot=1
+        vfs.zfs.version.spa=13
+        vfs.zfs.version.dmu_backup_stream=1
+        vfs.zfs.version.dmu_backup_header=2
+        vfs.zfs.version.acl=1
+        vfs.zfs.debug=0
+        vfs.zfs.super_owner=0
+        vm.kmem_size=536870912
+        vm.kmem_size_scale=3
+        vm.kmem_size_min=0
+        vm.kmem_size_max=536870912
+</pre>
