@@ -10,7 +10,6 @@ FreeBSD ZFS ARC Summary Report.
 *Example output:*
 
 <pre>
-
 System Summary                          Fri Feb 19 13:01:08 2010
 
 FreeBSD 7.3-STABLE #0 r204012M Thu Feb 18 01:43:42 EST 2010 root
