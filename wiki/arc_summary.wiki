@@ -1,5 +1,5 @@
 #summary FreeBSD ZFS ARC Summary
-#labels FreeBSD,arc_summary.pl,ZFS,zpool
+#labels FreeBSD,arc_summary.pl,ZFS,zpool,Featured
 
 = Introduction =
 
