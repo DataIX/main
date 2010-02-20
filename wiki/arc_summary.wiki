@@ -1,4 +1,4 @@
-#summary This is a script that utilizes perl & the sysctl kstats MIBs and preps a report for user review.
+#summary This is a script that utilizes perl & the sysctl kstats MIBs on FreeBSD and preps a report for user review.
 #labels FreeBSD,SunOS,Solaris,OpenSolaris,CuddleTech,Featured,ZFS,Memory,Statistics,Download,Perl,Summary
 
 = Introduction =
