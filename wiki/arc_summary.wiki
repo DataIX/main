@@ -1,0 +1,24 @@
+#summary This is a script that utilizes perl & the sysctl kstats MIBs and preps a report for user review.
+#labels FreeBSD,SunOS,Solaris,OpenSolaris,CuddleTech,Featured,ZFS,Memory,Statistics,Download,Perl,Summary
+
+= Introduction =
+
+This perl script is used to prep a report for user review with the contents being that of the ZFS ARC Statistics contained in sysctl kstats MIBs.
+
+  Quoting the original author of the script for Sun based systems:
+
+  While ARC is an amazing achievement its memory consumption raises doubts and questions in many administrators and users who view memory as a precious commodity. The Kstat facility provides access to a variety of ARC counters, but interpretting these properly is complex and non-intuative in their raw form, without spending several hours in the arc.c code. The purpose of arc_summary.pl is to provide a historical analysis of the ZFS ARC.
+
+*This script is still work in progress.*
+  * Currently [http://jhell.googlecode.com/files/arc_summary.pl arc_summary.pl] tries to make use of all kstats that are available.
+  * It includes some specific system information such as uname, uptime & date in a header.
+  * Spills relevant sysctl MIBs at the bottom of the report.
+  * Includes kernel memory usage.
+  * Has L2 ARC kstats.
+
+== Links ==
+
+  # FreeBSD [http://jhell.googlecode.com/files/arc_summary.pl arc_summary.pl]
+  # SunOS [http://www.cuddletech.com/arc_summary.pl arc_summary.pl]
+
+=== Updates ===
