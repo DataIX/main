@@ -22,3 +22,11 @@ This perl script is used to prep a report for user review with the contents bein
   # SunOS [http://www.cuddletech.com/arc_summary.pl arc_summary.pl]
 
 === Updates ===
+
+Revision 204:
+  * Some reformatting has been done to accommodate for the removal of the header and sysctl MIBs.
+  * The following editable variables have been included for convenience:
+  {{{
+  my $useheader = 1; # Change to 0 to disable FreeBSD header.
+  my $usetunable = 1; # Change to 0 to disable sysctl MIB spill at bottom.
+  }}}
