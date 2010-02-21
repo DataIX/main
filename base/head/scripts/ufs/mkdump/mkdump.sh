@@ -79,7 +79,7 @@ dump_uid="0"
 # modifications to this script that include editing the
 # variables dump_devs & dump_path above.
 #
-#trip="Please make the proper modifications to this script"
+trip="Please make the proper modifications to this script"
 
 
 
