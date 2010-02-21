@@ -1,4 +1,4 @@
-#summary FreeBSD ZFS ARC Summary Perl Script
+﻿#summary FreeBSD ZFS ARC Summary Perl Script
 #labels FreeBSD,SunOS,Solaris,OpenSolaris,CuddleTech,Featured,ZFS,Memory,Statistics,Download,Perl,Summary
 
 = Introduction =
@@ -23,7 +23,7 @@ This perl script is used to prep a report for user review with the contents bein
 
 === Updates ===
 
-Revision 204:
+Revision 19:
   * Some reformatting has been done to accommodate for the removal of the header and sysctl MIBs.
   * The following editable variables have been included for convenience:
   {{{
