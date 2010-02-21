@@ -3,7 +3,8 @@
 # $Id$
 #
 # Copyright (c) 2008, Ben Rockwood (benr@cuddletech.com)
-# Modifications Copyright (c) 2010, jhell <jhell@dataix.net>
+# Copyright (c) 2010 Jason J. Hellenthal  <jhell@dataix.net>,
+# All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -46,8 +47,6 @@ use strict;
 
 my $useheader = 1; # Change to 0 to disable FreeBSD header.
 my $usetunable = 1; # Change to 0 to disable sysctl MIB spill at bottom.
-
-
 
 
 my $Kstat;
