@@ -66,9 +66,15 @@ my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
 my $pagesize = `sysctl -n 'hw.pagesize'`;
 my $phys_memory = `sysctl -n 'hw.physmem'`;
+my $phys_memory_MiB = ($phys_memory / 1048576);
 my $ktext = `kldstat | awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' | dc`;
 my $kdata = `vmstat -m | sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' | dc`;
 my $kmem = ( $ktext + $kdata );
+my $kmem_MiB = ($kmem / 1048576);
+my $ktext_perc = (100 * ( $ktext / $kmem ));
+my $kdata_perc = (100 * ( $kdata / $kmem ));
+my $kdata_MiB = ($kdata / 1048576);
+my $ktext_MiB = ($ktext / 1048576);
 my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 printf("System Summary\t\t\t\t%s\n", $daydate);
@@ -90,13 +96,13 @@ if ($useheader > 0) {
 }
 print "------------------------------------------------------------------------\n";
 print "\n";
-printf("Physical Memory:\t\t\t\t%0.2fM\n", ($phys_memory / 1048576));
+printf("Physical Memory:\t\t\t\t%0.2fM\n", $phys_memory_MiB);
 printf("Page Size:\t\t\t\t\t%d\n", $pagesize);
 print "\n";
 print "Kernel Memory\n";
-printf("TOTAL:\t\t\t\t\t\t%0.2fM\n", ($kmem / 1048576));
-printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", 100*($kdata / $kmem), ($kdata / 1048576));
-printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", 100*($ktext / $kmem), ($ktext / 1048576));
+printf("TOTAL:\t\t\t\t\t\t%0.2fM\n", $kmem_MiB);
+printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
+printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
 print "\nARC Summary\n";
 print "\n";
 printf("\tStorage pool Version:\t\t\t%d (spa)\n", $spa);
@@ -106,24 +112,30 @@ print "\n";
 
 ### ARC Sizing ###
 my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
+my $mru_size_MiB = ($mru_size / 1048576);
 my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
+my $target_size_MiB = ($target_size / 1048576);
 my $arc_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
+my $arc_min_size_MiB = ($arc_min_size / 1048576);
 my $arc_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
+my $arc_max_size_MiB = ($arc_max_size / 1048576);
 
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
+my $arc_size_MiB = ($arc_size / 1048576);
 my $mfu_size = $target_size - $mru_size;
+my $mfu_size_MiB = ($mfu_size / 1048576);
 my $mru_perc = 100*($mru_size / $target_size);
 my $mfu_perc = 100*($mfu_size / $target_size);
 
 print "ARC Size:\n";
-printf("\tCurrent Size:\t\t\t\t%0.2fM (arcsize)\n", $arc_size / 1048576);
-printf("\tTarget Size: (Adaptive)\t\t\t%0.2fM (c)\n", $target_size / 1048576);
-printf("\tMin Size (Hard Limit):\t\t\t%0.2fM (arc_min)\n", $arc_min_size / 1048576);
-printf("\tMax Size (Hard Limit):\t\t\t%0.2fM (arc_max)\n", $arc_max_size / 1048576);
+printf("\tCurrent Size:\t\t\t\t%0.2fM (arcsize)\n", $arc_size_MiB);
+printf("\tTarget Size: (Adaptive)\t\t\t%0.2fM (c)\n", $target_size_MiB);
+printf("\tMin Size (Hard Limit):\t\t\t%0.2fM (arc_min)\n", $arc_min_size_MiB);
+printf("\tMax Size (Hard Limit):\t\t\t%0.2fM (arc_max)\n", $arc_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
-printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size / 1048576);
-printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (c-p)\n", $mfu_perc, $mfu_size / 1048576);
+printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
+printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (c-p)\n", $mfu_perc, $mfu_size_MiB);
 print "\n";
         
 ### ARC Efficency ###
@@ -238,6 +250,16 @@ my $l2_io_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_io_error};
 my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
 my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
 
+### L2 ARC Stats Calculations ###
+my $l2_access_total = ( $l2_hits + $l2_misses );
+my $l2_hdr_size_perc = (100 * ( $l2_hdr_size / $l2_size ));
+my $l2_hits_perc = (100 * ( $l2_hits / ( $l2_access_total )));
+my $l2_misses_perc = (100 * ( $l2_misses / ( $l2_access_total )));
+my $l2_writes_done_perc = (100 * ( $l2_writes_done / $l2_writes_sent ));
+my $l2_writes_error_perc = (100 * ( $l2_writes_error / $l2_writes_sent ));
+my $l2_size_MiB = ($l2_size / 1048576);
+my $l2_hdr_size_MiB = ($l2_hdr_size / 1048576);
+
 ### L2 ARC ###
 if ($l2_hits > 0) {
 	print "L2 ARC Summary\n";
@@ -249,8 +271,8 @@ if ($l2_hits > 0) {
 	print "\n";
 	
 	print "L2 ARC Size:\n";
-	printf("\tCurrent Size: (Adaptive)\t\t%0.2fM\n", $l2_size / 1048576);
-	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n", 100*($l2_hdr_size / $l2_size), ($l2_hdr_size / 1048576));
+	printf("\tCurrent Size: (Adaptive)\t\t%0.2fM\n", $l2_size_MiB);
+	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n", $l2_hdr_size_perc, $l2_hdr_size_MiB);
 	print "\n";
 	
 	print "L2 ARC Evicts:\n";
@@ -258,16 +280,16 @@ if ($l2_hits > 0) {
 	printf("\tUpon Reading:\t\t\t\t%d\n", $l2_evict_reading);
 	print "\n";
 	print "L2 ARC Breakdown:\n";
-	printf("\tAccess Total:\t\t\t\t%d\n", ( $l2_hits + $l2_misses ));
-	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n", 100*( $l2_hits / ( $l2_hits + $l2_misses )), $l2_hits);
-	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n", 100*( $l2_misses / ( $l2_hits + $l2_misses )), $l2_misses);
+	printf("\tAccess Total:\t\t\t\t%d\n", $l2_access_total);
+	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n", $l2_hits_perc, $l2_hits);
+	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n", $l2_misses_perc, $l2_misses);
 	printf("\tFeeds:\t\t\t\t\t%d\n", $l2_feeds);
 	print "\n";
 	
 	print "\tWRITES:\n";
 	printf("\t  Sent Total:\t\t\t\t%d\n", $l2_writes_sent);
-	printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n", 100*($l2_writes_done / $l2_writes_sent ), $l2_writes_done);
-	printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n", 100*($l2_writes_error / $l2_writes_sent ), $l2_writes_error);
+	printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_done_perc, $l2_writes_done);
+	printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_error_perc, $l2_writes_error);
 	print "\n"; } else {
 	
 	printf("L2 ARC Stats: (enabled when hits are > 0)\t%d\n", $l2_hits);
