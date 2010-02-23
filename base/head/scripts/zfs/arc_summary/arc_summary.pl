@@ -292,7 +292,7 @@ if ($l2_access_total > 0) {
 	printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_error_perc, $l2_writes_error);
 	print "\n"; } else {
 	
-	printf("L2 ARC Stats: (enabled with access > 0)\t%d\n", $l2_access_total);
+	printf("L2 ARC Stats: (enabled with access > 0)\t\t%d\n", $l2_access_total);
 	print "\n";
 }
 
