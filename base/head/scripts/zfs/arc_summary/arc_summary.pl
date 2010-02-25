@@ -45,8 +45,8 @@
 
 use strict;
 
-my $useheader = 1; # Change to 0 to disable FreeBSD header.
-my $usetunable = 1; # Change to 0 to disable sysctl MIB spill at bottom.
+my $useheader = 1;	# Change to 0 to disable FreeBSD header.
+my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
 
 my $Kstat;
