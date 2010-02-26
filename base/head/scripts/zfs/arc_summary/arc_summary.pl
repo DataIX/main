@@ -104,7 +104,6 @@ printf("TOTAL:\t\t\t\t\t\t%0.2fM\n", $kmem_MiB);
 printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
 print "\nARC Summary\n";
-print "\n";
 printf("\tStorage pool Version:\t\t\t%d (spa)\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d (zpl)\n", $zpl);
 printf("\tMemory Throttle Count:\t\t\t%d\n", $throttle);
@@ -295,6 +294,31 @@ if ($l2_access_total > 0) {
 	printf("L2 ARC Stats: (enabled with access > 0)\t\t%d\n", $l2_access_total);
 	print "\n";
 }
+
+### VDEV Cache Stats ###
+my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
+foreach my $vdev_cache_stats (@vdev_cache_stats) {
+	chomp $vdev_cache_stats;
+	my ($name,$value) = split /:/, $vdev_cache_stats;
+	my @z = split /\./, $name;
+	my $n = pop @z;
+	${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{$n} = $value;
+}
+
+my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
+my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
+my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
+my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits);
+my $vdev_cache_hits_perc = (100*($vdev_cache_hits / $vdev_cache_total));
+my $vdev_cache_misses_perc = (100*($vdev_cache_misses / $vdev_cache_total));
+my $vdev_cache_delegations_perc = (100*($vdev_cache_delegations / $vdev_cache_total));
+
+print "VDEV Cache Summary\n";
+printf("\tAccess Total:\t\t\t\t%d\n", $vdev_cache_total);
+printf("\tHits Ratio:\t\t\t%0.2f%%\t%d\n", $vdev_cache_hits_perc, $vdev_cache_hits);
+printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n", $vdev_cache_misses_perc, $vdev_cache_misses);
+printf("\tDelegations:\t\t\t\t%d\n", $vdev_cache_delegations);
+print "\n";
 
 if ($usetunable > 0) {
 	### Tunables FreeBSD  ###
