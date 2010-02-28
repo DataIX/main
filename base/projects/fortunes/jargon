@@ -1,7 +1,7 @@
 %%
 %% Copyright (c) 2006-2010, Jason J. Hellenthal, All rights reserved.
 %%
-%% $Id: jargon,v 1.11 2007/12/05 06:33:34 cmdlnkid Exp $
+%% $Id$
 %%
 %% Redistribution and use in source and binary forms, with or without
 %% modification, are permitted provided that the following conditions
@@ -44,7 +44,7 @@ of the hacker community in small ammounts with every login to a
 Unix-like based system. The definitions in this file were taken
 from the original Jargon file dated: 29 JUN 2001 version: 4.3.1
 
-$Id: jargon,v 1.11 2007/12/05 06:33:34 cmdlnkid Exp $
+$Id$
 %
 /dev/null /dev-nuhl/ n. [from the Unix null device, used as a data
    sink] A notional `black hole' in any information space being discussed,
