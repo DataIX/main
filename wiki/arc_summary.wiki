@@ -19,7 +19,8 @@ This script is still work in progress.
 
 == Download ==
 
-  # [http://jhell.googlecode.com/files/arc_summary.pl arc_summary.pl]
+  # [http://jhell.googlecode.com/files/arc_summary.pl Stable arc_summary.pl]
+  # [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development Trunk]
 
 == Links ==
 
