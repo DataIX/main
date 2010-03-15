@@ -20,7 +20,7 @@ This script is still work in progress.
 == Download ==
 
   # [http://jhell.googlecode.com/files/arc_summary.pl Stable arc_summary.pl]
-  # [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development Trunk]
+  # [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development Version]
 
 == Links ==
 
@@ -34,6 +34,6 @@ Revision 19:
   * Some reformatting has been done to accommodate for the removal of the header and sysctl MIBs.
   * The following editable variables have been included for convenience:
   {{{
-  my $useheader = 1; # Change to 0 to disable FreeBSD header.
-  my $usetunable = 1; # Change to 0 to disable sysctl MIB spill at bottom.
+  my $useheader = 1;	# Change to 0 to disable FreeBSD header.
+  my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill at bottom.
   }}}
