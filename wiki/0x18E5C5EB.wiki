@@ -1,5 +1,4 @@
-﻿#labels Featured
-{{{
+﻿{{{
 pub   2048R/18E5C5EB 2009-09-24
       Key fingerprint = 8DC3 CDBC 20E6 EE52 5FF7  67AC AAD4 EEF5 18E5 C5EB
 uid                  Jason J. Hellenthal <jhellenthal@gmail.com>
