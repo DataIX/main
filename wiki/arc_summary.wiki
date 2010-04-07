@@ -37,3 +37,142 @@ Revision 19:
   my $useheader = 1;	# Change to 0 to disable FreeBSD header.
   my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill at bottom.
   }}}
+
+=== Example output ===
+
+------------------------------------------------------------------------
+System Summary				Wed Apr  7 18:52:56 2010
+
+FreeBSD 7.3-STABLE #0 r206203M Mon Apr 5 16:00:53 EDT 2010 root
+
+Kernel Version:					703100 (osreldate)
+
+Hardware Platform:				i386
+Processor Architecture:				i386
+
+18:52  up 1 day,  2:36, 4 users, load averages: 1.97, 1.78, 1.20
+------------------------------------------------------------------------
+
+Physical Memory:				1009.91M
+Page Size:					4096
+
+Kernel Memory
+TOTAL:						205.91M
+DATA:					95.85%	197.36M
+TEXT:					4.15%	8.55M
+
+ARC Summary
+	Storage pool Version:			13 (spa)
+	Filesystem Version:			3 (zpl)
+	Memory Throttle Count:			3250
+
+ARC Size:
+	Current Size:				167.48M (arcsize)
+	Target Size: (Adaptive)			167.54M (c)
+	Min Size (Hard Limit):			80.00M (arc_min)
+	Max Size (Hard Limit):			480.00M (arc_max)
+
+ARC Size Breakdown:
+	Recently Used Cache Size:	66.62%	111.61M (p)
+	Frequently Used Cache Size:	33.38%	55.93M (c-p)
+
+ARC Efficiency:
+	Cache Access Total:			16180529
+	Cache Hit Ratio:		88.29%	14286011
+	Cache Miss Ratio:		11.71%	1894518
+	Actual Hit Ratio:		69.14%	11187592
+
+	Data Demand Efficiency:		87.82%
+	Data Prefetch Efficiency:	34.54%
+
+	CACHE HITS BY CACHE LIST:
+	  Anonymous:			18.56%	2651813
+	  Most Recently Used:		19.49%	2784655 (mru)
+	  Most Frequently Used:		58.82%	8402937 (mfu)
+	  Most Recently Used Ghost:	1.81%	258611 (mru_ghost)
+	  Most Frequently Used Ghost:	1.32%	187995 (mfu_ghost)
+
+	CACHE HITS BY DATA TYPE:
+	  Demand Data:			26.60%	3800073
+	  Prefetch Data:		1.12%	160315
+	  Demand Metadata:		50.10%	7157264
+	  Prefetch Metadata:		22.18%	3168359
+
+	CACHE MISSES BY DATA TYPE:
+	  Demand Data:			27.81%	526940
+	  Prefetch Data:		16.04%	303861
+	  Demand Metadata:		42.80%	810924
+	  Prefetch Metadata:		13.34%	252793
+
+L2 ARC Summary
+	Low Memory Aborts:			1494
+	Bad Checksums:				0
+	IO Errors:				0
+	R/W Clashes:				65
+	Free on Write:				3128
+
+L2 ARC Size:
+	Current Size: (Adaptive)		4014.65M
+	Header Size:			1.47%	58.84M
+
+L2 ARC Evicts:
+	Lock Retries:				0
+	Upon Reading:				0
+
+L2 ARC Breakdown:
+	Access Total:				381350
+	Hit Ratio:			99.98%	381285
+	Miss Ratio:			0.02%	65
+	Feeds:					93790
+
+	WRITES:
+	  Sent Total:				8455
+	  Done Ratio:			100.00%	8455
+	  Error Ratio:			0.00%	0
+
+VDEV Cache Summary
+	Access Total:				700798
+	Hits Ratio:			85.31%	597853
+	Miss Ratio:			14.69%	102945
+	Delegations:				77991
+
+ZFS Tunable (sysctl):
+	kern.maxusers=512
+	vfs.zfs.arc_meta_limit=125829120
+	vfs.zfs.arc_meta_used=124310436
+	vfs.zfs.mdcomp_disable=0
+	vfs.zfs.arc_min=83886080
+	vfs.zfs.arc_max=503316480
+	vfs.zfs.zfetch.array_rd_sz=1048576
+	vfs.zfs.zfetch.block_cap=256
+	vfs.zfs.zfetch.min_sec_reap=2
+	vfs.zfs.zfetch.max_streams=8
+	vfs.zfs.prefetch_disable=0
+	vfs.zfs.recover=0
+	vfs.zfs.txg.synctime=5
+	vfs.zfs.txg.timeout=30
+	vfs.zfs.scrub_limit=10
+	vfs.zfs.vdev.cache.bshift=16
+	vfs.zfs.vdev.cache.size=10485760
+	vfs.zfs.vdev.cache.max=16384
+	vfs.zfs.vdev.aggregation_limit=131072
+	vfs.zfs.vdev.ramp_rate=2
+	vfs.zfs.vdev.time_shift=6
+	vfs.zfs.vdev.min_pending=4
+	vfs.zfs.vdev.max_pending=35
+	vfs.zfs.cache_flush_disable=0
+	vfs.zfs.zil_disable=0
+	vfs.zfs.version.zpl=3
+	vfs.zfs.version.vdev_boot=1
+	vfs.zfs.version.spa=13
+	vfs.zfs.version.dmu_backup_stream=1
+	vfs.zfs.version.dmu_backup_header=2
+	vfs.zfs.version.acl=1
+	vfs.zfs.debug=0
+	vfs.zfs.super_owner=0
+	vm.kmem_size=536870912
+	vm.kmem_size_scale=3
+	vm.kmem_size_min=0
+	vm.kmem_size_max=536870912
+------------------------------------------------------------------------
+
