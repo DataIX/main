@@ -130,7 +130,7 @@ print "ARC Size:\n";
 printf("\tCurrent Size:\t\t\t\t%0.2fM (arcsize)\n", $arc_size_MiB);
 printf("\tTarget Size: (Adaptive)\t\t\t%0.2fM (c)\n", $target_size_MiB);
 printf("\tMin Size (Hard Limit):\t\t\t%0.2fM (arc_min)\n", $arc_min_size_MiB);
-printf("\tMax Size (Hard Limit):\t\t\t%0.2fM (arc_max)\n", $arc_max_size_MiB);
+printf("\tMax Size (High Water):\t\t\t%0.2fM (arc_max)\n", $arc_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
 printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
