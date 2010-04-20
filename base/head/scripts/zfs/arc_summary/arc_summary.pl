@@ -112,29 +112,41 @@ print "\n";
 ### ARC Sizing ###
 my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
 my $mru_size_MiB = ($mru_size / 1048576);
+
 my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
 my $target_size_MiB = ($target_size / 1048576);
-my $arc_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
-my $arc_min_size_MiB = ($arc_min_size / 1048576);
-my $arc_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
-my $arc_max_size_MiB = ($arc_max_size / 1048576);
+my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
+my $target_min_size_MiB = ($target_min_size / 1048576);
+my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
+my $target_max_size_MiB = ($target_max_size / 1048576);
 
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 my $arc_size_MiB = ($arc_size / 1048576);
-my $mfu_size = $target_size - $mru_size;
-my $mfu_size_MiB = ($mfu_size / 1048576);
-my $mru_perc = 100*($mru_size / $target_size);
-my $mfu_perc = 100*($mfu_size / $target_size);
 
 print "ARC Size:\n";
 printf("\tCurrent Size:\t\t\t\t%0.2fM (arcsize)\n", $arc_size_MiB);
 printf("\tTarget Size: (Adaptive)\t\t\t%0.2fM (c)\n", $target_size_MiB);
-printf("\tMin Size (Hard Limit):\t\t\t%0.2fM (arc_min)\n", $arc_min_size_MiB);
-printf("\tMax Size (High Water):\t\t\t%0.2fM (arc_max)\n", $arc_max_size_MiB);
+printf("\tMin Size (Hard Limit):\t\t\t%0.2fM (c_min)\n", $target_min_size_MiB);
+printf("\tMax Size (High Water):\t\t\t%0.2fM (c_max)\n", $target_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
-printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
-printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (c-p)\n", $mfu_perc, $mfu_size_MiB);
+if ($arc_size > $target_size) {
+	my $mfu_size = ($arc_size - $mru_size);
+	my $mfu_size_MiB = ($mfu_size / 1048576);
+	my $mru_perc = 100*($mru_size / $arc_size);
+	my $mfu_perc = 100*($mfu_size / $arc_size);
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (arcsize-p)\n", $mfu_perc, $mfu_size_MiB);
+}
+
+if ($arc_size < $target_size) {
+	my $mfu_size = ($target_size - $mru_size);
+	my $mfu_size_MiB = ($mfu_size / 1048576);
+	my $mru_perc = 100*($mru_size / $target_size);
+	my $mfu_perc = 100*($mfu_size / $target_size);
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (c-p)\n", $mfu_perc, $mfu_size_MiB);
+}
 print "\n";
         
 ### ARC Efficency ###
