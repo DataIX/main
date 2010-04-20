@@ -109,6 +109,19 @@ printf("\tFilesystem Version:\t\t\t%d (zpl)\n", $zpl);
 printf("\tMemory Throttle Count:\t\t\t%d\n", $throttle);
 print "\n";
 
+### ARC Misc. ###
+my $deleted = ${Kstat}->{zfs}->{0}->{arcstats}->{deleted};
+my $recycle_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{recycle_miss};
+my $mutex_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{mutex_miss};
+my $evict_skip = ${Kstat}->{zfs}->{0}->{arcstats}->{evict_skip};
+
+print "ARC Misc:\n";
+printf("\tDeleted:\t\t\t\t%d\n", $deleted);
+printf("\tRecycle Misses:\t\t\t\t%d\n", $recycle_miss);
+printf("\tMutex Misses:\t\t\t\t%d\n", $mutex_miss);
+printf("\tEvict Skips:\t\t\t\t%d\n", $mutex_miss);
+print "\n";
+
 ### ARC Sizing ###
 my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
 my $mru_size_MiB = ($mru_size / 1048576);
@@ -121,6 +134,7 @@ my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
 my $target_max_size_MiB = ($target_max_size / 1048576);
 my $target_size_ratio = ($target_max_size / $target_min_size);
 my $target_size_perc = 100*($target_size / $target_max_size);
+my $target_size_min_perc = 100*($target_min_size / $target_max_size);
 
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 my $arc_size_MiB = ($arc_size / 1048576);
@@ -129,8 +143,8 @@ my $arc_size_perc = 100*($arc_size / $target_max_size);
 print "ARC Size:\n";
 printf("\tCurrent Size:\t\t\t%0.2f%%\t%0.2fM (arcsize)\n", $arc_size_perc,  $arc_size_MiB);
 printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%0.2fM (c)\n", $target_size_perc, $target_size_MiB);
-printf("\tMin Size (Hard Limit):\t\t~1:%d\t%0.2fM (c_min)\n", $target_size_ratio, $target_min_size_MiB);
-printf("\tMax Size (High Water):\t\t~%d:1\t%0.2fM (c_max)\n", $target_size_ratio, $target_max_size_MiB);
+printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%0.2fM (c_min)\n", $target_size_min_perc, $target_min_size_MiB);
+printf("\tMax Size (High Water):\t\t\t%0.2fM (c_max)\n", $target_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
@@ -151,7 +165,23 @@ if ($arc_size < $target_size) {
 	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (c-p)\n", $mfu_perc, $mfu_size_MiB);
 }
 print "\n";
-        
+
+### ARC Hash ###
+my $hash_elements = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements};
+my $hash_elements_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements_max};
+my $hash_collisions = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_collisions};
+my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
+my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
+my $hash_elements_perc = 100*($hash_elements / $hash_elements_max);
+
+print "ARC Hash Breakdown:\n";
+printf("\tElements Max:\t\t\t\t%d\n", $hash_elements_max);
+printf("\tElements Current:\t\t%0.2f%%\t%d\n", $hash_elements_perc, $hash_elements);
+printf("\tCollisions:\t\t\t\t%d\n", $hash_collisions);
+printf("\tChain Max:\t\t\t\t%d\n", $hash_chain_max);
+printf("\tChains:\t\t\t\t\t%d\n", $hash_chains);
+print "\n";
+
 ### ARC Efficency ###
 my $arc_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{hits};
 my $arc_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{misses};
@@ -185,7 +215,6 @@ my $demand_data_hits_perc = 100*($demand_data_hits / $arc_hits);
 my $demand_metadata_hits_perc = 100*($demand_metadata_hits / $arc_hits);
 my $prefetch_data_hits_perc = 100*($prefetch_data_hits / $arc_hits);
 my $prefetch_metadata_hits_perc = 100*($prefetch_metadata_hits / $arc_hits);
-
 
 my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
 my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
