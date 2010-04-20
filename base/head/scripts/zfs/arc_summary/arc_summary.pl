@@ -144,7 +144,7 @@ print "ARC Size:\n";
 printf("\tCurrent Size:\t\t\t%0.2f%%\t%0.2fM (arcsize)\n", $arc_size_perc,  $arc_size_MiB);
 printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%0.2fM (c)\n", $target_size_perc, $target_size_MiB);
 printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%0.2fM (c_min)\n", $target_size_min_perc, $target_min_size_MiB);
-printf("\tMax Size (High Water):\t\t%d:1\t%0.2fM (c_max)\n", $target_size_ratio, $target_max_size_MiB);
+printf("\tMax Size (High Water):\t\t~%d:1\t%0.2fM (c_max)\n", $target_size_ratio, $target_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
