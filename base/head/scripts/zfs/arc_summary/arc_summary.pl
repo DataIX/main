@@ -119,15 +119,18 @@ my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
 my $target_min_size_MiB = ($target_min_size / 1048576);
 my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
 my $target_max_size_MiB = ($target_max_size / 1048576);
+my $target_size_ratio = ($target_max_size / $target_min_size);
+my $target_size_perc = 100*($target_size / $target_max_size);
 
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 my $arc_size_MiB = ($arc_size / 1048576);
+my $arc_size_perc = 100*($arc_size / $target_max_size);
 
 print "ARC Size:\n";
-printf("\tCurrent Size:\t\t\t\t%0.2fM (arcsize)\n", $arc_size_MiB);
-printf("\tTarget Size: (Adaptive)\t\t\t%0.2fM (c)\n", $target_size_MiB);
-printf("\tMin Size (Hard Limit):\t\t\t%0.2fM (c_min)\n", $target_min_size_MiB);
-printf("\tMax Size (High Water):\t\t\t%0.2fM (c_max)\n", $target_max_size_MiB);
+printf("\tCurrent Size:\t\t\t%0.2f%%\t%0.2fM (arcsize)\n", $arc_size_perc,  $arc_size_MiB);
+printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%0.2fM (c)\n", $target_size_perc, $target_size_MiB);
+printf("\tMin Size (Hard Limit):\t\t~1:%d\t%0.2fM (c_min)\n", $target_size_ratio, $target_min_size_MiB);
+printf("\tMax Size (High Water):\t\t~%d:1\t%0.2fM (c_max)\n", $target_size_ratio, $target_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
