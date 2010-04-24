@@ -42,105 +42,118 @@ Revision 19:
 
 {{{
 ------------------------------------------------------------------------
-System Summary				Wed Apr  7 18:52:56 2010
+System Summary								Sat Apr 24 17:22:02 2010
 
-FreeBSD 7.3-STABLE #0 r206203M Mon Apr 5 16:00:53 EDT 2010 root
+FreeBSD 7.3-STABLE #0 r207062M Thu Apr 22 10:36:14 EDT 2010 root
 
-Kernel Version:					703100 (osreldate)
+Kernel Version:								703100 (osreldate)
 
-Hardware Platform:				i386
-Processor Architecture:				i386
+Hardware Platform:							i386
+Processor Architecture:						i386
 
-18:52  up 1 day,  2:36, 4 users, load averages: 1.97, 1.78, 1.20
+17:22  up 1 day, 21:05, 4 users, load averages: 0.11, 0.11, 0.13
 ------------------------------------------------------------------------
 
-Physical Memory:				1009.91M
-Page Size:					4096
+Physical Memory:							1009.91M
+Page Size:									4096
 
 Kernel Memory
-TOTAL:						205.91M
-DATA:					95.85%	197.36M
-TEXT:					4.15%	8.55M
+TOTAL:										170.96M
+DATA:								94.99%	162.40M
+TEXT:								5.01%	8.56M
 
 ARC Summary
-	Storage pool Version:			13 (spa)
-	Filesystem Version:			3 (zpl)
-	Memory Throttle Count:			3250
+	Storage pool Version:					13 (spa)
+	Filesystem Version:						3 (zpl)
+	Memory Throttle Count:					150
+
+ARC Misc:
+	Deleted:								1185420
+	Recycle Misses:							740640
+	Mutex Misses:							714
+	Evict Skips:							714
 
 ARC Size:
-	Current Size:				167.48M (arcsize)
-	Target Size: (Adaptive)			167.54M (c)
-	Min Size (Hard Limit):			80.00M (arc_min)
-	Max Size (Hard Limit):			480.00M (arc_max)
+	Current Size:					30.08%	144.40M (arcsize)
+	Target Size: (Adaptive)			35.84%	172.03M (c)
+	Min Size (Hard Limit):			16.67%	80.00M (c_min)
+	Max Size (High Water):			~6:1	480.00M (c_max)
 
 ARC Size Breakdown:
-	Recently Used Cache Size:	66.62%	111.61M (p)
-	Frequently Used Cache Size:	33.38%	55.93M (c-p)
+	Recently Used Cache Size:		98.91%	170.15M (p)
+	Frequently Used Cache Size:		1.09%	1.87M (c-p)
+
+ARC Hash Breakdown:
+	Elements Max:							369547
+	Elements Current:				79.58%	294096
+	Collisions:								1132690
+	Chain Max:								44
+	Chains:									16384
 
 ARC Efficiency:
-	Cache Access Total:			16180529
-	Cache Hit Ratio:		88.29%	14286011
-	Cache Miss Ratio:		11.71%	1894518
-	Actual Hit Ratio:		69.14%	11187592
+	Cache Access Total:						22086496
+	Cache Hit Ratio:				93.09%	20561412
+	Cache Miss Ratio:				6.91%	1525084
+	Actual Hit Ratio:				76.28%	16847498
 
-	Data Demand Efficiency:		87.82%
-	Data Prefetch Efficiency:	34.54%
+	Data Demand Efficiency:			94.24%
+	Data Prefetch Efficiency:		76.70%
 
 	CACHE HITS BY CACHE LIST:
-	  Anonymous:			18.56%	2651813
-	  Most Recently Used:		19.49%	2784655 (mru)
-	  Most Frequently Used:		58.82%	8402937 (mfu)
-	  Most Recently Used Ghost:	1.81%	258611 (mru_ghost)
-	  Most Frequently Used Ghost:	1.32%	187995 (mfu_ghost)
+	  Anonymous:					15.05%	3093941
+	  Most Recently Used:			10.00%	2056877 (mru)
+	  Most Frequently Used:			71.93%	14790621 (mfu)
+	  Most Recently Used Ghost:		0.73%	150336 (mru_ghost)
+	  Most Frequently Used Ghost:	2.28%	469637 (mfu_ghost)
 
 	CACHE HITS BY DATA TYPE:
-	  Demand Data:			26.60%	3800073
-	  Prefetch Data:		1.12%	160315
-	  Demand Metadata:		50.10%	7157264
-	  Prefetch Metadata:		22.18%	3168359
+	  Demand Data:					17.44%	3586684
+	  Prefetch Data:				0.40%	81644
+	  Demand Metadata:				57.40%	11802747
+	  Prefetch Metadata:			24.76%	5090337
 
 	CACHE MISSES BY DATA TYPE:
-	  Demand Data:			27.81%	526940
-	  Prefetch Data:		16.04%	303861
-	  Demand Metadata:		42.80%	810924
-	  Prefetch Metadata:		13.34%	252793
+	  Demand Data:					14.36%	219054
+	  Prefetch Data:				1.63%	24803
+	  Demand Metadata:				59.32%	904699
+	  Prefetch Metadata:			24.69%	376528
 
 L2 ARC Summary
-	Low Memory Aborts:			1494
-	Bad Checksums:				0
-	IO Errors:				0
-	R/W Clashes:				65
-	Free on Write:				3128
+	Low Memory Aborts:						3960
+	Bad Checksums:							0
+	IO Errors:								0
+	R/W Clashes:							106
+	Free on Write:							5714
 
 L2 ARC Size:
-	Current Size: (Adaptive)		4014.65M
-	Header Size:			1.47%	58.84M
+	Current Size: (Adaptive)				2418.31M
+	Header Size:					1.70%	41.18M
 
 L2 ARC Evicts:
-	Lock Retries:				0
-	Upon Reading:				0
+	Lock Retries:							0
+	Upon Reading:							0
 
 L2 ARC Breakdown:
-	Access Total:				381350
-	Hit Ratio:			99.98%	381285
-	Miss Ratio:			0.02%	65
-	Feeds:					93790
+	Access Total:							875086
+	Hit Ratio:						99.99%	874980
+	Miss Ratio:						0.01%	106
+	Feeds:									157791
 
 	WRITES:
-	  Sent Total:				8455
-	  Done Ratio:			100.00%	8455
-	  Error Ratio:			0.00%	0
+	  Sent Total:							11372
+	  Done Ratio:					100.00%	11372
+	  Error Ratio:					0.00%	0
 
 VDEV Cache Summary
-	Access Total:				700798
-	Hits Ratio:			85.31%	597853
-	Miss Ratio:			14.69%	102945
-	Delegations:				77991
+	Access Total:							443247
+	Hits Ratio:						74.78%	331443
+	Miss Ratio:						25.22%	111804
+	Delegations:							85760
 
 ZFS Tunable (sysctl):
 	kern.maxusers=512
 	vfs.zfs.arc_meta_limit=125829120
-	vfs.zfs.arc_meta_used=124310436
+	vfs.zfs.arc_meta_used=144659580
 	vfs.zfs.mdcomp_disable=0
 	vfs.zfs.arc_min=83886080
 	vfs.zfs.arc_max=503316480
