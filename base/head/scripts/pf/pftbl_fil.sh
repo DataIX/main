@@ -48,8 +48,8 @@ if [ ! -f $BLIST ]; then
         exit 1
 fi
 
-TMPFILE1=$(mktemp /tmp/.pflog_fil.XXXXXX)
-TMPFILE2=$(mktemp /tmp/.pflog_fil.XXXXXX)
+TMPFILE1=$(mktemp /tmp/.pftbl_fil.XXXXXX)
+TMPFILE2=$(mktemp /tmp/.pftbl_fil.XXXXXX)
 if [ $? -ne 0 ]; then
 	echo "$0: Can't create temp file(s), exiting..."
 	exit 1
