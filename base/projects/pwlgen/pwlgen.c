@@ -1,7 +1,7 @@
 
 /*
  *
- * 1 -> 10 Byte PWL Generator (numeric)
+ * 1 -> 12 Byte PWL Generator (numeric)
  *
  * $Id$
  *
