@@ -8,16 +8,21 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <unistd.h>
 
 int main(void)
 {
   int cf,ce,cd,cc,cb,ca,c9,c8,c7,c6,c5,c4,c3,c2,c1,c0;
-  int start,end,length;
+  int start=0,end=9;
+  int length=6;
 
+  /* Deprecated for now.
   printf("Password Length (1-16): ");
   scanf("%d[1-16]", &length);
-
-  start=0; end=9;
+  */
 
   if(length==16)
     for(c0=end; c0>=start; c0--)
