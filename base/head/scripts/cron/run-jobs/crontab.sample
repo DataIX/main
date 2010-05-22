@@ -1,0 +1,8 @@
+@reboot         ~/bin/run-jobs ~/cron/reboot    1>/dev/null
+0 0 1 1 *       ~/bin/run-jobs ~/cron/yearly    1>/dev/null
+0 0 1 */3 *     ~/bin/run-jobs ~/cron/quarterly 1>/dev/null
+0 0 1 * *       ~/bin/run-jobs ~/cron/monthly   1>/dev/null
+0 0 * * 0       ~/bin/run-jobs ~/cron/weekly    1>/dev/null
+0 0 * * *       ~/bin/run-jobs ~/cron/daily     1>/dev/null
+0 * * * *       ~/bin/run-jobs ~/cron/hourly    1>/dev/null
+*/5 * * * *     ~/bin/run-jobs ~/cron/minutely  1>/dev/null
