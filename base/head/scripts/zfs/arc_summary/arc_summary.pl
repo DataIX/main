@@ -295,7 +295,7 @@ my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
 my $l2_access_total = ( $l2_hits + $l2_misses );
 
 ### L2 ARC ###
-if ($l2_access_total > 0) {
+if ($l2_size > 0 & $l2_access_total > 0) {
 	### L2 ARC Stats Calculations ###
 	my $l2_hdr_size_perc = (100 * ( $l2_hdr_size / $l2_size ));
 	my $l2_hits_perc = (100 * ( $l2_hits / ( $l2_access_total )));
@@ -333,9 +333,6 @@ if ($l2_access_total > 0) {
 	printf("\t  Sent Total:\t\t\t\t%d\n", $l2_writes_sent);
 	printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_done_perc, $l2_writes_done);
 	printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_error_perc, $l2_writes_error);
-	print "\n"; } else {
-	
-	printf("L2 ARC Stats: (enabled with access > 0)\t\t%d\n", $l2_access_total);
 	print "\n";
 }
 
