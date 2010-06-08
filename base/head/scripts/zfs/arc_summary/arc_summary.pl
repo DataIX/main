@@ -77,7 +77,7 @@ my $kdata_MiB = ($kdata / 1048576);
 my $ktext_MiB = ($ktext / 1048576);
 my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
-printf("System Summary\t\t\t\t%s\n", $daydate);
+printf("ZFS System Summary\t\t\t\t%s\n", $daydate);
 if ($useheader > 0) {
 	my $unamev = `uname -v |sed 's/@.*//' |xargs`;
 	my $unamem = `sysctl -n 'hw.machine'`;
@@ -104,9 +104,11 @@ printf("TOTAL:\t\t\t\t\t\t%0.2fM\n", $kmem_MiB);
 printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
 print "\nARC Summary\n";
-printf("\tStorage pool Version:\t\t\t%d (spa)\n", $spa);
-printf("\tFilesystem Version:\t\t\t%d (zpl)\n", $zpl);
-printf("\tMemory Throttle Count:\t\t\t%d\n", $throttle);
+printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
+printf("\tFilesystem Version:\t\t\t%d\t(zpl)\n", $zpl);
+if ($throttle > 0) {
+	printf("\tMemory Throttle Count:\t\t\t%d\t[*]\n", $throttle);
+}
 print "\n";
 
 ### ARC Misc. ###
@@ -141,10 +143,14 @@ my $arc_size_MiB = ($arc_size / 1048576);
 my $arc_size_perc = 100*($arc_size / $target_max_size);
 
 print "ARC Size:\n";
-printf("\tCurrent Size:\t\t\t%0.2f%%\t%0.2fM (arcsize)\n", $arc_size_perc,  $arc_size_MiB);
-printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%0.2fM (c)\n", $target_size_perc, $target_size_MiB);
-printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%0.2fM (c_min)\n", $target_size_min_perc, $target_min_size_MiB);
-printf("\tMax Size (High Water):\t\t~%d:1\t%0.2fM (c_max)\n", $target_size_ratio, $target_max_size_MiB);
+printf("\tCurrent Size:\t\t\t%0.2f%%\t%0.2fM\t(arcsize)\n",
+	$arc_size_perc,  $arc_size_MiB);
+printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%0.2fM\t(c)\n",
+	$target_size_perc, $target_size_MiB);
+printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%0.2fM\t(c_min)\n",
+	$target_size_min_perc, $target_min_size_MiB);
+printf("\tMax Size (High Water):\t\t~%d:1\t%0.2fM\t(c_max)\n",
+	$target_size_ratio, $target_max_size_MiB);
 
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
@@ -152,8 +158,10 @@ if ($arc_size > $target_size) {
 	my $mfu_size_MiB = ($mfu_size / 1048576);
 	my $mru_perc = 100*($mru_size / $arc_size);
 	my $mfu_perc = 100*($mfu_size / $arc_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (arcsize-p)\n", $mfu_perc, $mfu_size_MiB);
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM\t(p)\n",
+		$mru_perc, $mru_size_MiB);
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM\t(arcsize-p)\n",
+		$mfu_perc, $mfu_size_MiB);
 }
 
 if ($arc_size < $target_size) {
@@ -161,8 +169,10 @@ if ($arc_size < $target_size) {
 	my $mfu_size_MiB = ($mfu_size / 1048576);
 	my $mru_perc = 100*($mru_size / $target_size);
 	my $mfu_perc = 100*($mfu_size / $target_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM (p)\n", $mru_perc, $mru_size_MiB);
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM (c-p)\n", $mfu_perc, $mfu_size_MiB);
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM\t(p)\n",
+		$mru_perc, $mru_size_MiB);
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM\t(c-p)\n",
+		$mfu_perc, $mfu_size_MiB);
 }
 print "\n";
 
@@ -175,11 +185,16 @@ my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
 my $hash_elements_perc = 100*($hash_elements / $hash_elements_max);
 
 print "ARC Hash Breakdown:\n";
-printf("\tElements Max:\t\t\t\t%d\n", $hash_elements_max);
-printf("\tElements Current:\t\t%0.2f%%\t%d\n", $hash_elements_perc, $hash_elements);
-printf("\tCollisions:\t\t\t\t%d\n", $hash_collisions);
-printf("\tChain Max:\t\t\t\t%d\n", $hash_chain_max);
-printf("\tChains:\t\t\t\t\t%d\n", $hash_chains);
+printf("\tElements Max:\t\t\t\t%d\n",
+	$hash_elements_max);
+printf("\tElements Current:\t\t%0.2f%%\t%d\n",
+	$hash_elements_perc, $hash_elements);
+printf("\tCollisions:\t\t\t\t%d\n",
+	$hash_collisions);
+printf("\tChain Max:\t\t\t\t%d\n",
+	$hash_chain_max);
+printf("\tChains:\t\t\t\t\t%d\n",
+	$hash_chains);
 print "\n";
 
 ### ARC Efficency ###
@@ -219,6 +234,7 @@ my $prefetch_metadata_hits_perc = 100*($prefetch_metadata_hits / $arc_hits);
 my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
 my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
 my $prefetch_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_misses};
+
 my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_misses};
 
 my $demand_data_misses_perc = 100*($demand_data_misses / $arc_misses);
@@ -236,41 +252,58 @@ my $demand_data_total = ($demand_data_hits + $demand_data_misses);
 my $demand_data_perc = 100*($demand_data_hits / $demand_data_total);
 
 print "ARC Efficiency:\n";
-printf("\tCache Access Total:\t\t\t%d\n", $arc_accesses_total);
-printf("\tCache Hit Ratio:\t\t%0.2f%%\t%d\n", $arc_hit_perc, $arc_hits);
-printf("\tCache Miss Ratio:\t\t%0.2f%%\t%d\n", $arc_miss_perc, $arc_misses);
-printf("\tActual Hit Ratio:\t\t%0.2f%%\t%d\n", $real_hits_perc, $real_hits);
+printf("\tCache Access Total:\t\t\t%d\n",
+	$arc_accesses_total);
+printf("\tCache Hit Ratio:\t\t%0.2f%%\t%d\n",
+	$arc_hit_perc, $arc_hits);
+printf("\tCache Miss Ratio:\t\t%0.2f%%\t%d\n",
+	$arc_miss_perc, $arc_misses);
+printf("\tActual Hit Ratio:\t\t%0.2f%%\t%d\n",
+	$real_hits_perc, $real_hits);
 print "\n";
-printf("\tData Demand Efficiency:\t\t%0.2f%%\n", $demand_data_perc);
+printf("\tData Demand Efficiency:\t\t%0.2f%%\n",
+	$demand_data_perc);
 
-if ($prefetch_data_total == 0){ 
-	printf("\tData Prefetch Efficiency:\tDISABLED (zfs_prefetch_disable)\n");} else {
-
-	printf("\tData Prefetch Efficiency:\t%0.2f%%\n", $prefetch_data_perc);
+if ($prefetch_data_total > 0){ 
+	printf("\tData Prefetch Efficiency:\t%0.2f%%\n",
+		$prefetch_data_perc);
 }
 print "\n";
 
 print "\tCACHE HITS BY CACHE LIST:\n";
 if ( $anon_hits > 0 ){
-	printf("\t  Anonymously Used:\t\t%0.2f%%\t%d\n", $anon_hits_perc, $anon_hits);
+	printf("\t  Anonymously Used:\t\t%0.2f%%\t%d\n",
+		$anon_hits_perc, $anon_hits);
 }
 
-printf("\t  Most Recently Used:\t\t%0.2f%%\t%d (mru)\n", $mru_hits_perc, $mru_hits);
-printf("\t  Most Frequently Used:\t\t%0.2f%%\t%d (mfu)\n", $mfu_hits_perc, $mfu_hits);
-printf("\t  Most Recently Used Ghost:\t%0.2f%%\t%d (mru_ghost)\n", $mru_ghost_hits_perc, $mru_ghost_hits);
-printf("\t  Most Frequently Used Ghost:\t%0.2f%%\t%d (mfu_ghost)\n", $mfu_ghost_hits_perc, $mfu_ghost_hits);
+printf("\t  Most Recently Used:\t\t%0.2f%%\t%d\t(mru)\n",
+	$mru_hits_perc, $mru_hits);
+printf("\t  Most Frequently Used:\t\t%0.2f%%\t%d\t(mfu)\n",
+	$mfu_hits_perc, $mfu_hits);
+printf("\t  Most Recently Used Ghost:\t%0.2f%%\t%d\t(mru_ghost)\n",
+	$mru_ghost_hits_perc, $mru_ghost_hits);
+printf("\t  Most Frequently Used Ghost:\t%0.2f%%\t%d\t(mfu_ghost)\n",
+	$mfu_ghost_hits_perc, $mfu_ghost_hits);
 
 print "\n\tCACHE HITS BY DATA TYPE:\n";
-printf("\t  Demand Data:\t\t\t%0.2f%%\t%d\n", $demand_data_hits_perc, $demand_data_hits);
-printf("\t  Prefetch Data:\t\t%0.2f%%\t%d\n", $prefetch_data_hits_perc, $prefetch_data_hits);
-printf("\t  Demand Metadata:\t\t%0.2f%%\t%d\n", $demand_metadata_hits_perc, $demand_metadata_hits);
-printf("\t  Prefetch Metadata:\t\t%0.2f%%\t%d\n", $prefetch_metadata_hits_perc, $prefetch_metadata_hits);
+printf("\t  Demand Data:\t\t\t%0.2f%%\t%d\n",
+	$demand_data_hits_perc, $demand_data_hits);
+printf("\t  Prefetch Data:\t\t%0.2f%%\t%d\n",
+	$prefetch_data_hits_perc, $prefetch_data_hits);
+printf("\t  Demand Metadata:\t\t%0.2f%%\t%d\n",
+	$demand_metadata_hits_perc, $demand_metadata_hits);
+printf("\t  Prefetch Metadata:\t\t%0.2f%%\t%d\n",
+	$prefetch_metadata_hits_perc, $prefetch_metadata_hits);
 
 print "\n\tCACHE MISSES BY DATA TYPE:\n";
-printf("\t  Demand Data:\t\t\t%0.2f%%\t%d\n", $demand_data_misses_perc, $demand_data_misses);
-printf("\t  Prefetch Data:\t\t%0.2f%%\t%d\n", $prefetch_data_misses_perc, $prefetch_data_misses);
-printf("\t  Demand Metadata:\t\t%0.2f%%\t%d\n", $demand_metadata_misses_perc, $demand_metadata_misses);
-printf("\t  Prefetch Metadata:\t\t%0.2f%%\t%d\n", $prefetch_metadata_misses_perc, $prefetch_metadata_misses);
+printf("\t  Demand Data:\t\t\t%0.2f%%\t%d\n",
+	$demand_data_misses_perc, $demand_data_misses);
+printf("\t  Prefetch Data:\t\t%0.2f%%\t%d\n",
+	$prefetch_data_misses_perc, $prefetch_data_misses);
+printf("\t  Demand Metadata:\t\t%0.2f%%\t%d\n",
+	$demand_metadata_misses_perc, $demand_metadata_misses);
+printf("\t  Prefetch Metadata:\t\t%0.2f%%\t%d\n",
+	$prefetch_metadata_misses_perc, $prefetch_metadata_misses);
 print "\n";
 
 ### L2 ARC Stats Sysctl's ###
@@ -304,33 +337,60 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	my $l2_hdr_size_MiB = ($l2_hdr_size / 1048576);
 
 	print "L2 ARC Summary\n";
-	printf("\tLow Memory Aborts:\t\t\t%d\n", $l2_abort_lowmem);
-	printf("\tBad Checksums:\t\t\t\t%d\n", $l2_cksum_bad);
-	printf("\tIO Errors:\t\t\t\t%d\n", $l2_io_error);
-	printf("\tR/W Clashes:\t\t\t\t%d\n", $l2_rw_clash);
-	printf("\tFree on Write:\t\t\t\t%d\n", $l2_free_on_write);
+	printf("\tLow Memory Aborts:\t\t\t%d\n",
+		$l2_abort_lowmem);
+	if ($l2_cksum_bad > 0) {
+		printf("\tBad Checksums:\t\t\t\t%d\t[*]\n",
+			$l2_cksum_bad);
+	}
+	if ($l2_io_error > 0) {
+		printf("\tIO Errors:\t\t\t\t%d\t[*]\n",
+			$l2_io_error);
+	}
+	printf("\tR/W Clashes:\t\t\t\t%d\n",
+		$l2_rw_clash);
+	printf("\tFree on Write:\t\t\t\t%d\n",
+		$l2_free_on_write);
 	print "\n";
 	
 	print "L2 ARC Size:\n";
-	printf("\tCurrent Size: (Adaptive)\t\t%0.2fM\n", $l2_size_MiB);
-	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n", $l2_hdr_size_perc, $l2_hdr_size_MiB);
+	printf("\tCurrent Size: (Adaptive)\t\t%0.2fM\n",
+		$l2_size_MiB);
+	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n",
+		$l2_hdr_size_perc, $l2_hdr_size_MiB);
 	print "\n";
 	
-	print "L2 ARC Evicts:\n";
-	printf("\tLock Retries:\t\t\t\t%d\n", $l2_evict_lock_retry);
-	printf("\tUpon Reading:\t\t\t\t%d\n", $l2_evict_reading);
-	print "\n";
+	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
+		print "L2 ARC Evicts:\n";
+		printf("\tLock Retries:\t\t\t\t%d\n",
+			$l2_evict_lock_retry);
+		printf("\tUpon Reading:\t\t\t\t%d\n",
+			$l2_evict_reading);
+		print "\n";
+	}
 	print "L2 ARC Breakdown:\n";
-	printf("\tAccess Total:\t\t\t\t%d\n", $l2_access_total);
-	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n", $l2_hits_perc, $l2_hits);
-	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n", $l2_misses_perc, $l2_misses);
-	printf("\tFeeds:\t\t\t\t\t%d\n", $l2_feeds);
+	printf("\tAccess Total:\t\t\t\t%d\n",
+		$l2_access_total);
+	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
+		$l2_hits_perc, $l2_hits);
+	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
+		$l2_misses_perc, $l2_misses);
+	printf("\tFeeds:\t\t\t\t\t%d\n",
+		$l2_feeds);
 	print "\n";
 	
 	print "\tWRITES:\n";
-	printf("\t  Sent Total:\t\t\t\t%d\n", $l2_writes_sent);
-	printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_done_perc, $l2_writes_done);
-	printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n", $l2_writes_error_perc, $l2_writes_error);
+	if ($l2_writes_done != $l2_writes_sent) {
+		printf("\t  Sent Total:\t\t\t\t%d\n",
+			$l2_writes_sent);
+		printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n",
+			$l2_writes_done_perc, $l2_writes_done);
+		printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\t[*]\n",
+			$l2_writes_error_perc, $l2_writes_error);
+	} else {
+		printf("\t  Sent Total:\t\t\t%0.2f%\t%d\n",
+			100, $l2_writes_sent);
+	}
 	print "\n";
 }
 
@@ -353,10 +413,14 @@ my $vdev_cache_misses_perc = (100*($vdev_cache_misses / $vdev_cache_total));
 my $vdev_cache_delegations_perc = (100*($vdev_cache_delegations / $vdev_cache_total));
 
 print "VDEV Cache Summary\n";
-printf("\tAccess Total:\t\t\t\t%d\n", $vdev_cache_total);
-printf("\tHits Ratio:\t\t\t%0.2f%%\t%d\n", $vdev_cache_hits_perc, $vdev_cache_hits);
-printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n", $vdev_cache_misses_perc, $vdev_cache_misses);
-printf("\tDelegations:\t\t\t\t%d\n", $vdev_cache_delegations);
+printf("\tAccess Total:\t\t\t\t%d\n",
+	$vdev_cache_total);
+printf("\tHits Ratio:\t\t\t%0.2f%%\t%d\n",
+	$vdev_cache_hits_perc, $vdev_cache_hits);
+printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
+	$vdev_cache_misses_perc, $vdev_cache_misses);
+printf("\tDelegations:\t\t\t\t%d\n",
+	$vdev_cache_delegations);
 print "\n";
 
 if ($usetunable > 0) {
