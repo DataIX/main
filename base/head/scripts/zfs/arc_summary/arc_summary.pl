@@ -251,9 +251,7 @@ if ($prefetch_data_total == 0){
 print "\n";
 
 print "\tCACHE HITS BY CACHE LIST:\n";
-if ( $anon_hits < 1 ){
-	printf("\t  Anonymous:\t\t\t--%%\tCounter Rolled.\n");} else {
-
+if ( $anon_hits > 0 ){
 	printf("\t  Anonymous:\t\t\t%0.2f%%\t%d\n", $anon_hits_perc, $anon_hits);
 }
 
