@@ -252,7 +252,7 @@ print "\n";
 
 print "\tCACHE HITS BY CACHE LIST:\n";
 if ( $anon_hits > 0 ){
-	printf("\t  Anonymous:\t\t\t%0.2f%%\t%d\n", $anon_hits_perc, $anon_hits);
+	printf("\t  Anonymously Used:\t\t%0.2f%%\t%d\n", $anon_hits_perc, $anon_hits);
 }
 
 printf("\t  Most Recently Used:\t\t%0.2f%%\t%d (mru)\n", $mru_hits_perc, $mru_hits);
