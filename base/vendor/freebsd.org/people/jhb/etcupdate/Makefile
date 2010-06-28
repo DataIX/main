@@ -1,4 +1,5 @@
 # $FreeBSD$
+# $Id$
 
 SCRIPTS=etcupdate.sh
 MAN=	etcupdate.8

@@ -26,6 +26,7 @@
 # SUCH DAMAGE.
 #
 # $FreeBSD$
+# $Id$
 
 # This is a tool to manage updating files that are not updated as part
 # of 'make installworld' such as files in /etc.  Unlike other tools,
