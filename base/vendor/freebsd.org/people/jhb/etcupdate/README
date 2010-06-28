@@ -1,0 +1,45 @@
+This is a stab at a tool to better manage updating files in /etc after
+OS upgrades via buildworld/installworld.  Specifically, it aims to minimize
+the amount of user interaction required and provide an experience similar
+to doing an 'svn up' on a modified source tree.
+
+The easiest way to get started is to do the following:
+
+1) install the files in this directory to /usr/src/usr.sbin/etcupdate
+
+2) Run 'make install' from this directory.  This will install the script
+   and the manual page.
+
+3) Before using 'svn' or 'cvs' to update your source tree, run
+   'etcupdate extract' as root to bootstrap the state.  This assumes
+   that your source matches your currently installed world.  If that is
+   not the case then you have to find a matching source tree and use
+   'etcupdate extract -s /path/to/source/tree' or update your world to
+   match your current sources (including whatever process you use now to
+   update /etc).  If you have a matching world build for your source tree,
+   then run 'etcupdate extract -B' instead to minimize annoying conflicts
+   in /etc/mail/*.cf.
+
+4) After your next (cvs|svn) up/buildworld/installworld cycle, run
+   'etcupdate' as root when you would normally run mergemaster.
+
+5) If it doesn't encounter any warnings or conflicts, you are done.  You
+   can use 'etcupdate status' to check for any warnings or conflicts.
+
+6) If there are conflicts you can use 'etcupdate resolve' to resolve them
+   interactively akin to what happens during 'svn merge' or 'p4 resolve'.
+
+7) If there are warnings you have to decide if they matter or not and how
+   you want to cope with them.  Generally warnings happen due to obscure
+   things like you changed a file in /etc to be a directory or vice versa.
+
+8) You can use 'etcupdate diff' at anytime after step 3) to view a diff
+   of your /etc against a stock version.  This will show you what local
+   modifications you have made.  NB: This will _not_ include new files
+   you have added to /etc such as /etc/fstab or /etc/rc.conf.  It may also
+   be useful to do this right after step 3) to make sure all the local
+   modifications you expect are listed.
+
+For more details, check the etcupdate(8) man page.
+
+This file can be found at http://www.FreeBSD.org/~jhb/etcupdate/
