@@ -29,23 +29,25 @@
 # SUCH DAMAGE.
 #
 
-# If you are having troubles when using this script from cron(8) please try adjusting
-# your PATH before reporting problems. This script as of this version of FreeBSD that
-# coincides with the date and revision at the top of this file uses the binaries from:
+# If you are having troubles when using this script from cron(8) please try
+# adjusting your PATH before reporting problems.
+#
+# This script as of this version of FreeBSD that coincides with the date and
+# revision at the top of this file uses the binaries from:
 #
 # /bin /usr/bin & /sbin
 #
-# Binaries used at this point are:
+# Binaries used are:
 #
 # dc(1), kldstat(8), sed(1), sysctl(8), uname(1), vmstat(8), & xargs(1)
 #
-# Binaries that I am working on phasing out through the use of perl are:
+# Binaries that I am working on phasing out are:
 #
 # dc(1), sed(1) & xargs(1)
 
 use strict;
 
-my $useheader = 1;	# Change to 0 to disable FreeBSD header.
+my $useheader = 0;	# Change to 1 to enable FreeBSD header.
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
 
@@ -64,7 +66,6 @@ print "------------------------------------------------------------------------\
 my $daydate = localtime;
 my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
-my $pagesize = `sysctl -n 'hw.pagesize'`;
 my $phys_memory = `sysctl -n 'hw.physmem'`;
 my $phys_memory_MiB = ($phys_memory / 1048576);
 my $ktext = `kldstat | awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' | dc`;
@@ -97,13 +98,11 @@ if ($useheader > 0) {
 print "------------------------------------------------------------------------\n";
 print "\n";
 printf("Physical Memory:\t\t\t\t%0.2fM\n", $phys_memory_MiB);
-printf("Page Size:\t\t\t\t\t%d\n", $pagesize);
 print "\n";
-print "Kernel Memory\n";
-printf("TOTAL:\t\t\t\t\t\t%0.2fM\n", $kmem_MiB);
+printf("Kernel Memory:\t\t\t\t\t%0.2fM\n", $kmem_MiB);
 printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
-print "\nARC Summary\n";
+print "\nARC Summary:\n";
 printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\t(zpl)\n", $zpl);
 if ($throttle > 0) {
@@ -336,7 +335,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	my $l2_size_MiB = ($l2_size / 1048576);
 	my $l2_hdr_size_MiB = ($l2_hdr_size / 1048576);
 
-	print "L2 ARC Summary\n";
+	print "L2 ARC Summary:\n";
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
 	if ($l2_cksum_bad > 0) {
@@ -412,7 +411,7 @@ my $vdev_cache_hits_perc = (100*($vdev_cache_hits / $vdev_cache_total));
 my $vdev_cache_misses_perc = (100*($vdev_cache_misses / $vdev_cache_total));
 my $vdev_cache_delegations_perc = (100*($vdev_cache_delegations / $vdev_cache_total));
 
-print "VDEV Cache Summary\n";
+print "VDEV Cache Summary:\n";
 printf("\tAccess Total:\t\t\t\t%d\n",
 	$vdev_cache_total);
 printf("\tHits Ratio:\t\t\t%0.2f%%\t%d\n",
