@@ -106,7 +106,7 @@ print "\nARC Summary:\n";
 printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\t(zpl)\n", $zpl);
 if ($throttle > 0) {
-	printf("\tMemory Throttle Count:\t\t\t%d\t[*]\n", $throttle);
+	printf("\tMemory Throttle Count:\t\t\t%d\t[I]\n", $throttle);
 }
 print "\n";
 
@@ -339,11 +339,11 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
 	if ($l2_cksum_bad > 0) {
-		printf("\tBad Checksums:\t\t\t\t%d\t[*]\n",
+		printf("\tBad Checksums:\t\t\t\t%d\t[W]\n",
 			$l2_cksum_bad);
 	}
 	if ($l2_io_error > 0) {
-		printf("\tIO Errors:\t\t\t\t%d\t[*]\n",
+		printf("\tIO Errors:\t\t\t\t%d\t[E]\n",
 			$l2_io_error);
 	}
 	printf("\tR/W Clashes:\t\t\t\t%d\n",
@@ -384,7 +384,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 			$l2_writes_sent);
 		printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n",
 			$l2_writes_done_perc, $l2_writes_done);
-		printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\t[*]\n",
+		printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\t[E]\n",
 			$l2_writes_error_perc, $l2_writes_error);
 	} else {
 		printf("\t  Sent Total:\t\t\t%0.2f%\t%d\n",
