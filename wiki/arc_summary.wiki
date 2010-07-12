@@ -3,6 +3,9 @@
 
 = News =
 
+Mon Jul 12 22:50:39 UTC 2010
+  As of this date there has been more than *800* downloads of the arc_summary.pl script for FreeBSD and a large number of unaccounted downloads from the repository.
+
 Sat Apr 24 21:10:57 UTC 2010
   At some point today there has been a total of 501 downloads of arc_summary.pl.
 
