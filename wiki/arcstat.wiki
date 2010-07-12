@@ -1,5 +1,5 @@
 
-From the blog of realneal:
+From the blog of realneal: http://blogs.sun.com/realneel/entry/zfs_arc_statistics
 
 ZFS ARC Statistics
 ARC Statistics are exported via kstat(1M) (CR 6510807) in Solaris 10 U4 and Solaris nevada (build 57+). A simple way to see them is to use kstat -m zfs.
