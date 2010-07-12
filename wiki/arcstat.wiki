@@ -1,5 +1,5 @@
 
-From the blog of reelneal:
+From the blog of realneal:
 
 ZFS ARC Statistics
 ARC Statistics are exported via kstat(1M) (CR 6510807) in Solaris 10 U4 and Solaris nevada (build 57+). A simple way to see them is to use kstat -m zfs.
@@ -10,7 +10,7 @@ I wrote a simple perl script to print out the ARC statistics. Sample output is s
 In later blogs, I will describe how to make sense of these numbers. Sample output below
 
 Cached random read
-
+{{{
 thumper1[bash]$ ~/arcstat.pl
     Time  read  miss  miss%  dmis  dm%  pmis  pm%  mmis  mm%  arcsz     c
 18:15:21  985M  100M     10   47M   14   53M    8    1M    3    11G   11G
@@ -25,10 +25,10 @@ thumper1[bash]$ ~/arcstat.pl
 18:15:30  140K     0      0     0    0     0    0     0    0    11G   11G
 18:15:31  139K     0      0     0    0     0    0     0    0    11G   11G
 18:15:32   33K     0      0     0    0     0    0     0    0    11G   11G
-^C
+}}}
 
 Uncached sequential write
-
+{{{
     Time  read  miss  miss%  dmis  dm%  pmis  pm%  mmis  mm%  arcsz     c
 18:17:48     0     0      0     0    0     0    0     0    0    11G   11G
 18:17:49     0     0      0     0    0     0    0     0    0    11G   11G
@@ -41,3 +41,4 @@ Uncached sequential write
 18:17:56    1K   646     35     6    0   640  100     6    0    10G   10G
 18:17:57    2K   645     31     5    0   640  100     5    0    10G   10G
 18:17:58    2K   774     33     6    0   768  100     6    0    10G   10G
+}}}
