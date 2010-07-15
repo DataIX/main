@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# $Id$
+
 printf " <->\tUID \tLOCAL:PORT \t\tREMOTE:PORT\n"
 printf " ===\t======  ======================  ======================\n"
 lsof -Pnl -iTCP -sTCP:ESTABLISHED 2>/dev/null |\
