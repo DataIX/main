@@ -60,7 +60,7 @@ my %cols = (# HDR => [Size, Description]
 	"mh%"	=>[3, "Metadata hit percentage"],
 	"mm%"	=>[3, "Metadata miss percentage"],
 	"size"	=>[5, "Arc Size"],
-	"c" 	=>[4, "Arc Target Size"],
+	"tsize"	=>[4, "Arc Target Size"],
 	"mfu" 	=>[4, "MFU List hits per second"],
 	"mru" 	=>[4, "MRU List hits per second"],
 	"mfug" 	=>[4, "MFU Ghost List hits per second"],
@@ -72,7 +72,7 @@ my %cols = (# HDR => [Size, Description]
 	"pread"	=>[5, "Prefetch accesses per second"],
 );
 my %v=();
-my @hdr = qw(Time read miss miss% dmis dm% pmis pm% mmis mm% size c);
+my @hdr = qw(Time read miss miss% dmis dm% pmis pm% mmis mm% size tsize);
 my @xhdr = qw(Time mfu mru mfug mrug eskip mtxmis rmis dread pread read);
 my $int = 1;		# Print stats every 1 second by default
 my $count = 0;		# Print stats forever
@@ -239,7 +239,7 @@ sub calculate {
 	$v{"mm%"} = 100 - $v{"mh%"} if $v{"mread"} > 0;
 
 	$v{"size"} = $cur{"size"};
-	$v{"c"} = $cur{"c"};
+	$v{"tsize"} = $cur{"c"};
 	$v{"mfu"} = $d{"hits"}/$int;
 	$v{"mru"} = $d{"mru_hits"}/$int;
 	$v{"mrug"} = $d{"mru_ghost_hits"}/$int;
