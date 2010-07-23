@@ -41,33 +41,33 @@ use IO::Handle;
 
 my %cols = (# HDR => [Size, Description]
 	"Time"	=>[8, "Time"],
-	"hits"	=>[4, "Arc reads per second"],
-	"miss"	=>[4, "Arc misses per second"],
-	"read"	=>[4, "Total Arc accesses per second"],
+	"hits"	=>[5, "Arc reads per second"],
+	"miss"	=>[5, "Arc misses per second"],
+	"read"	=>[5, "Total Arc accesses per second"],
 	"Hit%"	=>[4, "Arc Hit percentage"],
 	"miss%"	=>[5, "Arc miss percentage"],
-	"dhit"	=>[4, "Demand Data hits per second"],
-	"dmis"	=>[4, "Demand Data misses per second"],
+	"dhit"	=>[5, "Demand Data hits per second"],
+	"dmis"	=>[5, "Demand Data misses per second"],
 	"dh%"	=>[3, "Demand Data hit percentage"],
 	"dm%"	=>[3, "Demand Data miss percentage"],
 	"phit"	=>[4, "Prefetch hits per second"],
 	"pmis"	=>[4, "Prefetch misses per second"],
 	"ph%"	=>[3, "Prefetch hits percentage"],
 	"pm%"	=>[3, "Prefetch miss percentage"],
-	"mhit"	=>[4, "Metadata hits per second"],
-	"mmis"	=>[4, "Metadata misses per second"],
+	"mhit"	=>[5, "Metadata hits per second"],
+	"mmis"	=>[5, "Metadata misses per second"],
 	"mread"	=>[5, "Metadata accesses per second"],
 	"mh%"	=>[3, "Metadata hit percentage"],
 	"mm%"	=>[3, "Metadata miss percentage"],
 	"size"	=>[5, "Arc Size"],
-	"tsize"	=>[4, "Arc Target Size"],
-	"mfu" 	=>[4, "MFU List hits per second"],
-	"mru" 	=>[4, "MRU List hits per second"],
-	"mfug" 	=>[4, "MFU Ghost List hits per second"],
-	"mrug" 	=>[4, "MRU Ghost List hits per second"],
+	"tsize"	=>[5, "Arc Target Size"],
+	"mfu" 	=>[5, "MFU List hits per second"],
+	"mru" 	=>[5, "MRU List hits per second"],
+	"mfug" 	=>[5, "MFU Ghost List hits per second"],
+	"mrug" 	=>[5, "MRU Ghost List hits per second"],
 	"eskip"	=>[5, "evict_skip per second"],
 	"mtxmis"=>[6, "mutex_miss per second"],
-	"rmis"	=>[4, "recycle_miss per second"],
+	"rmis"	=>[5, "recycle_miss per second"],
 	"dread"	=>[5, "Demand data accesses per second"],
 	"pread"	=>[5, "Prefetch accesses per second"],
 );
@@ -79,6 +79,7 @@ my $count = 0;		# Print stats forever
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
+my $rflag = 0;		# Do not display pretty print by default
 my $version = "0.1";
 my $cmd = "Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]\n";
 my %cur;
@@ -94,7 +95,7 @@ sub kstat_update {
 
 	foreach my $k (@k) {
 	  chomp $k;
-	  my ($name,$value) = split /:/, $k;
+	  my ($name,$value) = split /: /, $k;
 	  my @z = split /\./, $name;
 	  my $n = pop @z;
 	  ${kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
@@ -117,6 +118,7 @@ sub usage {
 	print STDERR "\t -x : Print extended stats\n";
 	print STDERR "\t -f : Specify specific fields to print (see -v)\n";
 	print STDERR "\t -o : Print stats to file\n";
+	print STDERR "\t -r : Raw output\n";
 	print STDERR "\t -s : Specify a seperator\n\nExamples:\n";
 	print STDERR "\tarcstat -o /tmp/a.log 2 10\n";
 	print STDERR "\tarcstat -s , -o /tmp/a.log 2 10\n";
@@ -134,6 +136,7 @@ sub init {
 		'o=s' => \$opfile,
 		'help|h|?' => \$hflag,
 		'v' => \$vflag,
+		'r' => \$rflag,
 		's=s' => \$sep,
 		'f=s' => \$desired_cols);
 	$int = $ARGV[0] || $int;
@@ -186,14 +189,25 @@ sub prettynum {
 	my $num = $_[1] || 0;
 	my $sz = $_[0];
 	my $index = 0;
-	return sprintf("%s", $num) if not $num =~ /^[0-9\.]+$/;
-	while ($num > 1000 and $index < 8) {
+	return sprintf("%*s", $sz, $num) if ($rflag or not $num =~ /^[0-9\.]+$/);
+	while ($num >= 10000 and $index < 8) {
 		$num = $num/1000;
 		$index++;
 	}
 	return sprintf("%*d", $sz, $num) if ($index == 0);
 	return sprintf("%*d%s", $sz - 1, $num,$suffix[$index]);
 }
+
+#1		1
+#10		10
+#100		100
+#1000		1000
+#10000		10K
+#100000		100K
+#1000000	1000K
+#10000000	10M
+#100000000	100M
+#1000000000	1000M
 
 sub print_values {
 	foreach my $col (@hdr) {
