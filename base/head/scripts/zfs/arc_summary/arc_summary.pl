@@ -306,7 +306,6 @@ printf("\t  Demand Metadata:\t\t%0.2f%%\t%d\n",
 	$demand_metadata_misses_perc, $demand_metadata_misses);
 printf("\t  Prefetch Metadata:\t\t%0.2f%%\t%d\n",
 	$prefetch_metadata_misses_perc, $prefetch_metadata_misses);
-print "\n";
 
 ### L2 ARC Stats Sysctl's ###
 my $l2_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hits};
