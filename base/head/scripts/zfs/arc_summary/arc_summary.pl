@@ -50,6 +50,9 @@ use strict;
 my $useheader = 0;	# Change to 1 to enable FreeBSD header.
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
+sub hline(){
+	print "\n------------------------------------------------------------------------\n\n";
+}
 
 my $Kstat;
 my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
@@ -62,7 +65,6 @@ foreach my $arcstats (@arcstats) {
 }
 
 ### System Information / FreeBSD ###
-print "------------------------------------------------------------------------\n";
 my $daydate = localtime;
 my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
@@ -78,14 +80,15 @@ my $kdata_MiB = ($kdata / 1048576);
 my $ktext_MiB = ($ktext / 1048576);
 my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
-printf("ZFS System Summary\t\t\t\t%s\n", $daydate);
-if ($useheader > 0) {
+print "\n------------------------------------------------------------------------\n";
+printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
+if ($useheader != 0) {
 	my $unamev = `uname -v |sed 's/@.*//' |xargs`;
 	my $unamem = `sysctl -n 'hw.machine'`;
 	my $unamep = `sysctl -n 'hw.machine_arch'`;
 	my $osreldate = `sysctl -n 'kern.osreldate'`;
 	my $sysuptime = `uptime`;
-	print "\n";
+	hline();
 	printf("%s", $unamev);
 	print "\n";
 	printf("Kernel Version:\t\t\t\t\t%d (osreldate)\n", $osreldate);
@@ -95,14 +98,14 @@ if ($useheader > 0) {
 	print "\n";
 	printf("%s", $sysuptime);
 }
-print "------------------------------------------------------------------------\n";
-print "\n";
+hline();
 printf("Physical Memory:\t\t\t\t%0.2fM\n", $phys_memory_MiB);
 print "\n";
 printf("Kernel Memory:\t\t\t\t\t%0.2fM\n", $kmem_MiB);
 printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
-print "\nARC Summary:\n";
+hline();
+print "ARC Summary:\n";
 printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\t(zpl)\n", $zpl);
 if ($throttle > 0) {
@@ -335,6 +338,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	my $l2_size_MiB = ($l2_size / 1048576);
 	my $l2_hdr_size_MiB = ($l2_hdr_size / 1048576);
 
+	hline();
+
 	print "L2 ARC Summary:\n";
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
@@ -390,7 +395,6 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		printf("\t  Sent Total:\t\t\t%0.2f%\t%d\n",
 			100, $l2_writes_sent);
 	}
-	print "\n";
 }
 
 ### VDEV Cache Stats ###
@@ -411,6 +415,7 @@ my $vdev_cache_hits_perc = (100*($vdev_cache_hits / $vdev_cache_total));
 my $vdev_cache_misses_perc = (100*($vdev_cache_misses / $vdev_cache_total));
 my $vdev_cache_delegations_perc = (100*($vdev_cache_delegations / $vdev_cache_total));
 
+hline();
 print "VDEV Cache Summary:\n";
 printf("\tAccess Total:\t\t\t\t%d\n",
 	$vdev_cache_total);
@@ -420,9 +425,83 @@ printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
 	$vdev_cache_misses_perc, $vdev_cache_misses);
 printf("\tDelegations:\t\t\t\t%d\n",
 	$vdev_cache_delegations);
-print "\n";
 
-if ($usetunable > 0) {
+### DMU Stats ###
+my @zfetch_stats = `sysctl 'kstat.zfs.misc.zfetchstats'`;
+foreach my $zfetch_stats (@zfetch_stats) {
+	chomp $zfetch_stats;
+	my ($name,$value) = split /:/, $zfetch_stats;
+	my @z = split /\./, $name;
+	my $n = pop @z;
+	${Kstat}->{zfs}->{0}->{zfetch_stats}->{$n} = $value;
+}
+
+### DMU Stats Sysctl's ###
+my $zfetch_hits = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{hits};
+my $zfetch_misses = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{misses};
+my $zfetch_colinear_hits = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{colinear_hits};
+my $zfetch_colinear_misses = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{colinear_misses};
+my $zfetch_stride_hits = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{stride_hits};
+my $zfetch_stride_misses = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{stride_misses};
+my $zfetch_reclaim_successes = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{reclaim_successes};
+my $zfetch_reclaim_failures = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{reclaim_failures};
+my $zfetch_streams_resets = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{streams_resets};
+my $zfetch_streams_noresets = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{streams_noresets};
+my $zfetch_bogus_streams = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{bogus_streams};
+my $zfetch_access_total = ( $zfetch_hits + $zfetch_misses );
+my $zfetch_colinear_total = ( $zfetch_colinear_hits + $zfetch_colinear_misses );
+my $zfetch_stride_total = ( $zfetch_stride_hits + $zfetch_stride_misses );
+
+if ($zfetch_access_total > 0) {
+	my $zfetch_hits_perc = (100 * ( $zfetch_hits / ( $zfetch_access_total )));
+	my $zfetch_misses_perc = (100 * ( $zfetch_misses / ( $zfetch_access_total )));
+	my $zfetch_colinear_hits_perc = (100 * ( $zfetch_colinear_hits / ( $zfetch_colinear_total )));
+	my $zfetch_colinear_misses_perc = (100 * ( $zfetch_colinear_misses / ( $zfetch_colinear_total )));
+	my $zfetch_stride_hits_perc = (100 * ( $zfetch_stride_hits / ( $zfetch_stride_total )));
+	my $zfetch_stride_misses_perc = (100 * ( $zfetch_stride_misses / ( $zfetch_stride_total )));
+
+	hline();
+	print "File-Level Prefetch Stats (DMU):\n\n";
+	print "DMU Efficiency:\n";
+	printf("\tAccess Total:\t\t\t\t%d\n",
+		$zfetch_access_total);
+	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
+		$zfetch_hits_perc, $zfetch_hits);
+	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
+		$zfetch_misses_perc, $zfetch_misses);
+	print "\n";
+
+	printf("\tColinear Access Total:\t\t\t%d\n",
+		$zfetch_colinear_total);
+	printf("\tColinear Hit Ratio:\t\t%0.2f%%\t%d\n",
+		$zfetch_colinear_hits_perc, $zfetch_colinear_hits);
+	printf("\tColinear Miss Ratio:\t\t%0.2f%%\t%d\n",
+		$zfetch_colinear_misses_perc, $zfetch_colinear_misses);
+	print "\n";
+
+	printf("\tStride Access Total:\t\t\t%d\n",
+		$zfetch_stride_total);
+	printf("\tStride Hit Ratio:\t\t%0.2f%%\t%d\n",
+		$zfetch_stride_hits_perc, $zfetch_stride_hits);
+	printf("\tStride Miss Ratio:\t\t%0.2f%%\t%d\n",
+		$zfetch_stride_misses_perc, $zfetch_stride_misses);
+	print "\n";
+
+	print "DMU misc:\n";
+	printf("\tReclaim successes:\t\t\t%d\n",
+		$zfetch_reclaim_successes);
+	printf("\tReclaim failures:\t\t\t%d\n",
+		$zfetch_reclaim_failures);
+	printf("\tStream resets:\t\t\t\t%d\n",
+		$zfetch_streams_resets);
+	printf("\tStream noresets:\t\t\t%d\n",
+		$zfetch_streams_noresets);
+	printf("\tBogus streams:\t\t\t\t%d\n",
+		$zfetch_bogus_streams);
+}
+
+hline();
+if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
 	my @Tunable = qw(
 		kern.maxusers
@@ -439,4 +518,4 @@ if ($usetunable > 0) {
 		print "\t$tunable\n";
 	}
 }
-print "------------------------------------------------------------------------\n";
+hline();
