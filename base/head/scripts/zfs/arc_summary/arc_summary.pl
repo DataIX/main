@@ -419,7 +419,7 @@ hline();
 print "VDEV Cache Summary:\n";
 printf("\tAccess Total:\t\t\t\t%d\n",
 	$vdev_cache_total);
-printf("\tHits Ratio:\t\t\t%0.2f%%\t%d\n",
+printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
 	$vdev_cache_hits_perc, $vdev_cache_hits);
 printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
 	$vdev_cache_misses_perc, $vdev_cache_misses);
@@ -461,7 +461,7 @@ if ($zfetch_access_total > 0) {
 	my $zfetch_stride_misses_perc = (100 * ( $zfetch_stride_misses / ( $zfetch_stride_total )));
 
 	hline();
-	print "File-Level Prefetch Stats (DMU):\n\n";
+	print "File-Level Prefetch (DMU):\n\n";
 	print "DMU Efficiency:\n";
 	printf("\tAccess Total:\t\t\t\t%d\n",
 		$zfetch_access_total);
@@ -488,15 +488,15 @@ if ($zfetch_access_total > 0) {
 	print "\n";
 
 	print "DMU misc:\n";
-	printf("\tReclaim successes:\t\t\t%d\n",
+	printf("\tReclaim Successes:\t\t\t%d\n",
 		$zfetch_reclaim_successes);
-	printf("\tReclaim failures:\t\t\t%d\n",
+	printf("\tReclaim Failures:\t\t\t%d\n",
 		$zfetch_reclaim_failures);
-	printf("\tStream resets:\t\t\t\t%d\n",
+	printf("\tStream Resets:\t\t\t\t%d\n",
 		$zfetch_streams_resets);
-	printf("\tStream noresets:\t\t\t%d\n",
+	printf("\tStream NoResets:\t\t\t%d\n",
 		$zfetch_streams_noresets);
-	printf("\tBogus streams:\t\t\t\t%d\n",
+	printf("\tBogus Streams:\t\t\t\t%d\n",
 		$zfetch_bogus_streams);
 }
 
