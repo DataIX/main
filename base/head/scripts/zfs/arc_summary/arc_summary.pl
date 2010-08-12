@@ -495,7 +495,6 @@ if ($zfetch_access_total > 0) {
 		$zfetch_bogus_streams);
 }
 
-hline();
 if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
 	my @Tunable = qw(
@@ -507,6 +506,7 @@ if ($usetunable != 0) {
 		vm.kmem_size_max
 	);
 	my @tunable = `sysctl -e @Tunable`;
+	hline();
 	print "ZFS Tunable (sysctl):\n";
 	foreach my $tunable (@tunable){
 		chomp($tunable);
