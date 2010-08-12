@@ -71,14 +71,14 @@ my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
 my $phys_memory = `sysctl -n 'hw.physmem'`;
 my $phys_memory_MiB = ($phys_memory / 1048576);
-my $ktext = `kldstat | awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' | dc`;
-my $kdata = `vmstat -m | sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' | dc`;
+my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
+my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 my $kmem = ( $ktext + $kdata );
-my $kmem_MiB = ($kmem / 1048576);
-my $ktext_perc = (100 * ( $ktext / $kmem ));
-my $kdata_perc = (100 * ( $kdata / $kmem ));
-my $kdata_MiB = ($kdata / 1048576);
-my $ktext_MiB = ($ktext / 1048576);
+my $kmem_MiB = ( $kmem / 1048576 );
+my $ktext_perc = ( 100 * ( $ktext / $kmem ));
+my $kdata_perc = ( 100 * ( $kdata / $kmem ));
+my $kdata_MiB = ( $kdata / 1048576 );
+my $ktext_MiB = ( $ktext / 1048576 );
 my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 print "\n------------------------------------------------------------------------\n";
@@ -215,24 +215,24 @@ my $mru_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_ghost_hits};
 my $anon_hits = $arc_hits - ($mfu_hits + $mru_hits + $mfu_ghost_hits + $mru_ghost_hits);
 
 my $real_hits = ($mfu_hits + $mru_hits);
-my $real_hits_perc = 100*($real_hits / $arc_accesses_total);
+my $real_hits_perc = ( 100 * ( $real_hits / $arc_accesses_total ));
 
 ### These should be based on TOTAL HITS ($arc_hits) ###
-my $anon_hits_perc = 100*($anon_hits / $arc_hits);
-my $mfu_hits_perc = 100*($mfu_hits / $arc_hits);
-my $mru_hits_perc = 100*($mru_hits / $arc_hits);
-my $mfu_ghost_hits_perc = 100*($mfu_ghost_hits / $arc_hits);
-my $mru_ghost_hits_perc = 100*($mru_ghost_hits / $arc_hits);
+my $anon_hits_perc = ( 100 * ( $anon_hits / $arc_hits ));
+my $mfu_hits_perc = ( 100 * ( $mfu_hits / $arc_hits ));
+my $mru_hits_perc = ( 100 * ( $mru_hits / $arc_hits ));
+my $mfu_ghost_hits_perc = ( 100 * ( $mfu_ghost_hits / $arc_hits ));
+my $mru_ghost_hits_perc = ( 100 * ( $mru_ghost_hits / $arc_hits ));
 
 my $demand_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_hits};
 my $demand_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_hits};
 my $prefetch_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_hits};
 my $prefetch_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_hits};
 
-my $demand_data_hits_perc = 100*($demand_data_hits / $arc_hits);
-my $demand_metadata_hits_perc = 100*($demand_metadata_hits / $arc_hits);
-my $prefetch_data_hits_perc = 100*($prefetch_data_hits / $arc_hits);
-my $prefetch_metadata_hits_perc = 100*($prefetch_metadata_hits / $arc_hits);
+my $demand_data_hits_perc = ( 100 * ( $demand_data_hits / $arc_hits ));
+my $demand_metadata_hits_perc = ( 100 * ( $demand_metadata_hits / $arc_hits ));
+my $prefetch_data_hits_perc = ( 100 * ( $prefetch_data_hits / $arc_hits ));
+my $prefetch_metadata_hits_perc = ( 100 * ( $prefetch_metadata_hits / $arc_hits ));
 
 my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
 my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
@@ -240,19 +240,19 @@ my $prefetch_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_miss
 
 my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_misses};
 
-my $demand_data_misses_perc = 100*($demand_data_misses / $arc_misses);
-my $demand_metadata_misses_perc = 100*($demand_metadata_misses / $arc_misses);
-my $prefetch_data_misses_perc = 100*($prefetch_data_misses / $arc_misses);
-my $prefetch_metadata_misses_perc = 100*($prefetch_metadata_misses / $arc_misses);
+my $demand_data_misses_perc = ( 100 * ( $demand_data_misses / $arc_misses ));
+my $demand_metadata_misses_perc = ( 100 * ($demand_metadata_misses / $arc_misses ));
+my $prefetch_data_misses_perc = ( 100 * ( $prefetch_data_misses / $arc_misses ));
+my $prefetch_metadata_misses_perc = ( 100 * ( $prefetch_metadata_misses / $arc_misses ));
 
-my $prefetch_data_total = ($prefetch_data_hits + $prefetch_data_misses);
+my $prefetch_data_total = ( $prefetch_data_hits + $prefetch_data_misses );
 my $prefetch_data_perc = "00";
 if ($prefetch_data_total > 0) {
-        $prefetch_data_perc = 100*($prefetch_data_hits / $prefetch_data_total);
+        $prefetch_data_perc = ( 100 * ( $prefetch_data_hits / $prefetch_data_total ));
 }
 
-my $demand_data_total = ($demand_data_hits + $demand_data_misses);
-my $demand_data_perc = 100*($demand_data_hits / $demand_data_total);
+my $demand_data_total = ( $demand_data_hits + $demand_data_misses );
+my $demand_data_perc = ( 100 * ( $demand_data_hits / $demand_data_total ));
 
 print "ARC Efficiency:\n";
 printf("\tCache Access Total:\t\t\t%d\n",
@@ -330,13 +330,13 @@ my $l2_access_total = ( $l2_hits + $l2_misses );
 ### L2 ARC ###
 if ($l2_size > 0 & $l2_access_total > 0) {
 	### L2 ARC Stats Calculations ###
-	my $l2_hdr_size_perc = (100 * ( $l2_hdr_size / $l2_size ));
-	my $l2_hits_perc = (100 * ( $l2_hits / ( $l2_access_total )));
-	my $l2_misses_perc = (100 * ( $l2_misses / ( $l2_access_total )));
-	my $l2_writes_done_perc = (100 * ( $l2_writes_done / $l2_writes_sent ));
-	my $l2_writes_error_perc = (100 * ( $l2_writes_error / $l2_writes_sent ));
-	my $l2_size_MiB = ($l2_size / 1048576);
-	my $l2_hdr_size_MiB = ($l2_hdr_size / 1048576);
+	my $l2_hdr_size_perc = ( 100 * ( $l2_hdr_size / $l2_size ));
+	my $l2_hits_perc = ( 100 * ( $l2_hits / ( $l2_access_total )));
+	my $l2_misses_perc = ( 100 * ( $l2_misses / ( $l2_access_total )));
+	my $l2_writes_done_perc = ( 100 * ( $l2_writes_done / $l2_writes_sent ));
+	my $l2_writes_error_perc = ( 100 * ( $l2_writes_error / $l2_writes_sent ));
+	my $l2_size_MiB = ( $l2_size / 1048576 );
+	my $l2_hdr_size_MiB = ( $l2_hdr_size / 1048576 );
 
 	hline();
 
@@ -410,10 +410,10 @@ foreach my $vdev_cache_stats (@vdev_cache_stats) {
 my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
 my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
 my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
-my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits);
-my $vdev_cache_hits_perc = (100*($vdev_cache_hits / $vdev_cache_total));
-my $vdev_cache_misses_perc = (100*($vdev_cache_misses / $vdev_cache_total));
-my $vdev_cache_delegations_perc = (100*($vdev_cache_delegations / $vdev_cache_total));
+my $vdev_cache_total = ( $vdev_cache_misses + $vdev_cache_hits );
+my $vdev_cache_hits_perc = ( 100 * ( $vdev_cache_hits / $vdev_cache_total ));
+my $vdev_cache_misses_perc = ( 100 * ( $vdev_cache_misses / $vdev_cache_total ));
+my $vdev_cache_delegations_perc = ( 100 * ( $vdev_cache_delegations / $vdev_cache_total ));
 
 hline();
 print "VDEV Cache Summary:\n";
@@ -453,12 +453,12 @@ my $zfetch_colinear_total = ( $zfetch_colinear_hits + $zfetch_colinear_misses );
 my $zfetch_stride_total = ( $zfetch_stride_hits + $zfetch_stride_misses );
 
 if ($zfetch_access_total > 0) {
-	my $zfetch_hits_perc = (100 * ( $zfetch_hits / ( $zfetch_access_total )));
-	my $zfetch_misses_perc = (100 * ( $zfetch_misses / ( $zfetch_access_total )));
-	my $zfetch_colinear_hits_perc = (100 * ( $zfetch_colinear_hits / ( $zfetch_colinear_total )));
-	my $zfetch_colinear_misses_perc = (100 * ( $zfetch_colinear_misses / ( $zfetch_colinear_total )));
-	my $zfetch_stride_hits_perc = (100 * ( $zfetch_stride_hits / ( $zfetch_stride_total )));
-	my $zfetch_stride_misses_perc = (100 * ( $zfetch_stride_misses / ( $zfetch_stride_total )));
+	my $zfetch_hits_perc = ( 100 * ( $zfetch_hits / ( $zfetch_access_total )));
+	my $zfetch_misses_perc = ( 100 * ( $zfetch_misses / ( $zfetch_access_total )));
+	my $zfetch_colinear_hits_perc = ( 100 * ( $zfetch_colinear_hits / ( $zfetch_colinear_total )));
+	my $zfetch_colinear_misses_perc = ( 100 * ( $zfetch_colinear_misses / ( $zfetch_colinear_total )));
+	my $zfetch_stride_hits_perc = ( 100 * ( $zfetch_stride_hits / ( $zfetch_stride_total )));
+	my $zfetch_stride_misses_perc = ( 100 * ( $zfetch_stride_misses / ( $zfetch_stride_total )));
 
 	hline();
 	print "File-Level Prefetch (DMU):\n\n";
