@@ -105,6 +105,7 @@ print "\n";
 printf("Kernel Memory:\t\t\t\t\t%0.2fM\n", $kmem_MiB);
 printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
+
 hline();
 print "ARC Summary:\n";
 printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
