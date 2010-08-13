@@ -342,14 +342,14 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "L2 ARC Summary:\n";
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
+	printf("\tFree on Write:\t\t\t\t%d\n",
+		$l2_free_on_write);
+	printf("\tR/W Clashes:\t\t\t\t%d\n",
+		$l2_rw_clash);
 	printf("\tBad Checksums:\t\t\t\t%d\n",
 		$l2_cksum_bad);
 	printf("\tIO Errors:\t\t\t\t%d\n",
 		$l2_io_error);
-	printf("\tR/W Clashes:\t\t\t\t%d\n",
-		$l2_rw_clash);
-	printf("\tFree on Write:\t\t\t\t%d\n",
-		$l2_free_on_write);
 	print "\n";
 	
 	print "L2 ARC Size:\n";
