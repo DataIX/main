@@ -423,6 +423,8 @@ my $zfetch_bogus_streams = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{bogus_streams}
 my $zfetch_access_total = ( $zfetch_hits + $zfetch_misses );
 my $zfetch_colinear_total = ( $zfetch_colinear_hits + $zfetch_colinear_misses );
 my $zfetch_stride_total = ( $zfetch_stride_hits + $zfetch_stride_misses );
+my $zfetch_streams_total = ( $zfetch_streams_resets + $zfetch_streams_noresets + $zfetch_bogus_streams );
+my $zfetch_reclaim_total = ( $zfetch_reclaim_successes + $zfetch_reclaim_failures );
 my $zfetch_health_count = ( $zfetch_bogus_streams );
 
 if ($zfetch_access_total > 0) {
@@ -432,6 +434,10 @@ if ($zfetch_access_total > 0) {
 	my $zfetch_colinear_misses_perc = ( 100 * ( $zfetch_colinear_misses / ( $zfetch_colinear_total )));
 	my $zfetch_stride_hits_perc = ( 100 * ( $zfetch_stride_hits / ( $zfetch_stride_total )));
 	my $zfetch_stride_misses_perc = ( 100 * ( $zfetch_stride_misses / ( $zfetch_stride_total )));
+	my $zfetch_streams_resets_perc = ( 100 * ( $zfetch_streams_resets / ( $zfetch_streams_total )));
+	my $zfetch_streams_noresets_perc = ( 100 * ( $zfetch_streams_noresets / ( $zfetch_streams_total )));
+	my $zfetch_reclaim_failures_perc = ( 100 * ( $zfetch_reclaim_failures / (  $zfetch_reclaim_total )));
+	my $zfetch_reclaim_successes_perc = ( 100 * ( $zfetch_reclaim_successes / (  $zfetch_reclaim_total )));
 
 	hline();
 	if ($zfetch_health_count > 0) {
@@ -439,8 +445,7 @@ if ($zfetch_access_total > 0) {
 	} else {
 		printf("File-Level Prefetch: (%s)\n\n", "HEALTHY");
 	};
-	print "DMU Efficiency:\n";
-	printf("\tAccess Total:\t\t\t\t%d\n",
+	printf("DMU Efficiency:\t\t\t\t\t%d\n",
 		$zfetch_access_total);
 	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
 		$zfetch_hits_perc, $zfetch_hits);
@@ -448,19 +453,19 @@ if ($zfetch_access_total > 0) {
 		$zfetch_misses_perc, $zfetch_misses);
 	print "\n";
 
-	printf("\tColinear Access Total:\t\t\t%d\n",
+	printf("\tColinear:\t\t\t\t%d\n",
 		$zfetch_colinear_total);
-	printf("\tColinear Hit Ratio:\t\t%0.2f%%\t%d\n",
+	printf("\t  Hit Ratio:\t\t\t%0.2f%%\t%d\n",
 		$zfetch_colinear_hits_perc, $zfetch_colinear_hits);
-	printf("\tColinear Miss Ratio:\t\t%0.2f%%\t%d\n",
+	printf("\t  Miss Ratio:\t\t\t%0.2f%%\t%d\n",
 		$zfetch_colinear_misses_perc, $zfetch_colinear_misses);
 	print "\n";
 
-	printf("\tStride Access Total:\t\t\t%d\n",
+	printf("\tStride:\t\t\t\t\t%d\n",
 		$zfetch_stride_total);
-	printf("\tStride Hit Ratio:\t\t%0.2f%%\t%d\n",
+	printf("\t  Hit Ratio:\t\t\t%0.2f%%\t%d\n",
 		$zfetch_stride_hits_perc, $zfetch_stride_hits);
-	printf("\tStride Miss Ratio:\t\t%0.2f%%\t%d\n",
+	printf("\t  Miss Ratio:\t\t\t%0.2f%%\t%d\n",
 		$zfetch_stride_misses_perc, $zfetch_stride_misses);
 	print "\n";
 
@@ -469,15 +474,19 @@ if ($zfetch_access_total > 0) {
         } else {
                 print "DMU Misc:\n";
         };
-	printf("\tReclaim Successes:\t\t\t%d\n",
-		$zfetch_reclaim_successes);
-	printf("\tReclaim Failures:\t\t\t%d\n",
-		$zfetch_reclaim_failures);
-	printf("\tStream Resets:\t\t\t\t%d\n",
-		$zfetch_streams_resets);
-	printf("\tStream NoResets:\t\t\t%d\n",
-		$zfetch_streams_noresets);
-	printf("\tBogus Streams:\t\t\t\t%d\n",
+	printf("\tReclaim:\t\t\t\t%d\n",
+		$zfetch_reclaim_total);
+	printf("\t  Successes:\t\t\t%0.2f%\t%d\n",
+		$zfetch_reclaim_successes_perc, $zfetch_reclaim_successes);
+	printf("\t  Failures:\t\t\t%0.2f%\t%d\n",
+		$zfetch_reclaim_failures_perc, $zfetch_reclaim_failures);
+	printf("\n\tStreams:\t\t\t\t%d\n",
+		$zfetch_streams_total);
+	printf("\t  +Resets:\t\t\t%0.2f%\t%d\n",
+		$zfetch_streams_resets_perc, $zfetch_streams_resets);
+	printf("\t  -Resets:\t\t\t%0.2f%\t%d\n",
+		$zfetch_streams_noresets_perc, $zfetch_streams_noresets);
+	printf("\t  Bogus:\t\t\t%0.2f%\t%d\n",
 		$zfetch_bogus_streams);
 }
 
@@ -500,8 +509,7 @@ my $vdev_cache_misses_perc = ( 100 * ( $vdev_cache_misses / $vdev_cache_total ))
 my $vdev_cache_delegations_perc = ( 100 * ( $vdev_cache_delegations / $vdev_cache_total ));
 
 hline();
-print "VDEV Cache Summary:\n";
-printf("\tAccess Total:\t\t\t\t%d\n",
+printf("VDEV Cache Summary:\t\t\t\t%d\n",
 	$vdev_cache_total);
 printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
 	$vdev_cache_hits_perc, $vdev_cache_hits);
