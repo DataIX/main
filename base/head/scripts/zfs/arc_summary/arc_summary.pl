@@ -357,8 +357,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_io_error);
 	print "\n";
 	
-	print "L2 ARC Size:\n";
-	printf("\tCurrent Size: (Adaptive)\t\t%0.2fM\n",
+	printf("L2 ARC Size: (Adaptive)\t\t\t\t%0.2fM\n",
 		$l2_size_MiB);
 	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n",
 		$l2_hdr_size_perc, $l2_hdr_size_MiB);
@@ -372,8 +371,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 			$l2_evict_reading);
 		print "\n";
 	}
-	print "L2 ARC Breakdown:\n";
-	printf("\tAccess Total:\t\t\t\t%d\n",
+	printf("L2 ARC Breakdown:\t\t\t\t%d\n",
 		$l2_access_total);
 	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
 		$l2_hits_perc, $l2_hits);
