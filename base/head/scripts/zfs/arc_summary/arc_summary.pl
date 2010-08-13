@@ -55,34 +55,12 @@ sub hline(){
 	print "\n------------------------------------------------------------------------\n\n";
 }
 
-my $Kstat;
-my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
-foreach my $arcstats (@arcstats) {
-	chomp $arcstats;
-	my ($name,$value) = split /:/, $arcstats;
-	my @z = split /\./, $name;
-	my $n = pop @z;
-	${Kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
-}
-
 ### System Information / FreeBSD ###
 my $daydate = localtime;
-my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
-my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
-my $phys_memory = `sysctl -n 'hw.physmem'`;
-my $phys_memory_MiB = ($phys_memory / 1048576);
-my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
-my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
-my $kmem = ( $ktext + $kdata );
-my $kmem_MiB = ( $kmem / 1048576 );
-my $ktext_perc = ( 100 * ( $ktext / $kmem ));
-my $kdata_perc = ( 100 * ( $kdata / $kmem ));
-my $kdata_MiB = ( $kdata / 1048576 );
-my $ktext_MiB = ( $ktext / 1048576 );
-my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
+
 if ($useheader != 0) {
 	my $unamev = `uname -v |sed 's/@.*//' |xargs`;
 	my $unamem = `sysctl -n 'hw.machine'`;
@@ -99,12 +77,38 @@ if ($useheader != 0) {
 	print "\n";
 	printf("%s", $sysuptime);
 }
+
+my $phys_memory = `sysctl -n 'hw.physmem'`;
+my $phys_memory_MiB = ($phys_memory / 1048576);
+my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
+my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
+my $kmem = ( $ktext + $kdata );
+my $kmem_MiB = ( $kmem / 1048576 );
+my $ktext_perc = ( 100 * ( $ktext / $kmem ));
+my $ktext_MiB = ( $ktext / 1048576 );
+my $kdata_perc = ( 100 * ( $kdata / $kmem ));
+my $kdata_MiB = ( $kdata / 1048576 );
+
 hline();
 printf("Physical Memory:\t\t\t\t%0.2fM\n", $phys_memory_MiB);
 print "\n";
 printf("Kernel Memory:\t\t\t\t\t%0.2fM\n", $kmem_MiB);
 printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
+
+my $Kstat;
+my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
+foreach my $arcstats (@arcstats) {
+        chomp $arcstats;
+        my ($name,$value) = split /:/, $arcstats;
+        my @z = split /\./, $name;
+        my $n = pop @z;
+        ${Kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
+}
+
+my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
+my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
+my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 hline();
 print "ARC Summary:\n";
