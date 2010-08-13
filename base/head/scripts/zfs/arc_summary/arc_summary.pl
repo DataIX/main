@@ -493,7 +493,11 @@ if ($zfetch_access_total > 0) {
 		$zfetch_stride_misses_perc, $zfetch_stride_misses);
 	print "\n";
 
-	print "DMU misc:\n";
+        if ($zfetch_health_count > 0) {
+                printf("DMU Misc: (%s)\n", "FAULTED");
+        } else {
+                print "DMU Misc:\n";
+        };
 	printf("\tReclaim Successes:\t\t\t%d\n",
 		$zfetch_reclaim_successes);
 	printf("\tReclaim Failures:\t\t\t%d\n",
