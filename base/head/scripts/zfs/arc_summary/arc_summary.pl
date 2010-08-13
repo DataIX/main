@@ -380,16 +380,14 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "\n";
 	
 	if ($l2_writes_done != $l2_writes_sent) {
-		printf("\tWRITES: (%s)\n", "FAULTED");
-		printf("\t  Sent Total:\t\t\t\t%d\n",
-			$l2_writes_sent);
+		printf("\tWrites Sent: (%s)\t\t\t\t%d\n",
+			"FAULTED", $l2_writes_sent);
 		printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n",
 			$l2_writes_done_perc, $l2_writes_done);
 		printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n",
 			$l2_writes_error_perc, $l2_writes_error);
 	} else {
-		print "\tWRITES:\n";
-		printf("\t  Sent Total:\t\t\t%0.2f%\t%d\n",
+		printf("\tWrites Sent:\t\t\t%0.2f%\t%d\n",
 			100, $l2_writes_sent);
 	}
 }
