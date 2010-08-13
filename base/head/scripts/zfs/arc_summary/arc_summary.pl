@@ -398,35 +398,6 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	}
 }
 
-### VDEV Cache Stats ###
-my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
-foreach my $vdev_cache_stats (@vdev_cache_stats) {
-	chomp $vdev_cache_stats;
-	my ($name,$value) = split /:/, $vdev_cache_stats;
-	my @z = split /\./, $name;
-	my $n = pop @z;
-	${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{$n} = $value;
-}
-
-my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
-my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
-my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
-my $vdev_cache_total = ( $vdev_cache_misses + $vdev_cache_hits );
-my $vdev_cache_hits_perc = ( 100 * ( $vdev_cache_hits / $vdev_cache_total ));
-my $vdev_cache_misses_perc = ( 100 * ( $vdev_cache_misses / $vdev_cache_total ));
-my $vdev_cache_delegations_perc = ( 100 * ( $vdev_cache_delegations / $vdev_cache_total ));
-
-hline();
-print "VDEV Cache Summary:\n";
-printf("\tAccess Total:\t\t\t\t%d\n",
-	$vdev_cache_total);
-printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
-	$vdev_cache_hits_perc, $vdev_cache_hits);
-printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
-	$vdev_cache_misses_perc, $vdev_cache_misses);
-printf("\tDelegations:\t\t\t\t%d\n",
-	$vdev_cache_delegations);
-
 ### DMU Stats ###
 my @zfetch_stats = `sysctl 'kstat.zfs.misc.zfetchstats'`;
 foreach my $zfetch_stats (@zfetch_stats) {
@@ -509,6 +480,35 @@ if ($zfetch_access_total > 0) {
 	printf("\tBogus Streams:\t\t\t\t%d\n",
 		$zfetch_bogus_streams);
 }
+
+### VDEV Cache Stats ###
+my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
+foreach my $vdev_cache_stats (@vdev_cache_stats) {
+	chomp $vdev_cache_stats;
+	my ($name,$value) = split /:/, $vdev_cache_stats;
+	my @z = split /\./, $name;
+	my $n = pop @z;
+	${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{$n} = $value;
+}
+
+my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
+my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
+my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
+my $vdev_cache_total = ( $vdev_cache_misses + $vdev_cache_hits );
+my $vdev_cache_hits_perc = ( 100 * ( $vdev_cache_hits / $vdev_cache_total ));
+my $vdev_cache_misses_perc = ( 100 * ( $vdev_cache_misses / $vdev_cache_total ));
+my $vdev_cache_delegations_perc = ( 100 * ( $vdev_cache_delegations / $vdev_cache_total ));
+
+hline();
+print "VDEV Cache Summary:\n";
+printf("\tAccess Total:\t\t\t\t%d\n",
+	$vdev_cache_total);
+printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
+	$vdev_cache_hits_perc, $vdev_cache_hits);
+printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
+	$vdev_cache_misses_perc, $vdev_cache_misses);
+printf("\tDelegations:\t\t\t\t%d\n",
+	$vdev_cache_delegations);
 
 if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
