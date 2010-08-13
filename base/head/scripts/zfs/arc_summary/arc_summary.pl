@@ -325,6 +325,7 @@ my $l2_io_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_io_error};
 my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
 my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
 my $l2_access_total = ( $l2_hits + $l2_misses );
+my $l2_health_count = ( $l2_writes_error + $l2_cksum_bad + $l2_io_error );
 
 ### L2 ARC ###
 if ($l2_size > 0 & $l2_access_total > 0) {
@@ -339,7 +340,11 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 
 	hline();
 
-	print "L2 ARC Summary:\n";
+	if ($l2_health_count > 0) {
+		printf("L2 ARC Summary: (%s)\n", "DEGRADED");
+	} else {
+		printf("L2 ARC Summary: (%s)\n", "HEALTHY");
+	}
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
 	printf("\tFree on Write:\t\t\t\t%d\n",
@@ -378,8 +383,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_feeds);
 	print "\n";
 	
-	print "\tWRITES:\n";
 	if ($l2_writes_done != $l2_writes_sent) {
+		printf("\tWRITES: (%s)\n", "FAULTED");
 		printf("\t  Sent Total:\t\t\t\t%d\n",
 			$l2_writes_sent);
 		printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n",
@@ -387,6 +392,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n",
 			$l2_writes_error_perc, $l2_writes_error);
 	} else {
+		print "\tWRITES:\n";
 		printf("\t  Sent Total:\t\t\t%0.2f%\t%d\n",
 			100, $l2_writes_sent);
 	}
@@ -446,6 +452,7 @@ my $zfetch_bogus_streams = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{bogus_streams}
 my $zfetch_access_total = ( $zfetch_hits + $zfetch_misses );
 my $zfetch_colinear_total = ( $zfetch_colinear_hits + $zfetch_colinear_misses );
 my $zfetch_stride_total = ( $zfetch_stride_hits + $zfetch_stride_misses );
+my $zfetch_health_count = ( $zfetch_bogus_streams );
 
 if ($zfetch_access_total > 0) {
 	my $zfetch_hits_perc = ( 100 * ( $zfetch_hits / ( $zfetch_access_total )));
@@ -456,7 +463,11 @@ if ($zfetch_access_total > 0) {
 	my $zfetch_stride_misses_perc = ( 100 * ( $zfetch_stride_misses / ( $zfetch_stride_total )));
 
 	hline();
-	print "File-Level Prefetch (DMU):\n\n";
+	if ($zfetch_health_count > 0) {
+		printf("File-Level Prefetch: (%s)\n\n", "DEGRADED");
+	} else {
+		printf("File-Level Prefetch: (%s)\n\n", "HEALTHY");
+	};
 	print "DMU Efficiency:\n";
 	printf("\tAccess Total:\t\t\t\t%d\n",
 		$zfetch_access_total);
