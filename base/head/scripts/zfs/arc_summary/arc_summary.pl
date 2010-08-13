@@ -144,8 +144,7 @@ my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 my $arc_size_MiB = ($arc_size / 1048576);
 my $arc_size_perc = 100*($arc_size / $target_max_size);
 
-print "ARC Size:\n";
-printf("\tCurrent Size:\t\t\t%0.2f%%\t%0.2fM\t(arcsize)\n",
+printf("ARC Size:\t\t\t\t%0.2f%%\t%0.2fM\t(arcsize)\n",
 	$arc_size_perc,  $arc_size_MiB);
 printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%0.2fM\t(c)\n",
 	$target_size_perc, $target_size_MiB);
@@ -253,8 +252,7 @@ if ($prefetch_data_total > 0) {
 my $demand_data_total = ( $demand_data_hits + $demand_data_misses );
 my $demand_data_perc = ( 100 * ( $demand_data_hits / $demand_data_total ));
 
-print "ARC Efficiency:\n";
-printf("\tCache Access Total:\t\t\t%d\n",
+printf("ARC Efficiency:\t\t\t\t\t%d\n",
 	$arc_accesses_total);
 printf("\tCache Hit Ratio:\t\t%0.2f%%\t%d\n",
 	$arc_hit_perc, $arc_hits);
