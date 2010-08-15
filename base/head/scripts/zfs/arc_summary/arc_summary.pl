@@ -265,12 +265,12 @@ printf("\tCache Miss Ratio:\t\t%0.2f%%\t%d\n",
 printf("\tActual Hit Ratio:\t\t%0.2f%%\t%d\n",
 	$real_hits_perc, $real_hits);
 print "\n";
-printf("\tData Demand Efficiency:\t\t%0.2f%%\n",
-	$demand_data_perc);
+printf("\tData Demand Efficiency:\t\t%0.2f%%\t%d\n",
+	$demand_data_perc, $demand_data_total);
 
 if ($prefetch_data_total > 0){ 
-	printf("\tData Prefetch Efficiency:\t%0.2f%%\n",
-		$prefetch_data_perc);
+	printf("\tData Prefetch Efficiency:\t%0.2f%%\t%d\n",
+		$prefetch_data_perc, $prefetch_data_total);
 }
 print "\n";
 
