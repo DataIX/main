@@ -40,10 +40,9 @@ This script is still work in progress.
 
 === Updates ===
 
-Revision 19:
-  * Some reformatting has been done to accommodate for the removal of the header and sysctl MIBs.
-  * The following editable variables have been included for convenience:
+Revision 89:
+  * The following editable variables are included for convenience:
   {{{
-  my $useheader = 1;	# Change to 0 to disable FreeBSD header.
+  my $useheader = 1;	# Change to 1 to enable FreeBSD header.
   my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill at bottom.
   }}}
