@@ -1,4 +1,4 @@
-﻿#summary FreeBSD ZFS ARC Summary Perl Script
+#summary FreeBSD ZFS ARC Summary Perl Script
 #labels FreeBSD,SunOS,Solaris,OpenSolaris,CuddleTech,Featured,ZFS,Memory,Statistics,Download,Perl,Summary
 
 = News =
