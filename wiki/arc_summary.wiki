@@ -43,6 +43,6 @@ This script is still work in progress.
 Revision 89:
   * The following editable variables are included for convenience:
   {{{
-  my $useheader = 1;	# Change to 1 to enable FreeBSD header.
+  my $useheader = 0;	# Change to 1 to enable FreeBSD header.
   my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill at bottom.
   }}}
