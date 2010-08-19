@@ -27,10 +27,10 @@ This script is still work in progress.
 
 == Download ==
 
-|| *Name*     || *Example*     || *Description*                                  ||
+|| *Name* || *Example* || *Description* ||
 || [http://jhell.googlecode.com/files/arc_summary.pl Stable] || [http://code.google.com/p/jhell/wiki/arc_summary_stable_example Output] || 8.1-STABLE or lower without ZFSv15 patch. ||
 
-  # [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development Version] Geared toward 8.1-STABLE or greater with ZFSv15 patch.
+|| [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development ] || [http://code.google.com/p/jhell/wiki/arc_summary_dev_example Output] || Geared toward 8.1-STABLE or greater with ZFSv15 patch. ||
 
 == Links ==
 
