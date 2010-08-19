@@ -31,6 +31,13 @@ This script is still work in progress.
   || [http://jhell.googlecode.com/files/arc_summary.pl Stable] || [http://code.google.com/p/jhell/wiki/arc_summary_stable_example Output] || 8.1-STABLE or lower without ZFSv15 patch. ||
   # [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development Version] Geared toward 8.1-STABLE or greater with ZFSv15 patch.
 
+|| *Year* || *Temperature (low)* || *Temperature (high)* ||
+|| 1900 || -10 || 25 ||
+|| 1910 || -15 || 30 ||
+|| 1920 || -10 || 32 ||
+|| 1930 || _N/A_ || _N/A_ ||
+|| 1940 || -2 || 40 ||
+
 == Links ==
 
   # [http://www.FreeBSD.org/ FreeBSD.org Website]
@@ -47,6 +54,3 @@ Revision 19:
   my $useheader = 1;	# Change to 0 to disable FreeBSD header.
   my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill at bottom.
   }}}
-
-=== Example output ===
-
