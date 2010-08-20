@@ -111,7 +111,12 @@ my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 hline();
-print "ARC Summary:\n";
+print "ARC Summary: ";
+if ($throttle > 0) {
+	print "(THROTTLED)\n";
+} else {
+	print "(HEALTHY)\n";
+};
 printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\t(zpl)\n", $zpl);
 printf("\tMemory Throttle Count:\t\t\t%d\n", $throttle);
@@ -342,11 +347,12 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 
 	hline();
 
+	print "L2 ARC Summary: ";
 	if ($l2_health_count > 0) {
-		printf("L2 ARC Summary: (%s)\n", "DEGRADED");
+		print "(DEGRADED)\n";
 	} else {
-		printf("L2 ARC Summary: (%s)\n", "HEALTHY");
-	}
+		print "(HEALTHY)\n";
+	};
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
 	printf("\tFree on Write:\t\t\t\t%d\n",
@@ -438,10 +444,11 @@ if ($zfetch_access_total > 0) {
 	my $zfetch_reclaim_successes_perc = ( 100 * ( $zfetch_reclaim_successes / (  $zfetch_reclaim_total )));
 
 	hline();
+	print "File-Level Prefetch: ";
 	if ($zfetch_health_count > 0) {
-		printf("File-Level Prefetch: (%s)\n\n", "DEGRADED");
+		print "(DEGRADED)\n\n";
 	} else {
-		printf("File-Level Prefetch: (%s)\n\n", "HEALTHY");
+		print "(HEALTHY)\n\n";
 	};
 	printf("DMU Efficiency:\t\t\t\t\t%d\n",
 		$zfetch_access_total);
