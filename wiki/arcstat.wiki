@@ -1,4 +1,4 @@
-#labels Featured
+﻿#labels Featured
 From the blog of realneal: http://blogs.sun.com/realneel/entry/zfs_arc_statistics
 
 ZFS ARC Statistics
@@ -42,3 +42,6 @@ Uncached sequential write
 18:17:57    2K   645     31     5    0   640  100     5    0    10G   10G
 18:17:58    2K   774     33     6    0   768  100     6    0    10G   10G
 }}}
+
+---
+ $LastChangedDate$
