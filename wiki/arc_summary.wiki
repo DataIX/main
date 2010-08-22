@@ -1,4 +1,4 @@
-#summary FreeBSD ZFS ARC Summary Perl Script
+﻿#summary FreeBSD ZFS ARC Summary Perl Script
 #labels FreeBSD,SunOS,Solaris,OpenSolaris,CuddleTech,Featured,ZFS,Memory,Statistics,Download,Perl,Summary
 
 = News =
@@ -31,8 +31,9 @@ This script is still work in progress.
 == Download ==
 
 || *Name* || *Example* || *Description* ||
-|| [http://jhell.googlecode.com/files/arc_summary.pl Stable] || [http://code.google.com/p/jhell/wiki/arc_summary_stable_example Output] || 8.1-STABLE or lower without ZFSv15 patch. ||
-|| [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development ] || [http://code.google.com/p/jhell/wiki/arc_summary_dev_example Output] || Geared toward 8.1-STABLE or greater with ZFSv15 patch. ||
+|| [http://jhell.googlecode.com/files/arc_summary.pl Stable] || [http://code.google.com/p/jhell/wiki/arc_summary_stable_example Output] || 8.1-STABLE or lower with ZFSv14. ||
+|| [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development ] || [http://code.google.com/p/jhell/wiki/arc_summary_dev_example Output] || 8.1-STABLE or greater with ZFSv15 patch. ||
+|| [http://code.google.com/p/jhell/source/browse/base#base/stable/7/scripts/zfs/arc_summary Stable 7 ] || [http://code.google.com/p/jhell/wiki/arc_summary_stable7_example Output] || Geared toward 7.X users with ZFSv13. ||
 
 == Links ==
 
