@@ -12,6 +12,7 @@ if [ -d .hg ]; then
 	hg addremove
 else
 	echo "No Mercurial repo. Exiting..."
+	echo "Please ( cd /var/db/pkg && hg init . ) before using this."
 	exit 1
 fi
 
