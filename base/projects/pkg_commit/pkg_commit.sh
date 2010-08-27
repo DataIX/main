@@ -2,25 +2,34 @@
 
 # $Id$
 
+PATH="/bin:/usr/bin:/usr/local/bin"
+
 trap 'exit 1' 2
 
 cd /var/db/pkg
+
+if [ -d .hg ]; then
+	hg addremove
+else
+	echo "No Mercurial repo. Exiting..."
+	exit 1
+fi
 
 readonly ADDENDUM=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly COMMITLOG=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly DEPRECATED=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly MODIFIED=$(mktemp /tmp/.pkg_commit.XXXXXX)
-readonly SVNSTATUS=$(mktemp /tmp/.pkg_commit.XXXXXX)
+readonly HGSTATUS=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly WRITEAREA=$(mktemp /tmp/.pkg_commit.XXXXXX)
 
 _tclean(){
-	rm -f $SVNSTATUS $WRITEAREA $ADDENDUM $DEPRECATED $MODIFIED \
+	rm -f $HGSTATUS $WRITEAREA $ADDENDUM $DEPRECATED $MODIFIED \
 	$COMMITLOG
 }
 
 _tstatus(){
-	svn status >$SVNSTATUS
-	if [ -z "$(cat $SVNSTATUS)" ]; then
+	hg status >$HGSTATUS
+	if [ -z "$(cat $HGSTATUS)" ]; then
 		printf "Nothing to be done, Cleaning up...\n"
 		_tclean		||printf "Error in: _tclean,$?\n"
 		exit 0
@@ -28,8 +37,8 @@ _tstatus(){
 }
 
 _taddendum(){
-	grep "? " $SVNSTATUS |awk '{print $2}' |xargs svn add |\
-		awk '{print $2}' |cut -f1 -d/ |sort | uniq >$WRITEAREA
+	grep "A " $HGSTATUS |awk '{print $2}' |\
+		cut -f1 -d/ |sort | uniq >$WRITEAREA
 
         if [ -n "$(cat $WRITEAREA)" ]; then
 		printf "Addendum:\n"    > $ADDENDUM
@@ -41,8 +50,8 @@ _taddendum(){
 
 
 _tdeprecated(){
-	grep "! " $SVNSTATUS |awk '{print $2}' |xargs svn del |\
-		awk '{print $2}' |cut -f1 -d/ |sort | uniq >$WRITEAREA
+	grep "R " $HGSTATUS |awk '{print $2}' |cut -f1 -d/ |sort |\
+	uniq >$WRITEAREA
 
         if [ -n "$(cat $WRITEAREA)" ]; then
 		printf "Deprecated:\n"	> $DEPRECATED
@@ -54,8 +63,8 @@ _tdeprecated(){
 
 
 _tmodified(){
-	grep "M " $SVNSTATUS |awk '{print $2}' |cut -f1 -d/ |sort |\
-		uniq >$WRITEAREA
+	grep "M " $HGSTATUS |awk '{print $2}' |cut -f1 -d/ |sort |\
+	uniq >$WRITEAREA
 
         if [ -n "$(cat $WRITEAREA)" ]; then
 		printf "Modified:\n"	> $MODIFIED
@@ -66,6 +75,7 @@ _tmodified(){
 }
 
 _tcombine(){
+	printf "Package database update by pkg_commit(1)\n\n" >$COMMITLOG
 	for tmpfile in $ADDENDUM $DEPRECATED $MODIFIED; do
 		if [ -n "$(cat $tmpfile)" ]; then 
 			cat $tmpfile >>$COMMITLOG
@@ -75,13 +85,14 @@ _tcombine(){
 
 _tcommit(){
 	if [ -n "$(cat $COMMITLOG)" ]; then
-		svn commit -F $COMMITLOG	||exit 1
-		svn update			||exit 2
+		hg commit -l $COMMITLOG	||exit 1
 	fi
 }
 
 _tmail(){
-	cat $COMMITLOG |mail -s "Package Commit Report: $(date)" root
+	hg tip
+	echo
+	cat $COMMITLOG
 }
 
 _tmain(){
@@ -91,7 +102,7 @@ _tmain(){
 	_tmodified	||printf "Error in: _tmodified,$?\n"
 	_tcombine	||printf "Error in: _tcombine,$?\n"
 	_tcommit	||printf "Error in: _tcommit,$?\n"
-	_tmail		||printf "Error in: _tmail,$?\n"
+	_tmail		|mail -s "Package Database Update: $(hg tip --template '{rev}:{node|short}')" root
 	_tclean		||printf "Error in: _tclean,$?\n"
 	exit 0
 }
