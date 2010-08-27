@@ -26,21 +26,21 @@ This script is still work in progress.
   * Spills relevant sysctl MIBs at the bottom of the report.
   * Includes kernel memory usage.
   * Has L2 ARC kstats.
-  * Current with sysctl MIBs as of ZFS v14. ( Please report new sysctls [http://code.google.com/p/jhell/issues/entry here])
+  * Current with sysctl MIBs as of ZFS v14. ( Please report new sysctls [http://bit.ly/94ORw0 here])
 
 == Download ==
 
 || *Name* || *Example* || *Description* ||
-|| [http://jhell.googlecode.com/files/arc_summary.pl Stable] || [http://code.google.com/p/jhell/wiki/arc_summary_stable_example Output] || 8.1-STABLE or lower with ZFSv14 ||
-|| [http://code.google.com/p/jhell/source/browse/base#base/head/scripts/zfs/arc_summary Development ] || [http://code.google.com/p/jhell/wiki/arc_summary_dev_example Output] || 8.1-STABLE or greater with ZFSv15 patch ||
-|| [http://code.google.com/p/jhell/source/browse/base#base/stable/7/scripts/zfs/arc_summary Stable 7 ] || [http://code.google.com/p/jhell/wiki/arc_summary_stable7_example Output] || 7.X users with ZFSv13 ||
+|| [http://bit.ly/dtk50s Stable] || [http://bit.ly/bhXCGV Output] || 8.1-STABLE or lower with ZFSv14 ||
+|| [http://bit.ly/djkYe2 Development ] || [http://bit.ly/bmQNrT Output] || 8.1-STABLE or greater with ZFSv15 patch ||
+|| [http://bit.ly/agwLYl Stable 7 ] || [http://bit.ly/bz9zb1 Output] || 7.X users with ZFSv13 ||
 
 == Links ==
 
-  # [http://www.FreeBSD.org/ FreeBSD.org Website]
-  # [http://wiki.FreeBSD.org/ FreeBSD.org WiKi]
-  # [http://www.sun.com/ Sun Microsystems]
-  # [http://www.opensolaris.org/ OpenSolaris]
+  # [http://bit.ly/aihrpc FreeBSD.org Website]
+  # [http://bit.ly/cCMdOM FreeBSD.org WiKi]
+  # [http://bit.ly/94eRA3 Sun Microsystems]
+  # [http://bit.ly/93rGf5 OpenSolaris]
 
 === Updates ===
 
