@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# $Id$
-
 PATH="/bin:/usr/bin:/usr/local/bin"
 
 trap 'exit 1' 2
