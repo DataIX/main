@@ -9,21 +9,33 @@ cd /var/db/pkg
 if [ -d .hg ]; then
 	hg addremove
 else
-	echo "No Mercurial repo. Exiting..."
-	echo "Please ( cd /var/db/pkg && hg init . ) before using this."
+	printf "No Mercurial repo. Exiting...\n"
+	printf "Please ( cd /var/db/pkg && hg init . ) before using this.\n"
 	exit 1
 fi
 
 readonly ADDENDUM=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly COMMITLOG=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly DEPRECATED=$(mktemp /tmp/.pkg_commit.XXXXXX)
-readonly MODIFIED=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly HGSTATUS=$(mktemp /tmp/.pkg_commit.XXXXXX)
+readonly MODIFIED=$(mktemp /tmp/.pkg_commit.XXXXXX)
 readonly WRITEAREA=$(mktemp /tmp/.pkg_commit.XXXXXX)
 
 _tclean(){
-	rm -f $HGSTATUS $WRITEAREA $ADDENDUM $DEPRECATED $MODIFIED \
-	$COMMITLOG
+	rm -f $HGSTATUS $WRITEAREA $ADDENDUM $DEPRECATED $MODIFIED $COMMITLOG
+	for tmpfile in $HGSTATUS $WRITEAREA $ADDENDUM $DEPRECATED $MODIFIED $COMMITLOG; do
+		if [ -f $tmpfile ]; then
+			LEFTOVER="${LEFTOVER} $tmpfile"
+		fi
+	done ;unset tmpfile
+
+	if [ -n "$LEFTOVER" ]; then
+		printf "Problem discovered while removing files.\n\n"
+		printf "Please remove the folling files manually:\n"
+		for tmpfile in $LEFTOVER; do
+			printf "$tmpfile\n"
+		done ;unset tmpfile
+	fi
 }
 
 _tstatus(){
@@ -36,14 +48,13 @@ _tstatus(){
 }
 
 _taddendum(){
-	grep "A " $HGSTATUS |awk '{print $2}' |\
-		cut -f1 -d/ |sort | uniq >$WRITEAREA
+	grep "A " $HGSTATUS |awk '{print $2}' |cut -f1 -d/ |sort |\
+	uniq >$WRITEAREA
 
         if [ -n "$(cat $WRITEAREA)" ]; then
-		printf "Addendum:\n"    > $ADDENDUM
-		cat $WRITEAREA          >>$ADDENDUM
-		printf "\n"             >>$ADDENDUM
-		printf ""               > $WRITEAREA
+		printf "Addendum:\n"
+		cat $WRITEAREA ;printf "" >$WRITEAREA
+		printf "\n"
         fi
 }
 
@@ -53,10 +64,9 @@ _tdeprecated(){
 	uniq >$WRITEAREA
 
         if [ -n "$(cat $WRITEAREA)" ]; then
-		printf "Deprecated:\n"	> $DEPRECATED
-		cat $WRITEAREA		>>$DEPRECATED
-		printf "\n"		>>$DEPRECATED
-		printf ""		> $WRITEAREA
+		printf "Deprecated:\n"
+		cat $WRITEAREA ;printf "" >$WRITEAREA
+		printf "\n"
 	fi
 }
 
@@ -66,45 +76,48 @@ _tmodified(){
 	uniq >$WRITEAREA
 
         if [ -n "$(cat $WRITEAREA)" ]; then
-		printf "Modified:\n"	> $MODIFIED
-		cat $WRITEAREA		>>$MODIFIED
-		printf "\n"		>>$MODIFIED
-		printf ""		> $WRITEAREA
+		printf "Modified:\n"
+		cat $WRITEAREA ;printf "" >$WRITEAREA
+		printf "\n"
 	fi
 }
 
 _tcombine(){
-	printf "Package database update by pkg_commit(1)\n\n" >$COMMITLOG
+	printf "Package database update by pkg_commit(1)\n\n"
 	for tmpfile in $ADDENDUM $DEPRECATED $MODIFIED; do
 		if [ -n "$(cat $tmpfile)" ]; then 
-			cat $tmpfile >>$COMMITLOG
+			cat $tmpfile
 		fi
-	done
+	done ;unset tmpfile
 }
 
 _tcommit(){
 	if [ -n "$(cat $COMMITLOG)" ]; then
 		hg commit -l $COMMITLOG	||exit 1
 	fi
+	HGREV="$(hg tip --template '{rev}:{node|short}')"
 }
 
 _tmail(){
 	hg tip
-	echo
-	cat $COMMITLOG
+	for tmpfile in $ADDENDUM $DEPRECATED $MODIFIED; do
+		if [ -n "$(cat $tmpfile)" ]; then
+			cat $tmpfile
+		fi
+	done ;unset tmpfile
+	SUBJECT="Package Database Commit: ${HGTIP}"
 }
 
 _tmain(){
-	_tstatus	||printf "Error in: _tstatus,$?\n"
-	_taddendum	||printf "Error in: _taddendum,$?\n"
-	_tdeprecated	||printf "Error in: _tdeprecated,$?\n"
-	_tmodified	||printf "Error in: _tmodified,$?\n"
-	_tcombine	||printf "Error in: _tcombine,$?\n"
-	_tcommit	||printf "Error in: _tcommit,$?\n"
-	_tmail		|mail -s "Package Database Update: $(hg tip --template '{rev}:{node|short}')" root
-	_tclean		||printf "Error in: _tclean,$?\n"
+	_tstatus
+	_taddendum	>$ADDENDUM
+	_tdeprecated	>$DEPRECATED
+	_tmodified	>$MODIFIED
+	_tcombine	>$COMMITLOG
+	_tcommit
+	_tmail		|mail -s "${SUBJECT}" $(id -un)
+	_tclean
 	exit 0
 }
 
 _tmain
-exit 0
