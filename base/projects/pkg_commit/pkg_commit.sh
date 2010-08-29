@@ -105,7 +105,7 @@ _tmail(){
 			cat $tmpfile
 		fi
 	done ;unset tmpfile
-	export SUBJECT="Package Database Commit: ${HGTIP}"
+	export SUBJECT="Package Database Commit: ${HGREV}"
 }
 
 _tmain(){
