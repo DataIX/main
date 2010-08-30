@@ -95,7 +95,6 @@ _tcommit(){
 	if [ -n "$(cat $COMMITLOG)" ]; then
 		hg commit -l $COMMITLOG	||exit 1
 	fi
-	export HGREV="$(hg tip --template '{rev}:{node|short}')"
 }
 
 _tmail(){
@@ -105,7 +104,6 @@ _tmail(){
 			cat $tmpfile
 		fi
 	done ;unset tmpfile
-	export SUBJECT="Package Database Commit: ${HGREV}"
 }
 
 _tmain(){
@@ -115,6 +113,8 @@ _tmain(){
 	_tmodified	>$MODIFIED
 	_tcombine	>$COMMITLOG
 	_tcommit
+	HGREV="$(hg tip --template '{rev}:{node|short}')"
+	SUBJECT="Package Database Commit: ${HGREV}"
 	_tmail		|mail -s "${SUBJECT}" $(id -un)
 	_tclean
 	exit 0
