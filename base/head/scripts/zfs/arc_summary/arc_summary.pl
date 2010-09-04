@@ -526,6 +526,7 @@ printf("\tDelegations:\t\t\t\t%d\n",
 if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
 	my @Tunable = qw(
+		hw.availpages
 		hw.physmem
 		kern.maxusers
 		vfs.zfs
