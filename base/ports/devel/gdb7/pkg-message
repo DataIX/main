@@ -1,0 +1,13 @@
+Changes in this 7.X release include:
+
+  * D language support
+  * C++ support enhancements
+  * Improved Python support
+  * Tracepoint support enhancements, GDBserver support for tracepoints
+  * GDBserver support for x86_64 Windows debugging
+  * ARM Symbian support
+  * Hardware-assisted watchpoint conditions on powerpc-linux 
+
+See the website for a more complete and detailed list.
+
+http://www.gnu.org/software/gdb/
