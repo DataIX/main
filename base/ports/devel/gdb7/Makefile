@@ -74,6 +74,14 @@ PLIST_SUB+=	INSIGHT='@comment '
 CONFIGURE_TARGET=	x86_64-portbld-freebsd${OSREL}
 .endif
 
+.if ${ARCH} == "powerpc"
+CONFIGURE_TARGET=       ppc-portbld-freebsd${OSREL}
+.endif
+
+.if ${ARCH} == "powerpc64"
+CONFIGURE_TARGET=       ppc64-portbld-freebsd${OSREL}
+.endif
+
 post-patch:
 	@${REINPLACE_CMD} -e 's/$$/ [GDB v${PORTVERSION} for FreeBSD]/' \
 		${WRKSRC}/gdb/version.in
