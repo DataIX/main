@@ -46,7 +46,7 @@ BROKEN=		Does not configure on ia64 or powerpc
 .if defined(WITH_INSIGHT)
 LIB_DEPENDS=	itk:${PORTSDIR}/x11-toolkits/itk
 RUN_DEPENDS=	${LOCALBASE}/lib/iwidgets:${PORTSDIR}/x11-toolkits/iwidgets
-DISTFILES+=	gdbtk-6.8${EXTRACT_SUFX}:gdbtk
+DISTFILES+=	insight-6.8-1${EXTRACT_SUFX}:gdbtk
 PLIST_SUB+=	INSIGHT=''
 EXTRA_PATCHES=	${FILESDIR}/itcl33-patch
 CONFIGURE_ARGS+=--enable-gdbtk \
