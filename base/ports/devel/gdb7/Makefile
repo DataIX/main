@@ -50,10 +50,10 @@ DISTFILES+=	gdbtk-6.6${EXTRACT_SUFX}:gdbtk
 PLIST_SUB+=	INSIGHT=''
 EXTRA_PATCHES=	${FILESDIR}/itcl33-patch
 CONFIGURE_ARGS+=--enable-gdbtk \
-		--with-tclconfig=${LOCALBASE}/lib/tcl8.4 \
-		--with-tclinclude=${LOCALBASE}/include/tcl8.4/generic \
-		--with-tkconfig=${LOCALBASE}/lib/tk8.4 \
-		--with-tkinclude=${LOCALBASE}/include/tk8.4/generic \
+		--with-tclconfig=${LOCALBASE}/lib/tcl${TCL_VER} \
+		--with-tclinclude=${LOCALBASE}/include/tcl${TCL_VER}/generic \
+		--with-tkconfig=${LOCALBASE}/lib/tk${TK_VER} \
+		--with-tkinclude=${LOCALBASE}/include/tk${TK_VER}/generic \
 		--with-itclconfig=${LOCALBASE}/lib/itcl3.3 \
 		--with-itkconfig=${LOCALBASE}/lib/itk3.3
 
