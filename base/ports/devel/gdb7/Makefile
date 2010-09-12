@@ -1,7 +1,7 @@
 # ex:ts=8
-# Ports collection makefile for:	GDB 6
-# Date created:				30 March 2001
-# Whom:					David O'Brien <obrien@NUXI.com>
+# Ports collection makefile for:	GDB 7
+# Date created:				6 September 2010
+# Whom:					J. Hellenthal <jhell@DataIX.net>
 #
 # $FreeBSD: ports/devel/gdb6/Makefile,v 1.57 2010/08/11 19:44:36 linimon Exp $
 # $Id$
