@@ -226,10 +226,10 @@ my $real_hits_perc = ( 100 * ( $real_hits / $arc_accesses_total ));
 
 ### These should be based on TOTAL HITS ($arc_hits) ###
 my $anon_hits_perc = ( 100 * ( $anon_hits / $arc_hits ));
-my $mfu_hits_perc = ( 100 * ( $mfu_hits / $arc_hits ));
 my $mru_hits_perc = ( 100 * ( $mru_hits / $arc_hits ));
-my $mfu_ghost_hits_perc = ( 100 * ( $mfu_ghost_hits / $arc_hits ));
+my $mfu_hits_perc = ( 100 * ( $mfu_hits / $arc_hits ));
 my $mru_ghost_hits_perc = ( 100 * ( $mru_ghost_hits / $arc_hits ));
+my $mfu_ghost_hits_perc = ( 100 * ( $mfu_ghost_hits / $arc_hits ));
 
 my $demand_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_hits};
 my $demand_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_hits};
