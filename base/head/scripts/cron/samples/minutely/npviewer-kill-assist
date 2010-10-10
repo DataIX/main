@@ -1,0 +1,5 @@
+#!/bin/sh
+# Scratch for a running firefox and if its not found check for leftover
+# hung npviewer(Flash) processes from Adobe flash sites.
+
+ps axc -U $LOGNAME |grep firefox >>/dev/null 2>&1 || pkill npviewer.bin

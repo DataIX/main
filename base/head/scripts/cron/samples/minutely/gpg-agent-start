@@ -1,0 +1,6 @@
+#!/bin/sh
+# Start gpg-agent if it is not running as the current user.
+
+umask 077
+
+ps axc -U $LOGNAME |grep gpg-agent >>/dev/null 2>&1 ||/usr/local/bin/gpg-agent --daemon --write-env-file "${HOME}/.gpg-agent-info" >>/dev/null 2>&1
