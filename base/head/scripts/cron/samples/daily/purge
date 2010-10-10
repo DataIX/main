@@ -1,0 +1,4 @@
+#!/bin/sh
+
+find $HOME -maxdepth 1 -type f \( -atime +1w \( -name ".*history*" -o -name ".serverauth.*" \) \) -delete -print
+test -d $HOME/Trash && find $HOME/Trash -maxdepth 1 -type f \( -atime +1w \) -delete -print

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Start ssh-agent if it is not running as the current user.
+
+umask 077
+
+DISPLAY=:0.0 ;export DISPLAY
+SSH_ASKPASS=`which ssh-askpass` ;export SSH_ASKPASS
+
+AGENTBIN=/usr/bin/ssh-agent
+test -f /usr/local/bin/ssh-agent && AGENTBIN=/usr/local/bin/ssh-agent
+
+ps axc -U $LOGNAME |grep ssh-agent >>/dev/null 2>&1 ||$AGENTBIN -a $HOME/.ssh/ssh-agent -s >>/dev/null 2>&1
