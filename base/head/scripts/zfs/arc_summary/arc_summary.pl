@@ -333,6 +333,19 @@ my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
 my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
 my $l2_access_total = ( $l2_hits + $l2_misses );
 my $l2_health_count = ( $l2_writes_error + $l2_cksum_bad + $l2_io_error );
+my $l2_write_bytes = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_bytes};
+my $l2_write_trylock_fail = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_trylock_fail};
+my $l2_write_passed_headroom = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_passed_headroom};
+my $l2_write_spa_mismatch = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_spa_mismatch};
+my $l2_write_in_l2 = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_in_l2};
+my $l2_write_io_in_progress = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_io_in_progress};
+my $l2_write_not_cacheable = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_not_cacheable};
+my $l2_write_full = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_full};
+my $l2_write_buffer_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_iter};
+my $l2_write_pios = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_pios};
+my $l2_write_buffer_bytes_scanned = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_bytes_scanned};
+my $l2_write_buffer_list_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_iter};
+my $l2_write_buffer_list_null_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_null_iter};
 
 ### L2 ARC ###
 if ($l2_size > 0 & $l2_access_total > 0) {
