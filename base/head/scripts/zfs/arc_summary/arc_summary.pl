@@ -376,6 +376,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_cksum_bad);
 	printf("\tIO Errors:\t\t\t\t%d\n",
 		$l2_io_error);
+	printf("\tSPA Mismatch:\t\t\t\t%d\n",
+		$l2_write_spa_mismatch);
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t%0.2fM\n",
