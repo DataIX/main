@@ -382,6 +382,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_write_spa_mismatch);
 	printf("\tTried Lock Failures:\t\t\t%d\n",
 		$l2_write_trylock_fail);
+	printf("\tIO In Progress:\t\t\t\t%d\n",
+		$l2_write_io_in_progress);
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t%0.2fM\n",
