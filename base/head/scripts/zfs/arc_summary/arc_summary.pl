@@ -530,6 +530,8 @@ if ($usetunable != 0) {
 		hw.physmem
 		kern.maxusers
 		vfs.zfs
+		vm.kmem_map_free
+		vm.kmem_map_size
 		vm.kmem_size
 		vm.kmem_size_scale
 		vm.kmem_size_min
