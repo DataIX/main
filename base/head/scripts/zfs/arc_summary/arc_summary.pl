@@ -408,10 +408,10 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_feeds);
 	print "\n";
 
-        print "L2 ARC Buffer:\n";
-        printf("\tBytes Scanned:\t\t\t\t%dK\n",
-                $l2_write_buffer_bytes_scanned/1024 );
-        print "\n";
+	print "L2 ARC Buffer:\n";
+	printf("\tBytes Scanned:\t\t\t\t%dK\n",
+		$l2_write_buffer_bytes_scanned/1024 );
+	print "\n";
 	
 	print "L2 ARC Writes:\n";
 	if ($l2_writes_done != $l2_writes_sent) {
