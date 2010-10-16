@@ -376,6 +376,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_cksum_bad);
 	printf("\tIO Errors:\t\t\t\t%d\n",
 		$l2_io_error);
+	printf("\tWrites While Full:\t\t\t%d\n",
+		$l2_write_full);
 	printf("\tSPA Mismatch:\t\t\t\t%d\n",
 		$l2_write_spa_mismatch);
 	printf("\tTried Lock Failures:\t\t\t%d\n",
