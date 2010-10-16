@@ -413,8 +413,15 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "\n";
 
 	print "L2 ARC Buffer:\n";
-	printf("\tBytes Scanned:\t\t\t\t%dK\n",
-		$l2_write_buffer_bytes_scanned/1024 );
+	if ($l2_write_buffer_bytes_scanned > 1048576) {
+		printf("\tBytes Scanned:\t\t\t\t%dM\n",
+			$l2_write_buffer_bytes_scanned/1048576 );
+	} else { if ($l2_write_buffer_bytes_scanned > 1024) {
+			printf("\tBytes Scanned:\t\t\t\t%dK\n",
+				$l2_write_buffer_bytes_scanned/1024 );
+		};
+	};
+
 	printf("\tBuffer Iterations:\t\t\t%dK\n",
 		$l2_write_buffer_iter);
 	printf("\tList Iterations:\t\t\t%dK\n",
