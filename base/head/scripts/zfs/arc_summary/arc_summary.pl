@@ -424,9 +424,9 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	printf("\tBuffer Iterations:\t\t\t%dK\n",
 		$l2_write_buffer_iter);
 	printf("\tList Iterations:\t\t\t%dK\n",
-		$l2_write_buffer_list_iter/1024);
+		$l2_write_buffer_list_iter/1000);
 	printf("\tNULL List Iterations:\t\t\t%dK\n",
-		$l2_write_buffer_list_null_iter/1024);
+		$l2_write_buffer_list_null_iter/1000);
 	print "\n";
 	
 	print "L2 ARC Writes:\n";
