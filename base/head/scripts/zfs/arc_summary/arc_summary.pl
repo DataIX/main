@@ -57,14 +57,14 @@ sub hline(){
 
 ### System Information / FreeBSD ###
 my $daydate = localtime;
-my $kilobytes = ( 1024 );
-my $megabytes = ( $kilobytes * $kilobytes );
-my $gigabytes = ( $megabytes * $kilobytes );
-my $terabytes = ( $gigabytes * $kilobytes );
-my $petabytes = ( $terabytes * $kilobytes );
-my $exabytes  = ( $petabytes * $kilobytes );
-my $zetabytes = ( $exabytes  * $kilobytes );
-my $yottabytes = ( $zetabytes * $kilobytes );
+my $kbytes = ( 1024 );
+my $mbytes = ( $kbytes * $kbytes );
+my $gbytes = ( $mbytes * $kbytes );
+my $tbytes = ( $gbytes * $kbytes );
+my $pbytes = ( $tbytes * $kbytes );
+my $ebytes = ( $pbytes * $kbytes );
+my $zbytes = ( $ebytes * $kbytes );
+my $ybytes = ( $zbytes * $kbytes );
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
@@ -87,15 +87,15 @@ if ($useheader != 0) {
 }
 
 my $phys_memory = `sysctl -n 'hw.physmem'`;
-my $phys_memory_MiB = ($phys_memory / $megabytes);
+my $phys_memory_MiB = ($phys_memory / $mbytes);
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 my $kmem = ( $ktext + $kdata );
-my $kmem_MiB = ( $kmem / $megabytes );
+my $kmem_MiB = ( $kmem / $mbytes );
 my $ktext_perc = ( 100 * ( $ktext / $kmem ));
-my $ktext_MiB = ( $ktext / $megabytes );
+my $ktext_MiB = ( $ktext / $mbytes );
 my $kdata_perc = ( 100 * ( $kdata / $kmem ));
-my $kdata_MiB = ( $kdata / $megabytes );
+my $kdata_MiB = ( $kdata / $mbytes );
 
 hline();
 printf("Physical Memory:\t\t\t\t%0.2fM\n", $phys_memory_MiB);
@@ -145,20 +145,20 @@ print "\n";
 
 ### ARC Sizing ###
 my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
-my $mru_size_MiB = ($mru_size / $megabytes);
+my $mru_size_MiB = ($mru_size / $mbytes);
 
 my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
-my $target_size_MiB = ($target_size / $megabytes);
+my $target_size_MiB = ($target_size / $mbytes);
 my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
-my $target_min_size_MiB = ($target_min_size / $megabytes);
+my $target_min_size_MiB = ($target_min_size / $mbytes);
 my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
-my $target_max_size_MiB = ($target_max_size / $megabytes);
+my $target_max_size_MiB = ($target_max_size / $mbytes);
 my $target_size_ratio = ($target_max_size / $target_min_size);
 my $target_size_perc = 100*($target_size / $target_max_size);
 my $target_size_min_perc = 100*($target_min_size / $target_max_size);
 
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
-my $arc_size_MiB = ($arc_size / $megabytes);
+my $arc_size_MiB = ($arc_size / $mbytes);
 my $arc_size_perc = 100*($arc_size / $target_max_size);
 
 printf("ARC Size:\t\t\t\t%0.2f%%\t%0.2fM\t(arcsize)\n",
@@ -173,7 +173,7 @@ printf("\tMax Size (High Water):\t\t~%d:1\t%0.2fM\t(c_max)\n",
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
 	my $mfu_size = ($arc_size - $mru_size);
-	my $mfu_size_MiB = ($mfu_size / $megabytes);
+	my $mfu_size_MiB = ($mfu_size / $mbytes);
 	my $mru_perc = 100*($mru_size / $arc_size);
 	my $mfu_perc = 100*($mfu_size / $arc_size);
 	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM\t(p)\n",
@@ -184,7 +184,7 @@ if ($arc_size > $target_size) {
 
 if ($arc_size < $target_size) {
 	my $mfu_size = ($target_size - $mru_size);
-	my $mfu_size_MiB = ($mfu_size / $megabytes);
+	my $mfu_size_MiB = ($mfu_size / $mbytes);
 	my $mru_perc = 100*($mru_size / $target_size);
 	my $mfu_perc = 100*($mfu_size / $target_size);
 	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM\t(p)\n",
@@ -363,8 +363,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	my $l2_misses_perc = ( 100 * ( $l2_misses / ( $l2_access_total )));
 	my $l2_writes_done_perc = ( 100 * ( $l2_writes_done / $l2_writes_sent ));
 	my $l2_writes_error_perc = ( 100 * ( $l2_writes_error / $l2_writes_sent ));
-	my $l2_size_MiB = ( $l2_size / $megabytes );
-	my $l2_hdr_size_MiB = ( $l2_hdr_size / $megabytes );
+	my $l2_size_MiB = ( $l2_size / $mbytes );
+	my $l2_hdr_size_MiB = ( $l2_hdr_size / $mbytes );
 
 	hline();
 
@@ -397,12 +397,12 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t");
-	if ($l2_size > $gigabytes) {
-		printf("%0.2fG\n", $l2_size / $gigabytes );
-	} else { if ($l2_size > $megabytes) {
-		printf("%0.2fM\n", $l2_size / $megabytes );
-	} else { if ($l2_size > $kilobytes) {
-		printf("%0.2fK\n", $l2_size / $kilobytes );
+	if ($l2_size > $gbytes) {
+		printf("%0.2fG\n", $l2_size / $gbytes );
+	} else { if ($l2_size > $mbytes) {
+		printf("%0.2fM\n", $l2_size / $mbytes );
+	} else { if ($l2_size > $kbytes) {
+		printf("%0.2fK\n", $l2_size / $kbytes );
 	} else { printf("%d\n", $l2_size );
 	}}};
 
@@ -430,12 +430,12 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 
 	print "L2 ARC Buffer:\n";
 	print "\tBytes Scanned:\t\t\t\t";
-	if ($l2_write_buffer_bytes_scanned > $gigabytes) {
-		printf("%0.2fG\n", $l2_write_buffer_bytes_scanned / $gigabytes );
-	} else { if ($l2_write_buffer_bytes_scanned > $megabytes ) {
-			printf("%0.2fM\t\n", $l2_write_buffer_bytes_scanned / $megabytes );
-		} else { if ( $l2_write_buffer_bytes_scanned > $kilobytes ) {
-			       	printf("%0.2fK\n", $l2_write_buffer_bytes_scanned / $kilobytes );
+	if ($l2_write_buffer_bytes_scanned > $gbytes) {
+		printf("%0.2fG\n", $l2_write_buffer_bytes_scanned / $gbytes );
+	} else { if ($l2_write_buffer_bytes_scanned > $mbytes ) {
+			printf("%0.2fM\t\n", $l2_write_buffer_bytes_scanned / $mbytes );
+		} else { if ( $l2_write_buffer_bytes_scanned > $kbytes ) {
+			       	printf("%0.2fK\n", $l2_write_buffer_bytes_scanned / $kbytes );
 		} else { printf("%d\n", $l2_write_buffer_bytes_scanned);
 	}}};
 
