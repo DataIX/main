@@ -363,7 +363,6 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	my $l2_misses_perc = ( 100 * ( $l2_misses / ( $l2_access_total )));
 	my $l2_writes_done_perc = ( 100 * ( $l2_writes_done / $l2_writes_sent ));
 	my $l2_writes_error_perc = ( 100 * ( $l2_writes_error / $l2_writes_sent ));
-	my $l2_size_MiB = ( $l2_size / $mbytes );
 	my $l2_hdr_size_MiB = ( $l2_hdr_size / $mbytes );
 
 	hline();
