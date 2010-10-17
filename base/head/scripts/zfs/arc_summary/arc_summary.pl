@@ -372,26 +372,26 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	} else {
 		print "(HEALTHY)\n";
 	};
+	printf("\tPassed Headroom:\t\t\t%d\n",
+		$l2_write_passed_headroom);
+	printf("\tTried Lock Failures:\t\t\t%d\n",
+		$l2_write_trylock_fail);
+	printf("\tIO In Progress:\t\t\t\t%d\n",
+		$l2_write_io_in_progress);
 	printf("\tLow Memory Aborts:\t\t\t%d\n",
 		$l2_abort_lowmem);
 	printf("\tFree on Write:\t\t\t\t%d\n",
 		$l2_free_on_write);
+	printf("\tWrites While Full:\t\t\t%d\n",
+		$l2_write_full);
 	printf("\tR/W Clashes:\t\t\t\t%d\n",
 		$l2_rw_clash);
 	printf("\tBad Checksums:\t\t\t\t%d\n",
 		$l2_cksum_bad);
 	printf("\tIO Errors:\t\t\t\t%d\n",
 		$l2_io_error);
-	printf("\tWrites While Full:\t\t\t%d\n",
-		$l2_write_full);
 	printf("\tSPA Mismatch:\t\t\t\t%d\n",
 		$l2_write_spa_mismatch);
-	printf("\tTried Lock Failures:\t\t\t%d\n",
-		$l2_write_trylock_fail);
-	printf("\tIO In Progress:\t\t\t\t%d\n",
-		$l2_write_io_in_progress);
-	printf("\tPassed Headroom:\t\t\t%d\n",
-		$l2_write_passed_headroom);
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t%0.2fM\n",
