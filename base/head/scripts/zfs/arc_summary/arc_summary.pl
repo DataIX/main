@@ -437,8 +437,15 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	} else { printf("%d\t*(1)\n", $l2_write_buffer_list_iter);
 	}};
 
-	printf("\tNULL List Iterations:\t\t\t%dK\n",
-		$l2_write_buffer_list_null_iter/1000);
+	print "\tNULL List Iterations:\t\t\t";
+	if ($l2_write_buffer_list_null_iter > 100000000 ) {
+		printf("%0.2fm\t*(100m)\n", $l2_write_buffer_list_null_iter/100000000);
+	} else { if ($l2_write_buffer_list_null_iter > 100000 ) {
+			printf("%0.2fk\t*(100k)\n", $l2_write_buffer_list_null_iter/100000);
+	} else { printf("%d\t*(1)\n", $l2_write_buffer_list_null_iter);
+	}};
+
+
 	print "\n";
 	
 	print "L2 ARC Writes:\n";
