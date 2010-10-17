@@ -421,8 +421,14 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		} else { printf("%d\n", $l2_write_buffer_bytes_scanned );
 	}};
 
-	printf("\tBuffer Iterations:\t\t\t%dK\n",
-		$l2_write_buffer_iter);
+	print "\tBuffer Iterations:\t\t\t";
+	if ($l2_write_buffer_iter > 1000000) {
+		printf("%0.2fm\t(x1000000)\n", $l2_write_buffer_iter /1000000);
+	} else { if ($l2_write_buffer_iter > 100000) {
+			printf("%0.2fk\t(x100000)\n", $l2_write_buffer_iter /100000);
+	} else { printf("%d\t(x1)\n", $l2_write_buffer_iter );
+	}};
+
 	printf("\tList Iterations:\t\t\t%dK\n",
 		$l2_write_buffer_list_iter/1000);
 	printf("\tNULL List Iterations:\t\t\t%dK\n",
