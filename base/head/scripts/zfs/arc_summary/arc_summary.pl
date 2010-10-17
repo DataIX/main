@@ -415,11 +415,11 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "L2 ARC Buffer:\n";
 	print "\tBytes Scanned:\t\t\t\t";
 	if ($l2_write_buffer_bytes_scanned > 1073741824) {
-		printf("%0.2fG\n", $l2_write_buffer_bytes_scanned / 1073741824 );
+		printf("%0.2fM\n", $l2_write_buffer_bytes_scanned / 1073741824 );
 	} else { if ($l2_write_buffer_bytes_scanned > 1048576 ) {
-			printf("%0.2fM\n", $l2_write_buffer_bytes_scanned / 1048576 );
+			printf("%0.2fK\n", $l2_write_buffer_bytes_scanned / 1048576 );
 		} else { if ( $l2_write_buffer_bytes_scanned > 1024 ) {
-			       	printf("%0.2fk\n", $l2_write_buffer_bytes_scanned / 1024 );
+			       	printf("%0.2fB\n", $l2_write_buffer_bytes_scanned / 1024 );
 		} else { printf("%d\n", $l2_write_buffer_bytes_scanned);
 	}}};
 
