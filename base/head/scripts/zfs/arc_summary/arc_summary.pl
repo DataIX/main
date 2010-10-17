@@ -59,10 +59,12 @@ sub hline(){
 my $daydate = localtime;
 my $kilobytes = ( 1024 );
 my $megabytes = ( $kilobytes * $kilobytes );
-my $gigabytes = ( $megabytes * $megabytes );
-my $terabytes = ( $gigabytes * $gigabytes );
-my $petabytes = ( $terabytes * $terabytes );
-my $zetabytes = ( $petabytes * $petabytes );
+my $gigabytes = ( $megabytes * $kilobytes );
+my $terabytes = ( $gigabytes * $kilobytes );
+my $petabytes = ( $terabytes * $kilobytes );
+my $exabytes  = ( $petabytes * $kilobytes );
+my $zetabytes = ( $exabytes  * $kilobytes );
+my $yottabytes = ( $zetabytes * $kilobytes );
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
@@ -394,8 +396,16 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_write_spa_mismatch);
 	print "\n";
 	
-	printf("L2 ARC Size: (Adaptive)\t\t\t\t%0.2fM\n",
-		$l2_size_MiB);
+	printf("L2 ARC Size: (Adaptive)\t\t\t\t");
+	if ($l2_size > $gigabytes) {
+		printf("%0.2fG\n", $l2_size / $gigabytes );
+	} else { if ($l2_size > $megabytes) {
+		printf("%0.2fM\n", $l2_size / $megabytes );
+	} else { if ($l2_size > $kilobytes) {
+		printf("%0.2fK\n", $l2_size / $kilobytes );
+	} else { printf("%d\n", $l2_size );
+	}}};
+
 	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n",
 		$l2_hdr_size_perc, $l2_hdr_size_MiB);
 	print "\n";
