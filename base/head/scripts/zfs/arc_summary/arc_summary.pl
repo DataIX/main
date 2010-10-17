@@ -430,13 +430,13 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 
 	print "L2 ARC Buffer:\n";
 	print "\tBytes Scanned:\t\t\t\t";
-	if ($l2_write_buffer_bytes_scanned > $tbytes) {
-		printf("%0.2fT\n", $l2_write_buffer_bytes_scanned / $tbytes );
-	} else { if ($l2_write_buffer_bytes_scanned > $gbytes ) {
-			printf("%0.2fG\t\n", $l2_write_buffer_bytes_scanned / $gbytes );
-		} else { if ( $l2_write_buffer_bytes_scanned > $mbytes ) {
-			       	printf("%0.2fM\n", $l2_write_buffer_bytes_scanned / $mbytes );
-		} else { printf("%0.2fK\n", $l2_write_buffer_bytes_scanned / $kbytes);
+	if ($l2_write_buffer_bytes_scanned > $pbytes) {
+		printf("%0.2fP\n", $l2_write_buffer_bytes_scanned / $pbytes );
+	} else { if ($l2_write_buffer_bytes_scanned > $tbytes ) {
+			printf("%0.2fT\t\n", $l2_write_buffer_bytes_scanned / $tbytes );
+		} else { if ( $l2_write_buffer_bytes_scanned > $gbytes ) {
+			       	printf("%0.2fG\n", $l2_write_buffer_bytes_scanned / $gbytes );
+		} else { printf("%0.2fM\n", $l2_write_buffer_bytes_scanned / $mbytes);
 	}}};
 
 	print "\tBuffer Iterations:\t\t\t";
