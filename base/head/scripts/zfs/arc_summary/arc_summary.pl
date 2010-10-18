@@ -40,15 +40,15 @@
 #
 # Binaries used are:
 #
-# dc(1), kldstat(8), sed(1), sysctl(8), uname(1), vmstat(8), & xargs(1)
+# dc(1), kldstat(8), sed(1), sysctl(8) & vmstat(8)
 #
 # Binaries that I am working on phasing out are:
 #
-# dc(1), sed(1) & xargs(1)
+# dc(1) & sed(1)
 
 use strict;
 
-my $useheader = 0;	# Change to 1 to enable FreeBSD header.
+my $useheader = 1;	# Change to 1 to enable FreeBSD header.
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
 sub hline(){
@@ -99,29 +99,24 @@ sub fBytes {
 }
 
 ### System Information / FreeBSD ###
-my $daydate = localtime;
+my $daydate = localtime; chomp $daydate;
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 
 if ($useheader != 0) {
-	my $unamev = `uname -v |sed 's/@.*//' |xargs`;
-	my $unamem = `sysctl -n 'hw.machine'`;
-	my $unamep = `sysctl -n 'hw.machine_arch'`;
-	my $osreldate = `sysctl -n 'kern.osreldate'`;
-	my $sysuptime = `uptime`;
+	my @osinfo = `sysctl -n kern.ostype kern.osrelease kern.osreldate`; chomp @osinfo;
+	my $unamem = `sysctl -n hw.machine`; chomp $unamem;
+	my $unamep = `sysctl -n hw.machine_arch`; chomp $unamep;
+	my $sysuptime = `uptime`; chomp $sysuptime;
 	hline();
-	printf("%s", $unamev);
-	print "\n";
-	printf("Kernel Version:\t\t\t\t\t%d (osreldate)\n", $osreldate);
-	print "\n";
-	printf("Hardware Platform:\t\t\t\t%s", $unamem);
-	printf("Processor Architecture:\t\t\t\t%s", $unamep);
-	print "\n";
-	printf("%s", $sysuptime);
+	printf("%s %s\t\t\t\t%s\t(osreldate)\n", @osinfo);
+	printf("Hardware Platform:\t\t\t\t%s\n", $unamem);
+	printf("Processor Architecture:\t\t\t\t%s\n\n", $unamep);
+	printf("%s\n", $sysuptime);
 }
 
-my $phys_memory = `sysctl -n 'hw.physmem'`;
+my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 my $kmem = ( $ktext + $kdata );
