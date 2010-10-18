@@ -100,14 +100,6 @@ sub fBytes {
 
 ### System Information / FreeBSD ###
 my $daydate = localtime;
-my $kbytes = ( 1024 );
-my $mbytes = ( $kbytes * $kbytes );
-my $gbytes = ( $mbytes * $kbytes );
-my $tbytes = ( $gbytes * $kbytes );
-my $pbytes = ( $tbytes * $kbytes );
-my $ebytes = ( $pbytes * $kbytes );
-my $zbytes = ( $ebytes * $kbytes );
-my $ybytes = ( $zbytes * $kbytes );
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
