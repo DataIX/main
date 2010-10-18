@@ -55,6 +55,49 @@ sub hline(){
 	print "\n------------------------------------------------------------------------\n\n";
 }
 
+sub fBytes {
+    my $kbytes = ( 1024 );
+    my $mbytes = ( $kbytes * $kbytes );
+    my $gbytes = ( $mbytes * $kbytes );
+    my $tbytes = ( $gbytes * $kbytes );
+    my $pbytes = ( $tbytes * $kbytes );
+    my $ebytes = ( $pbytes * $kbytes );
+    my $zbytes = ( $ebytes * $kbytes );
+    my $ybytes = ( $zbytes * $kbytes );
+
+    my $Bytes = $_[0] || 0;
+    defined($Bytes) or $Bytes = 0;
+
+    my $Decimal = $_[1] || 0;
+
+    if ( $Bytes > $ybytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ybytes ) . "Y";
+    }
+    elsif ( $Bytes > $zbytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $zbytes ) . "Z";
+    }
+    elsif ( $Bytes > $ebytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ebytes ) . "E";
+    }
+    elsif ( $Bytes > $pbytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $pbytes ) . "P";
+    }
+    elsif ( $Bytes > $tbytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $tbytes ) . "T";
+    }
+    elsif ( $Bytes > $gbytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $gbytes ) . "G";
+    }
+    elsif ( $Bytes > $mbytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $mbytes ) . "M";
+    }
+    elsif ( $Bytes > $kbytes ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $kbytes ) . "K";
+    }
+    elsif ( $Bytes == 0 ) { return sprintf( '%0.' . $Decimal . 'f', 0 ); }
+    else { return sprintf( '%0.' . $Decimal . 'f', $Bytes ) . "B"; }
+}
+
 ### System Information / FreeBSD ###
 my $daydate = localtime;
 my $kbytes = ( 1024 );
