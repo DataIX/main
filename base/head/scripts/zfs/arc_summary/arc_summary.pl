@@ -130,22 +130,18 @@ if ($useheader != 0) {
 }
 
 my $phys_memory = `sysctl -n 'hw.physmem'`;
-my $phys_memory_MiB = ($phys_memory / $mbytes);
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 my $kmem = ( $ktext + $kdata );
-my $kmem_MiB = ( $kmem / $mbytes );
 my $ktext_perc = ( 100 * ( $ktext / $kmem ));
-my $ktext_MiB = ( $ktext / $mbytes );
 my $kdata_perc = ( 100 * ( $kdata / $kmem ));
-my $kdata_MiB = ( $kdata / $mbytes );
 
 hline();
-printf("Physical Memory:\t\t\t\t%0.2fM\n", $phys_memory_MiB);
+printf("Physical Memory:\t\t\t\t%s\n", fBytes($phys_memory,2));
 print "\n";
-printf("Kernel Memory:\t\t\t\t\t%0.2fM\n", $kmem_MiB);
-printf("DATA:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $kdata_perc, $kdata_MiB);
-printf("TEXT:\t\t\t\t\t%0.2f%%\t%0.2fM\n", $ktext_perc, $ktext_MiB);
+printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem,2));
+printf("DATA:\t\t\t\t\t%0.2f%%\t%s\n", $kdata_perc, fBytes($kdata,2));
+printf("TEXT:\t\t\t\t\t%0.2f%%\t%s\n", $ktext_perc, fBytes($ktext,2));
 
 my $Kstat;
 my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
