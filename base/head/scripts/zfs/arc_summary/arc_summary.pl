@@ -94,8 +94,8 @@ sub fBytes {
     elsif ( $Bytes >= $kbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $kbytes ) . "K";
     }
-    elsif ( $Bytes == 0 ) { return sprintf( '%0.' . $Decimal . 'f', 0 ); }
-    else { return sprintf( '%0.' . $Decimal . 'f', $Bytes ) . "B"; }
+    elsif ( $Bytes == 0 ) { return sprintf( '%d', 0 ); }
+    else { return sprintf( '%d', $Bytes ) . "B"; }
 }
 
 sub fHits {
@@ -110,19 +110,19 @@ sub fHits {
     my $Decimal = $_[1] || 0;
 
     if ( $Hits >= (100*($thits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($thits)) ) . "\t*(100t)";
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($thits)) ) . "t\t(x100)";
     }
     elsif ( $Hits >= (100*($bhits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($bhits)) ) . "\t*(100b)";
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($bhits)) ) . "b\t(x100)";
     }
     elsif ( $Hits >= (100*($mhits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($mhits)) ) . "\t*(100m)";
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($mhits)) ) . "m\t(x100)";
     }
     elsif ( $Hits >= (100*($khits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($khits)) ) . "\t*(100k)";
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($khits)) ) . "k\t(x100)";
     }
-    elsif ( $Hits == 0 ) { return sprintf( '%0.' . $Decimal . 'f', 0 ); }
-    else { return sprintf( '%0.' . $Decimal . 'f', $Hits ) . "\t*(1)"; }
+    elsif ( $Hits == 0 ) { return sprintf( '%d', 0 ); }
+    else { return sprintf( '%d', $Hits ) . "\t(x1)"; }
 }
 
 ### System Information / FreeBSD ###
@@ -465,30 +465,9 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 
 	print "L2 ARC Buffer:\n";
 	printf("\tBytes Scanned:\t\t\t\t%s\n", fBytes($l2_write_buffer_bytes_scanned,2));
-
-	print "\tBuffer Iterations:\t\t\t";
-	if ($l2_write_buffer_iter > 100000000) {
-		printf("%0.2fm\t*(100m)\n", $l2_write_buffer_iter /100000000);
-	} else { if ($l2_write_buffer_iter > 100000) {
-			printf("%0.2fk\t*(100k)\n", $l2_write_buffer_iter /100000);
-	} else { printf("%d\t*(1)\n", $l2_write_buffer_iter );
-	}};
-
-	print "\tList Iterations:\t\t\t";
-	if ($l2_write_buffer_list_iter > 100000000) {
-		printf("%0.2fm\t*(100m)\n", $l2_write_buffer_list_iter/100000000);
-	} else { if ($l2_write_buffer_list_iter > 100000) {
-			printf("%0.2fk\t*(100k)\n", $l2_write_buffer_list_iter/100000);
-	} else { printf("%d\t*(1)\n", $l2_write_buffer_list_iter);
-	}};
-
-	print "\tNULL List Iterations:\t\t\t";
-	if ($l2_write_buffer_list_null_iter > 100000000 ) {
-		printf("%0.2fm\t*(100m)\n", $l2_write_buffer_list_null_iter/100000000);
-	} else { if ($l2_write_buffer_list_null_iter > 100000 ) {
-			printf("%0.2fk\t*(100k)\n", $l2_write_buffer_list_null_iter/100000);
-	} else { printf("%d\t*(1)\n", $l2_write_buffer_list_null_iter);
-	}};
+	printf("\tBuffer Iterations:\t\t\t%s\n", fHits($l2_write_buffer_iter,3));
+	printf("\tList Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_iter,3));
+	printf("\tNULL List Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_null_iter,3));
 	print "\n";
 	
 	print "L2 ARC Writes:\n";
