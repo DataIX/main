@@ -184,7 +184,6 @@ print "\n";
 
 ### ARC Sizing ###
 my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
-my $mru_size_MiB = ($mru_size / $mbytes);
 
 my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
 my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
@@ -208,24 +207,22 @@ printf("\tMax Size (High Water):\t\t~%d:1\t%s\t(c_max)\n",
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
 	my $mfu_size = ($arc_size - $mru_size);
-	my $mfu_size_MiB = ($mfu_size / $mbytes);
 	my $mru_perc = 100*($mru_size / $arc_size);
 	my $mfu_perc = 100*($mfu_size / $arc_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM\t(p)\n",
-		$mru_perc, $mru_size_MiB);
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM\t(arcsize-p)\n",
-		$mfu_perc, $mfu_size_MiB);
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\t(p)\n",
+		$mru_perc, fBytes($mru_size,2));
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\t(arcsize-p)\n",
+		$mfu_perc, fBytes($mfu_size,2));
 }
 
 if ($arc_size < $target_size) {
 	my $mfu_size = ($target_size - $mru_size);
-	my $mfu_size_MiB = ($mfu_size / $mbytes);
 	my $mru_perc = 100*($mru_size / $target_size);
 	my $mfu_perc = 100*($mfu_size / $target_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%0.2fM\t(p)\n",
-		$mru_perc, $mru_size_MiB);
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%0.2fM\t(c-p)\n",
-		$mfu_perc, $mfu_size_MiB);
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\t(p)\n",
+		$mru_perc, fBytes($mru_size,2));
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\t(c-p)\n",
+		$mfu_perc, fBytes($mfu_size,2));
 }
 print "\n";
 
