@@ -395,7 +395,6 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	my $l2_misses_perc = ( 100 * ( $l2_misses / ( $l2_access_total )));
 	my $l2_writes_done_perc = ( 100 * ( $l2_writes_done / $l2_writes_sent ));
 	my $l2_writes_error_perc = ( 100 * ( $l2_writes_error / $l2_writes_sent ));
-	my $l2_hdr_size_MiB = ( $l2_hdr_size / $mbytes );
 
 	hline();
 
@@ -427,18 +426,9 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 		$l2_write_spa_mismatch);
 	print "\n";
 	
-	printf("L2 ARC Size: (Adaptive)\t\t\t\t");
-	if ($l2_size > $gbytes) {
-		printf("%0.2fG\n", $l2_size / $gbytes );
-	} else { if ($l2_size > $mbytes) {
-		printf("%0.2fM\n", $l2_size / $mbytes );
-	} else { if ($l2_size > $kbytes) {
-		printf("%0.2fK\n", $l2_size / $kbytes );
-	} else { printf("%d\n", $l2_size );
-	}}};
-
-	printf("\tHeader Size:\t\t\t%0.2f%%\t%0.2fM\n",
-		$l2_hdr_size_perc, $l2_hdr_size_MiB);
+	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size,2));
+	printf("\tHeader Size:\t\t\t%0.2f%%\t%s\n",
+		$l2_hdr_size_perc, fBytes($l2_hdr_size,2));
 	print "\n";
 	
 	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
@@ -460,15 +450,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "\n";
 
 	print "L2 ARC Buffer:\n";
-	print "\tBytes Scanned:\t\t\t\t";
-	if ($l2_write_buffer_bytes_scanned > $pbytes) {
-		printf("%0.2fP\n", $l2_write_buffer_bytes_scanned / $pbytes );
-	} else { if ($l2_write_buffer_bytes_scanned > $tbytes ) {
-			printf("%0.2fT\t\n", $l2_write_buffer_bytes_scanned / $tbytes );
-		} else { if ( $l2_write_buffer_bytes_scanned > $gbytes ) {
-			       	printf("%0.2fG\n", $l2_write_buffer_bytes_scanned / $gbytes );
-		} else { printf("%0.2fM\n", $l2_write_buffer_bytes_scanned / $mbytes);
-	}}};
+	printf("\tBytes Scanned:\t\t\t\t%s\n", fBytes($l2_write_buffer_bytes_scanned,2));
 
 	print "\tBuffer Iterations:\t\t\t";
 	if ($l2_write_buffer_iter > 100000000) {
