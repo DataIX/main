@@ -70,28 +70,28 @@ sub fBytes {
 
     my $Decimal = $_[1] || 0;
 
-    if ( $Bytes > $ybytes ) {
+    if ( $Bytes >= $ybytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ybytes ) . "Y";
     }
-    elsif ( $Bytes > $zbytes ) {
+    elsif ( $Bytes >= $zbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $zbytes ) . "Z";
     }
-    elsif ( $Bytes > $ebytes ) {
+    elsif ( $Bytes >= $ebytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ebytes ) . "E";
     }
-    elsif ( $Bytes > $pbytes ) {
+    elsif ( $Bytes >= $pbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $pbytes ) . "P";
     }
-    elsif ( $Bytes > $tbytes ) {
+    elsif ( $Bytes >= $tbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $tbytes ) . "T";
     }
-    elsif ( $Bytes > $gbytes ) {
+    elsif ( $Bytes >= $gbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $gbytes ) . "G";
     }
-    elsif ( $Bytes > $mbytes ) {
+    elsif ( $Bytes >= $mbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $mbytes ) . "M";
     }
-    elsif ( $Bytes > $kbytes ) {
+    elsif ( $Bytes >= $kbytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $kbytes ) . "K";
     }
     elsif ( $Bytes == 0 ) { return sprintf( '%0.' . $Decimal . 'f', 0 ); }
