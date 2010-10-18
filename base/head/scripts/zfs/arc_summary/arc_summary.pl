@@ -98,6 +98,33 @@ sub fBytes {
     else { return sprintf( '%0.' . $Decimal . 'f', $Bytes ) . "B"; }
 }
 
+sub fHits {
+    my $khits = ( 1000 );
+    my $mhits = ( $khits * $khits );
+    my $bhits = ( $mhits * $khits );
+    my $thits = ( $bhits * $khits );
+
+    my $Hits = $_[0] || 0;
+    defined($Hits) or $Hits = 0;
+
+    my $Decimal = $_[1] || 0;
+
+    if ( $Hits >= (100*($thits)) ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($thits)) ) . "\t*(100t)";
+    }
+    elsif ( $Hits >= (100*($bhits)) ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($bhits)) ) . "\t*(100b)";
+    }
+    elsif ( $Hits >= (100*($mhits)) ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($mhits)) ) . "\t*(100m)";
+    }
+    elsif ( $Hits >= (100*($khits)) ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($khits)) ) . "\t*(100k)";
+    }
+    elsif ( $Hits == 0 ) { return sprintf( '%0.' . $Decimal . 'f', 0 ); }
+    else { return sprintf( '%0.' . $Decimal . 'f', $Hits ) . "\t*(1)"; }
+}
+
 ### System Information / FreeBSD ###
 my $daydate = localtime; chomp $daydate;
 
