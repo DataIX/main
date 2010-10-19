@@ -68,7 +68,7 @@ sub fBytes {
     my $Bytes = $_[0] || 0;
     defined($Bytes) or $Bytes = 0;
 
-    my $Decimal = $_[1] || 0;
+    my $Decimal = $_[1] || 2;
 
     if ( $Bytes >= $ybytes ) {
         return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ybytes ) . " YiB";
