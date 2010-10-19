@@ -71,31 +71,31 @@ sub fBytes {
     my $Decimal = $_[1] || 0;
 
     if ( $Bytes >= $ybytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ybytes ) . "Y";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ybytes ) . " YiB";
     }
     elsif ( $Bytes >= $zbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $zbytes ) . "Z";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $zbytes ) . "\tZiB";
     }
     elsif ( $Bytes >= $ebytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ebytes ) . "E";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ebytes ) . "\tEiB";
     }
     elsif ( $Bytes >= $pbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $pbytes ) . "P";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $pbytes ) . "\tPiB";
     }
     elsif ( $Bytes >= $tbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $tbytes ) . "T";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $tbytes ) . "\tTiB";
     }
     elsif ( $Bytes >= $gbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $gbytes ) . "G";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $gbytes ) . "\tGiB";
     }
     elsif ( $Bytes >= $mbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $mbytes ) . "M";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $mbytes ) . "\tMiB";
     }
     elsif ( $Bytes >= $kbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $kbytes ) . "K";
+        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $kbytes ) . "\tKiB";
     }
-    elsif ( $Bytes == 0 ) { return sprintf( '%d', 0 ); }
-    else { return sprintf( '%d', $Bytes ) . "B"; }
+    elsif ( $Bytes == 0 ) { return sprintf( '%d', 0 . "\tBytes" ); }
+    else { return sprintf( '%d', $Bytes ) . "\tBytes"; }
 }
 
 sub fHits {
@@ -137,7 +137,7 @@ if ($useheader != 0) {
 	my $unamep = `sysctl -n hw.machine_arch`; chomp $unamep;
 	my $sysuptime = `uptime`; chomp $sysuptime;
 	hline();
-	printf("%s %s\t\t\t\t%s\t(osreldate)\n", @osinfo);
+	printf("%s %s\t\t\t\t%s\n", @osinfo);
 	printf("Hardware Platform:\t\t\t\t%s\n", $unamem);
 	printf("Processor Architecture:\t\t\t\t%s\n\n", $unamep);
 	printf("%s\n", $sysuptime);
@@ -178,8 +178,8 @@ if ($throttle > 0) {
 } else {
 	print "(HEALTHY)\n";
 };
-printf("\tStorage pool Version:\t\t\t%d\t(spa)\n", $spa);
-printf("\tFilesystem Version:\t\t\t%d\t(zpl)\n", $zpl);
+printf("\tStorage pool Version:\t\t\t%d\n", $spa);
+printf("\tFilesystem Version:\t\t\t%d\n", $zpl);
 printf("\tMemory Throttle Count:\t\t\t%d\n", $throttle);
 print "\n";
 
@@ -209,13 +209,13 @@ my $target_size_min_perc = 100*($target_min_size / $target_max_size);
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 my $arc_size_perc = 100*($arc_size / $target_max_size);
 
-printf("ARC Size:\t\t\t\t%0.2f%%\t%s\t(arcsize)\n",
+printf("ARC Size:\t\t\t\t%0.2f%%\t%s\n",
 	$arc_size_perc,  fBytes($arc_size,2));
-printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%s\t(c)\n",
+printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%s\n",
 	$target_size_perc, fBytes($target_size,2));
-printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%s\t(c_min)\n",
+printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%s\n",
 	$target_size_min_perc, fBytes($target_min_size,2));
-printf("\tMax Size (High Water):\t\t~%d:1\t%s\t(c_max)\n",
+printf("\tMax Size (High Water):\t\t~%d:1\t%s\n",
 	$target_size_ratio, fBytes($target_max_size,2));
 
 print "\nARC Size Breakdown:\n";
@@ -223,9 +223,9 @@ if ($arc_size > $target_size) {
 	my $mfu_size = ($arc_size - $mru_size);
 	my $mru_perc = 100*($mru_size / $arc_size);
 	my $mfu_perc = 100*($mfu_size / $arc_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\t(p)\n",
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\n",
 		$mru_perc, fBytes($mru_size,2));
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\t(arcsize-p)\n",
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\n",
 		$mfu_perc, fBytes($mfu_size,2));
 }
 
@@ -233,9 +233,9 @@ if ($arc_size < $target_size) {
 	my $mfu_size = ($target_size - $mru_size);
 	my $mru_perc = 100*($mru_size / $target_size);
 	my $mfu_perc = 100*($mfu_size / $target_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\t(p)\n",
+	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\n",
 		$mru_perc, fBytes($mru_size,2));
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\t(c-p)\n",
+	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\n",
 		$mfu_perc, fBytes($mfu_size,2));
 }
 print "\n";
@@ -339,13 +339,13 @@ if ( $anon_hits > 0 ){
 		$anon_hits_perc, $anon_hits);
 }
 
-printf("\t  Most Recently Used:\t\t%0.2f%%\t%d\t(mru)\n",
+printf("\t  Most Recently Used:\t\t%0.2f%%\t%d\n",
 	$mru_hits_perc, $mru_hits);
-printf("\t  Most Frequently Used:\t\t%0.2f%%\t%d\t(mfu)\n",
+printf("\t  Most Frequently Used:\t\t%0.2f%%\t%d\n",
 	$mfu_hits_perc, $mfu_hits);
-printf("\t  Most Recently Used Ghost:\t%0.2f%%\t%d\t(mru_ghost)\n",
+printf("\t  Most Recently Used Ghost:\t%0.2f%%\t%d\n",
 	$mru_ghost_hits_perc, $mru_ghost_hits);
-printf("\t  Most Frequently Used Ghost:\t%0.2f%%\t%d\t(mfu_ghost)\n",
+printf("\t  Most Frequently Used Ghost:\t%0.2f%%\t%d\n",
 	$mfu_ghost_hits_perc, $mfu_ghost_hits);
 
 print "\n\tCACHE HITS BY DATA TYPE:\n";
