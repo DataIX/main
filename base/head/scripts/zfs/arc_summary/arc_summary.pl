@@ -109,17 +109,17 @@ sub fHits {
 
     my $Decimal = $_[1] || 0;
 
-    if ( $Hits >= (100*($thits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($thits)) ) . "t\t(x100)";
+    if ( $Hits >= $thits ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($thits)) . "t";
     }
-    elsif ( $Hits >= (100*($bhits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($bhits)) ) . "b\t(x100)";
+    elsif ( $Hits >= $bhits ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($bhits)) . "b";
     }
-    elsif ( $Hits >= (100*($mhits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($mhits)) ) . "m\t(x100)";
+    elsif ( $Hits >= $mhits ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($mhits)) . "m";
     }
-    elsif ( $Hits >= (100*($khits)) ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / (100*($khits)) ) . "k\t(x100)";
+    elsif ( $Hits >= $khits ) {
+        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($khits)) . "k";
     }
     elsif ( $Hits == 0 ) { return sprintf( '%d', 0 ); }
     else { return sprintf( '%d', $Hits ) . "\t(x1)"; }
