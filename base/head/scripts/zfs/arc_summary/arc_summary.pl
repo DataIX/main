@@ -122,7 +122,7 @@ sub fHits {
         return sprintf( '%0.' . $Decimal . 'f', $Hits / ($khits)) . "k";
     }
     elsif ( $Hits == 0 ) { return sprintf( '%d', 0 ); }
-    else { return sprintf( '%d', $Hits ) . "\t(x1)"; }
+    else { return sprintf( '%d', $Hits ); }
 }
 
 ### System Information / FreeBSD ###
