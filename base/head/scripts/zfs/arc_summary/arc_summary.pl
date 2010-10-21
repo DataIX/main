@@ -151,8 +151,7 @@ my $ktext_perc = 100*( $ktext / $kmem );
 my $kdata_perc = 100*( $kdata / $kmem );
 
 hline();
-printf("Physical Memory:\t\t\t\t%s\n", fBytes($phys_memory,2));
-print "\n";
+printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory,2));
 printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem,2));
 printf("DATA:\t\t\t\t\t%0.2f%%\t%s\n", $kdata_perc, fBytes($kdata,2));
 printf("TEXT:\t\t\t\t\t%0.2f%%\t%s\n", $ktext_perc, fBytes($ktext,2));
