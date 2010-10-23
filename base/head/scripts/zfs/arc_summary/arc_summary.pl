@@ -166,10 +166,10 @@ my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/'
 my $kmem = ( $ktext + $kdata );
 
 hline();
-printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory,2));
-printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem,2));
-printf("DATA:\t\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata,2));
-printf("TEXT:\t\t\t\t\t%s\t%s\n", fPerc($ktext, $kmem), fBytes($ktext,2));
+printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory));
+printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
+printf("DATA:\t\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
+printf("TEXT:\t\t\t\t\t%s\t%s\n", fPerc($ktext, $kmem), fBytes($ktext));
 
 my $Kstat;
 my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
@@ -221,29 +221,29 @@ my $target_size_ratio = ($target_max_size / $target_min_size);
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 
 printf("ARC Size:\t\t\t\t%s\t%s\n",
-	fPerc($arc_size, $target_max_size),  fBytes($arc_size,2));
+	fPerc($arc_size, $target_max_size),  fBytes($arc_size));
 printf("\tTarget Size: (Adaptive)\t\t%s\t%s\n",
-	fPerc($target_size, $target_max_size), fBytes($target_size,2));
+	fPerc($target_size, $target_max_size), fBytes($target_size));
 printf("\tMin Size (Hard Limit):\t\t%s\t%s\n",
-	fPerc($target_min_size, $target_max_size), fBytes($target_min_size,2));
+	fPerc($target_min_size, $target_max_size), fBytes($target_min_size));
 printf("\tMax Size (High Water):\t\t%d:1\t%s\n",
-	$target_size_ratio, fBytes($target_max_size,2));
+	$target_size_ratio, fBytes($target_max_size));
 
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
 	my $mfu_size = ($arc_size - $mru_size);
 	printf("\tRecently Used Cache Size:\t%s\t%s\n",
-		fPerc($mru_size, $arc_size), fBytes($mru_size,2));
+		fPerc($mru_size, $arc_size), fBytes($mru_size));
 	printf("\tFrequently Used Cache Size:\t%s\t%s\n",
-		fPerc($mfu_size, $arc_size), fBytes($mfu_size,2));
+		fPerc($mfu_size, $arc_size), fBytes($mfu_size));
 }
 
 if ($arc_size < $target_size) {
 	my $mfu_size = ($target_size - $mru_size);
 	printf("\tRecently Used Cache Size:\t%s\t%s\n",
-		fPerc($mru_size, $target_size), fBytes($mru_size,2));
+		fPerc($mru_size, $target_size), fBytes($mru_size));
 	printf("\tFrequently Used Cache Size:\t%s\t%s\n",
-		fPerc($mfu_size, $target_size), fBytes($mfu_size,2));
+		fPerc($mfu_size, $target_size), fBytes($mfu_size));
 }
 print "\n";
 
@@ -392,9 +392,9 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	printf("\tSPA Mismatch:\t\t\t\t%d\n", $l2_write_spa_mismatch);
 	print "\n";
 	
-	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size,2));
+	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size));
 	printf("\tHeader Size:\t\t\t%s\t%s\n",
-		fPerc($l2_hdr_size, $l2_size), fBytes($l2_hdr_size,2));
+		fPerc($l2_hdr_size, $l2_size), fBytes($l2_hdr_size));
 	print "\n";
 	
 	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
@@ -412,10 +412,10 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "\n";
 
 	print "L2 ARC Buffer:\n";
-	printf("\tBytes Scanned:\t\t\t\t%s\n", fBytes($l2_write_buffer_bytes_scanned,2));
-	printf("\tBuffer Iterations:\t\t\t%s\n", fHits($l2_write_buffer_iter,3));
-	printf("\tList Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_iter,3));
-	printf("\tNULL List Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_null_iter,3));
+	printf("\tBytes Scanned:\t\t\t\t%s\n", fBytes($l2_write_buffer_bytes_scanned));
+	printf("\tBuffer Iterations:\t\t\t%s\n", fHits($l2_write_buffer_iter));
+	printf("\tList Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_iter));
+	printf("\tNULL List Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_null_iter));
 	print "\n";
 	
 	print "L2 ARC Writes:\n";
