@@ -234,22 +234,18 @@ printf("\tMax Size (High Water):\t\t~%d:1\t%s\n",
 print "\nARC Size Breakdown:\n";
 if ($arc_size > $target_size) {
 	my $mfu_size = ($arc_size - $mru_size);
-	my $mru_perc = 100*($mru_size / $arc_size);
-	my $mfu_perc = 100*($mfu_size / $arc_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\n",
-		$mru_perc, fBytes($mru_size,2));
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\n",
-		$mfu_perc, fBytes($mfu_size,2));
+	printf("\tRecently Used Cache Size:\t%s\t%s\n",
+		fPerc($mru_size, $arc_size), fBytes($mru_size,2));
+	printf("\tFrequently Used Cache Size:\t%s\t%s\n",
+		fPerc($mfu_size, $arc_size), fBytes($mfu_size,2));
 }
 
 if ($arc_size < $target_size) {
 	my $mfu_size = ($target_size - $mru_size);
-	my $mru_perc = 100*($mru_size / $target_size);
-	my $mfu_perc = 100*($mfu_size / $target_size);
-	printf("\tRecently Used Cache Size:\t%0.2f%%\t%s\n",
-		$mru_perc, fBytes($mru_size,2));
-	printf("\tFrequently Used Cache Size:\t%0.2f%%\t%s\n",
-		$mfu_perc, fBytes($mfu_size,2));
+	printf("\tRecently Used Cache Size:\t%s\t%s\n",
+		fPerc($mru_size, $target_size), fBytes($mru_size,2));
+	printf("\tFrequently Used Cache Size:\t%s\t%s\n",
+		fPerc($mfu_size, $target_size), fBytes($mfu_size,2));
 }
 print "\n";
 
