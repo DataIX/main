@@ -175,9 +175,7 @@ hline();
 print "ARC Summary: ";
 if ($memory_throttle_count > 0) {
 	print "(THROTTLED)\n";
-} else {
-	print "(HEALTHY)\n";
-};
+} else { print "(HEALTHY)\n"; }
 printf("\tStorage pool Version:\t\t\t%d\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\n", $zpl);
 printf("\tMemory Throttle Count:\t\t\t%s\n", fHits($memory_throttle_count));
@@ -410,8 +408,7 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 			fPerc($l2_writes_done, $l2_writes_sent), fHits($l2_writes_done));
 		printf("\t  Error Ratio:\t\t\t%s\t%s\n",
 			fPerc($l2_writes_error, $l2_writes_sent), fHits($l2_writes_error));
-	} else { printf("\tWrites Sent:\t\t\t%s\t%s\n",
-			fPerc(100), fHits($l2_writes_sent)); }
+	} else { printf("\tWrites Sent:\t\t\t%s\t%s\n",	fPerc(100), fHits($l2_writes_sent)); }
 }
 
 ### DMU Stats ###
@@ -448,9 +445,7 @@ if ($zfetch_access_total > 0) {
 	print "File-Level Prefetch: ";
 	if ($zfetch_health_count > 0) {
 		print "(DEGRADED)\n\n";
-	} else {
-		print "(HEALTHY)\n\n";
-	};
+	} else { print "(HEALTHY)\n\n"; }
 	printf("DMU Efficiency:\t\t\t\t\t%s\n",	fHits($zfetch_access_total));
 	printf("\tHit Ratio:\t\t\t%s\t%s\n",
 		fPerc($zfetch_hits, $zfetch_access_total),
@@ -480,9 +475,7 @@ if ($zfetch_access_total > 0) {
 
         if ($zfetch_health_count > 0) {
                 printf("DMU Misc: (%s)\n", "FAULTED");
-        } else {
-                print "DMU Misc:\n";
-        };
+        } else { print "DMU Misc:\n"; }
 	printf("\tReclaim:\t\t\t\t%s\n", fHits($zfetch_reclaim_total));
 	printf("\t  Successes:\t\t\t%s\t%s\n",
 		fPerc($zfetch_reclaim_successes, $zfetch_reclaim_total),
