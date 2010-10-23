@@ -36,7 +36,7 @@
 # This script as of this version of FreeBSD that coincides with the date and
 # revision at the top of this file uses the binaries from:
 #
-# /bin /usr/bin & /sbin
+# /usr/bin & /sbin
 #
 # Binaries used are:
 #
@@ -44,7 +44,7 @@
 #
 # Binaries that I am working on phasing out are:
 #
-# dc(1) & sed(1)
+# dc(1), uptime(1) & sed(1)
 
 use strict;
 
