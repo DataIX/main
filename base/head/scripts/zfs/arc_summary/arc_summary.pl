@@ -96,15 +96,22 @@ sub fHits {
 	my $bhits = ($mhits * $khits);
 	my $thits = ($bhits * $khits);
 	my $qhits = ($thits * $khits);
-	my $shits = ($qhits * $khits);
+	my $Qhits = ($qhits * $khits);
+	my $shits = ($Qhits * $khits);
+	my $Shits = ($shits * $khits);
 
 	my $Hits = $_[0] || 0;
 	defined($Hits) or $Hits = 0;
 
 	my $Decimal = $_[1] || 2;
+	defined($Decimal) or $Decimal = 2;
 
-	if ($Hits >= $shits) {
+	if ($Hits >= $Shits) {
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $Shits)) . "S";
+	} elsif ($Hits >= $shits) {
 		return sprintf('%0.' . $Decimal . 'f', ($Hits / $shits)) . "s";
+	} elsif ($Hits >= $Qhits) {
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $Qhits)) . "Q";
 	} elsif ($Hits >= $qhits) {
 		return sprintf('%0.' . $Decimal . 'f', ($Hits / $qhits)) . "q";
 	} elsif ($Hits >= $thits) {
