@@ -481,17 +481,6 @@ my $zfetch_reclaim_total = ( $zfetch_reclaim_successes + $zfetch_reclaim_failure
 my $zfetch_health_count = ( $zfetch_bogus_streams );
 
 if ($zfetch_access_total > 0) {
-	my $zfetch_hits_perc = 100*( $zfetch_hits / $zfetch_access_total );
-	my $zfetch_misses_perc = 100*( $zfetch_misses / $zfetch_access_total );
-	my $zfetch_colinear_hits_perc = 100*( $zfetch_colinear_hits / $zfetch_colinear_total );
-	my $zfetch_colinear_misses_perc = 100*( $zfetch_colinear_misses / $zfetch_colinear_total );
-	my $zfetch_stride_hits_perc = 100*( $zfetch_stride_hits / $zfetch_stride_total );
-	my $zfetch_stride_misses_perc = 100*( $zfetch_stride_misses / $zfetch_stride_total );
-	my $zfetch_streams_resets_perc = 100*( $zfetch_streams_resets / $zfetch_streams_total );
-	my $zfetch_streams_noresets_perc = 100*( $zfetch_streams_noresets / $zfetch_streams_total );
-	my $zfetch_reclaim_failures_perc = 100*( $zfetch_reclaim_failures / $zfetch_reclaim_total );
-	my $zfetch_reclaim_successes_perc = 100*( $zfetch_reclaim_successes /  $zfetch_reclaim_total );
-
 	hline();
 	print "File-Level Prefetch: ";
 	if ($zfetch_health_count > 0) {
@@ -501,26 +490,26 @@ if ($zfetch_access_total > 0) {
 	};
 	printf("DMU Efficiency:\t\t\t\t\t%d\n",
 		$zfetch_access_total);
-	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
-		$zfetch_hits_perc, $zfetch_hits);
-	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
-		$zfetch_misses_perc, $zfetch_misses);
+	printf("\tHit Ratio:\t\t\t%s\t%d\n",
+		fPerc($zfetch_hits, $zfetch_access_total), $zfetch_hits);
+	printf("\tMiss Ratio:\t\t\t%s\t%d\n",
+		fPerc($zfetch_misses, $zfetch_access_total), $zfetch_misses);
 	print "\n";
 
 	printf("\tColinear:\t\t\t\t%d\n",
 		$zfetch_colinear_total);
-	printf("\t  Hit Ratio:\t\t\t%0.2f%%\t%d\n",
-		$zfetch_colinear_hits_perc, $zfetch_colinear_hits);
+	printf("\t  Hit Ratio:\t\t\t%s\t%d\n",
+		fPerc($zfetch_colinear_hits, $zfetch_colinear_total), $zfetch_colinear_hits);
 	printf("\t  Miss Ratio:\t\t\t%0.2f%%\t%d\n",
-		$zfetch_colinear_misses_perc, $zfetch_colinear_misses);
+		fPerc($zfetch_colinear_misses, $zfetch_colinear_total), $zfetch_colinear_misses);
 	print "\n";
 
 	printf("\tStride:\t\t\t\t\t%d\n",
 		$zfetch_stride_total);
-	printf("\t  Hit Ratio:\t\t\t%0.2f%%\t%d\n",
-		$zfetch_stride_hits_perc, $zfetch_stride_hits);
-	printf("\t  Miss Ratio:\t\t\t%0.2f%%\t%d\n",
-		$zfetch_stride_misses_perc, $zfetch_stride_misses);
+	printf("\t  Hit Ratio:\t\t\t%s\t%d\n",
+		fPerc($zfetch_stride_hits, $zfetch_stride_total), $zfetch_stride_hits);
+	printf("\t  Miss Ratio:\t\t\t%s\t%d\n",
+		fPerc($zfetch_stride_misses, $zfetch_stride_total), $zfetch_stride_misses);
 	print "\n";
 
         if ($zfetch_health_count > 0) {
@@ -530,17 +519,17 @@ if ($zfetch_access_total > 0) {
         };
 	printf("\tReclaim:\t\t\t\t%d\n",
 		$zfetch_reclaim_total);
-	printf("\t  Successes:\t\t\t%0.2f%\t%d\n",
-		$zfetch_reclaim_successes_perc, $zfetch_reclaim_successes);
-	printf("\t  Failures:\t\t\t%0.2f%\t%d\n",
-		$zfetch_reclaim_failures_perc, $zfetch_reclaim_failures);
+	printf("\t  Successes:\t\t\t%s\t%d\n",
+		fPerc($zfetch_reclaim_successes, $zfetch_reclaim_total), $zfetch_reclaim_successes);
+	printf("\t  Failures:\t\t\t%s\t%d\n",
+		fPerc($zfetch_reclaim_failures, $zfetch_reclaim_total), $zfetch_reclaim_failures);
 	printf("\n\tStreams:\t\t\t\t%d\n",
 		$zfetch_streams_total);
-	printf("\t  +Resets:\t\t\t%0.2f%\t%d\n",
-		$zfetch_streams_resets_perc, $zfetch_streams_resets);
-	printf("\t  -Resets:\t\t\t%0.2f%\t%d\n",
-		$zfetch_streams_noresets_perc, $zfetch_streams_noresets);
-	printf("\t  Bogus:\t\t\t%0.2f%\t%d\n",
+	printf("\t  +Resets:\t\t\t%s\t%d\n",
+		fPerc($zfetch_streams_resets, $zfetch_streams_total), $zfetch_streams_resets);
+	printf("\t  -Resets:\t\t\t%s\t%d\n",
+		fPerc($zfetch_streams_noresets, $zfetch_streams_total), $zfetch_streams_noresets);
+	printf("\t  Bogus:\t\t\t\t%d\n",
 		$zfetch_bogus_streams);
 }
 
