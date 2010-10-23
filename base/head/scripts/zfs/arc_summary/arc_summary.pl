@@ -255,13 +255,12 @@ my $hash_elements_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements_max};
 my $hash_collisions = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_collisions};
 my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
 my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
-my $hash_elements_perc = 100*($hash_elements / $hash_elements_max);
 
 print "ARC Hash Breakdown:\n";
 printf("\tElements Max:\t\t\t\t%d\n",
 	$hash_elements_max);
-printf("\tElements Current:\t\t%0.2f%%\t%d\n",
-	$hash_elements_perc, $hash_elements);
+printf("\tElements Current:\t\t%s\t%d\n",
+	fPerc($hash_elements, $hash_elements_max), $hash_elements);
 printf("\tCollisions:\t\t\t\t%d\n",
 	$hash_collisions);
 printf("\tChain Max:\t\t\t\t%d\n",
