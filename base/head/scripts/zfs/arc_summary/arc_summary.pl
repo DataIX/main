@@ -150,12 +150,16 @@ my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 my $kmem = ( $ktext + $kdata );
+my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
+my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
 
 hline();
 printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory));
 printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
-printf("DATA:\t\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
-printf("TEXT:\t\t\t\t\t%s\t%s\n", fPerc($ktext, $kmem), fBytes($ktext));
+printf("\tData:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
+printf("\tText:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
+printf("\t Map:\t\t\t\t\t%s\n", fBytes($kmem_map_size));
+printf("\t   Free:\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
 
 my $Kstat;
 my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
