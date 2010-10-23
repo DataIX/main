@@ -363,19 +363,17 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "L2 ARC Summary: ";
 	if ($l2_health_count > 0) {
 		print "(DEGRADED)\n";
-	} else {
-		print "(HEALTHY)\n";
-	};
-	printf("\tPassed Headroom:\t\t\t%d\n", $l2_write_passed_headroom);
-	printf("\tTried Lock Failures:\t\t\t%d\n", $l2_write_trylock_fail);
-	printf("\tIO In Progress:\t\t\t\t%d\n", $l2_write_io_in_progress);
-	printf("\tLow Memory Aborts:\t\t\t%d\n", $l2_abort_lowmem);
-	printf("\tFree on Write:\t\t\t\t%d\n", $l2_free_on_write);
-	printf("\tWrites While Full:\t\t\t%d\n", $l2_write_full);
-	printf("\tR/W Clashes:\t\t\t\t%d\n", $l2_rw_clash);
-	printf("\tBad Checksums:\t\t\t\t%d\n", $l2_cksum_bad);
-	printf("\tIO Errors:\t\t\t\t%d\n", $l2_io_error);
-	printf("\tSPA Mismatch:\t\t\t\t%d\n", $l2_write_spa_mismatch);
+	} else { print "(HEALTHY)\n"; }
+	printf("\tPassed Headroom:\t\t\t%s\n", fHits($l2_write_passed_headroom));
+	printf("\tTried Lock Failures:\t\t\t%s\n", fHits($l2_write_trylock_fail));
+	printf("\tIO In Progress:\t\t\t\t%s\n", fHits($l2_write_io_in_progress));
+	printf("\tLow Memory Aborts:\t\t\t%s\n", fHits($l2_abort_lowmem));
+	printf("\tFree on Write:\t\t\t\t%s\n", fHits($l2_free_on_write));
+	printf("\tWrites While Full:\t\t\t%s\n", fHits($l2_write_full));
+	printf("\tR/W Clashes:\t\t\t\t%s\n", fHits($l2_rw_clash));
+	printf("\tBad Checksums:\t\t\t\t%s\n", fHits($l2_cksum_bad));
+	printf("\tIO Errors:\t\t\t\t%s\n", fHits($l2_io_error));
+	printf("\tSPA Mismatch:\t\t\t\t%s\n", fHits($l2_write_spa_mismatch));
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size));
@@ -385,16 +383,16 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	
 	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
 		print "L2 ARC Evicts:\n";
-		printf("\tLock Retries:\t\t\t\t%d\n", $l2_evict_lock_retry);
-		printf("\tUpon Reading:\t\t\t\t%d\n", $l2_evict_reading);
+		printf("\tLock Retries:\t\t\t\t%s\n", fHits($l2_evict_lock_retry));
+		printf("\tUpon Reading:\t\t\t\t%s\n", fHits($l2_evict_reading));
 		print "\n";
 	}
-	printf("L2 ARC Breakdown:\t\t\t\t%d\n", $l2_access_total);
-	printf("\tHit Ratio:\t\t\t%s\t%d\n",
-		fPerc($l2_hits, $l2_access_total), $l2_hits);
-	printf("\tMiss Ratio:\t\t\t%s\t%d\n",
-		fPerc($l2_misses, $l2_access_total), $l2_misses);
-	printf("\tFeeds:\t\t\t\t\t%d\n", $l2_feeds);
+	printf("L2 ARC Breakdown:\t\t\t\t%s\n", fHits($l2_access_total));
+	printf("\tHit Ratio:\t\t\t%s\t%s\n",
+		fPerc($l2_hits, $l2_access_total), fHits($l2_hits));
+	printf("\tMiss Ratio:\t\t\t%s\t%s\n",
+		fPerc($l2_misses, $l2_access_total), fHits($l2_misses));
+	printf("\tFeeds:\t\t\t\t\t%s\n", fHits($l2_feeds));
 	print "\n";
 
 	print "L2 ARC Buffer:\n";
@@ -406,16 +404,14 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	
 	print "L2 ARC Writes:\n";
 	if ($l2_writes_done != $l2_writes_sent) {
-		printf("\tWrites Sent: (%s)\t\t\t\t%d\n",
-			"FAULTED", $l2_writes_sent);
-		printf("\t  Done Ratio:\t\t\t%s\t%d\n",
-			fPerc($l2_writes_done, $l2_writes_sent), $l2_writes_done);
-		printf("\t  Error Ratio:\t\t\t%s\t%d\n",
-			fPerc($l2_writes_error, $l2_writes_sent), $l2_writes_error);
-	} else {
-		printf("\tWrites Sent:\t\t\t%s\t%d\n",
-			fPerc(100), $l2_writes_sent);
-	}
+		printf("\tWrites Sent: (%s)\t\t\t\t%s\n",
+			"FAULTED", fHits($l2_writes_sent));
+		printf("\t  Done Ratio:\t\t\t%s\t%s\n",
+			fPerc($l2_writes_done, $l2_writes_sent), fHits($l2_writes_done));
+		printf("\t  Error Ratio:\t\t\t%s\t%s\n",
+			fPerc($l2_writes_error, $l2_writes_sent), fHits($l2_writes_error));
+	} else { printf("\tWrites Sent:\t\t\t%s\t%s\n",
+			fPerc(100), fHits($l2_writes_sent)); }
 }
 
 ### DMU Stats ###
