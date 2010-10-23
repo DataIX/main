@@ -180,7 +180,7 @@ if ($memory_throttle_count > 0) {
 };
 printf("\tStorage pool Version:\t\t\t%d\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\n", $zpl);
-printf("\tMemory Throttle Count:\t\t\t%d\n", $memory_throttle_count);
+printf("\tMemory Throttle Count:\t\t\t%s\n", fHits($memory_throttle_count));
 print "\n";
 
 ### ARC Misc. ###
@@ -190,10 +190,10 @@ my $mutex_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{mutex_miss};
 my $evict_skip = ${Kstat}->{zfs}->{0}->{arcstats}->{evict_skip};
 
 print "ARC Misc:\n";
-printf("\tDeleted:\t\t\t\t%d\n", $deleted);
-printf("\tRecycle Misses:\t\t\t\t%d\n", $recycle_miss);
-printf("\tMutex Misses:\t\t\t\t%d\n", $mutex_miss);
-printf("\tEvict Skips:\t\t\t\t%d\n", $mutex_miss);
+printf("\tDeleted:\t\t\t\t%s\n", fHits($deleted));
+printf("\tRecycle Misses:\t\t\t\t%s\n", fHits($recycle_miss));
+printf("\tMutex Misses:\t\t\t\t%s\n", fHits($mutex_miss));
+printf("\tEvict Skips:\t\t\t\t%s\n", fHits($mutex_miss));
 print "\n";
 
 ### ARC Sizing ###
