@@ -241,12 +241,12 @@ my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
 my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
 
 print "ARC Hash Breakdown:\n";
-printf("\tElements Max:\t\t\t\t%d\n", $hash_elements_max);
-printf("\tElements Current:\t\t%s\t%d\n",
-	fPerc($hash_elements, $hash_elements_max), $hash_elements);
-printf("\tCollisions:\t\t\t\t%d\n", $hash_collisions);
-printf("\tChain Max:\t\t\t\t%d\n", $hash_chain_max);
-printf("\tChains:\t\t\t\t\t%d\n", $hash_chains);
+printf("\tElements Max:\t\t\t\t%s\n", fHits($hash_elements_max));
+printf("\tElements Current:\t\t%s\t%s\n",
+	fPerc($hash_elements, $hash_elements_max), fHits($hash_elements));
+printf("\tCollisions:\t\t\t\t%s\n", fHits($hash_collisions));
+printf("\tChain Max:\t\t\t\t%s\n", fHits($hash_chain_max));
+printf("\tChains:\t\t\t\t\t%s\n", fHits($hash_chains));
 print "\n";
 
 ### ARC Efficency ###
