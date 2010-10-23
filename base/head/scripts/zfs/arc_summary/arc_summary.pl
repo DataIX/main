@@ -374,7 +374,7 @@ my $l2_write_buffer_list_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buff
 my $l2_write_buffer_list_null_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_null_iter};
 
 ### L2 ARC ###
-if ($l2_size > 0 & $l2_access_total > 0) {
+if ($l2_size > 0 && $l2_access_total > 0) {
 	hline();
 	print "L2 ARC Summary: ";
 	if ($l2_health_count > 0) {
@@ -530,7 +530,7 @@ hline();
 printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
 printf("\tHit Ratio:\t\t\t%s\t%s\n",
 	fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
-printf("\tMiss Ratio:\t\t\t%0.2f%%\t%s\n",
+printf("\tMiss Ratio:\t\t\t%s\t%s\n",
 	fPerc($vdev_cache_misses, $vdev_cache_total), fHits($vdev_cache_misses));
 printf("\tDelegations:\t\t\t%s\t%s\n",
 	fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
