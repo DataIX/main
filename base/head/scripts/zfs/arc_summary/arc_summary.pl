@@ -104,9 +104,9 @@ sub fHits {
 	my $Decimal = $_[1] || 2;
 
 	if ($Hits >= $shits) {
-		return sprintf('%0.' . $Decimal . 'f', ($Hits / $shits)) . "t";
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $shits)) . "s";
 	} elsif ($Hits >= $qhits) {
-		return sprintf('%0.' . $Decimal . 'f', ($Hits / $qhits)) . "t";
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $qhits)) . "q";
 	} elsif ($Hits >= $thits) {
 		return sprintf('%0.' . $Decimal . 'f', ($Hits / $thits)) . "t";
 	} elsif ($Hits >= $bhits) {
