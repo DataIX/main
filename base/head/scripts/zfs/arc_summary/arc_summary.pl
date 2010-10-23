@@ -137,10 +137,8 @@ sub fPerc {
 
 	if ( $rVal > 0 ) {
 		return sprintf('%0.' . $Decimal . 'f', 100*($lVal / $rVal)) . "%";
-	} elsif ( $rVal = 0 ) {
-		return sprintf('%0.' . $Decimal . 'f', 100) . "%";
 	} else {
-		return sprintf('%0.' . $Decimal . 'f', 0) . "%";
+		return sprintf('%0.' . $Decimal . 'f', 100) . "%";
 	}
 }
 
@@ -380,15 +378,7 @@ my $l2_write_buffer_list_null_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write
 
 ### L2 ARC ###
 if ($l2_size > 0 & $l2_access_total > 0) {
-	### L2 ARC Stats Calculations ###
-	my $l2_hdr_size_perc = 100*( $l2_hdr_size / $l2_size );
-	my $l2_hits_perc = 100*( $l2_hits / $l2_access_total );
-	my $l2_misses_perc = 100*( $l2_misses / $l2_access_total );
-	my $l2_writes_done_perc = 100*( $l2_writes_done / $l2_writes_sent );
-	my $l2_writes_error_perc = 100*( $l2_writes_error / $l2_writes_sent );
-
 	hline();
-
 	print "L2 ARC Summary: ";
 	if ($l2_health_count > 0) {
 		print "(DEGRADED)\n";
@@ -418,8 +408,8 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size,2));
-	printf("\tHeader Size:\t\t\t%0.2f%%\t%s\n",
-		$l2_hdr_size_perc, fBytes($l2_hdr_size,2));
+	printf("\tHeader Size:\t\t\t%s\t%s\n",
+		fPerc($l2_hdr_size, $l2_size), fBytes($l2_hdr_size,2));
 	print "\n";
 	
 	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
@@ -432,10 +422,10 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	}
 	printf("L2 ARC Breakdown:\t\t\t\t%d\n",
 		$l2_access_total);
-	printf("\tHit Ratio:\t\t\t%0.2f%%\t%d\n",
-		$l2_hits_perc, $l2_hits);
-	printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
-		$l2_misses_perc, $l2_misses);
+	printf("\tHit Ratio:\t\t\t%s\t%d\n",
+		fPerc($l2_hits, $l2_access_total), $l2_hits);
+	printf("\tMiss Ratio:\t\t\t%s\t%d\n",
+		fPerc($l2_misses, $l2_access_total), $l2_misses);
 	printf("\tFeeds:\t\t\t\t\t%d\n",
 		$l2_feeds);
 	print "\n";
@@ -451,13 +441,13 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	if ($l2_writes_done != $l2_writes_sent) {
 		printf("\tWrites Sent: (%s)\t\t\t\t%d\n",
 			"FAULTED", $l2_writes_sent);
-		printf("\t  Done Ratio:\t\t\t%0.2f%%\t%d\n",
-			$l2_writes_done_perc, $l2_writes_done);
-		printf("\t  Error Ratio:\t\t\t%0.2f%%\t%d\n",
-			$l2_writes_error_perc, $l2_writes_error);
+		printf("\t  Done Ratio:\t\t\t%s\t%d\n",
+			fPerc($l2_writes_done, $l2_writes_sent), $l2_writes_done);
+		printf("\t  Error Ratio:\t\t\t%s\t%d\n",
+			fPerc($l2_writes_error, $l2_writes_sent), $l2_writes_error);
 	} else {
-		printf("\tWrites Sent:\t\t\t%0.2f%\t%d\n",
-			100, $l2_writes_sent);
+		printf("\tWrites Sent:\t\t\t%s\t%d\n",
+			fPerc(100), $l2_writes_sent);
 	}
 }
 
