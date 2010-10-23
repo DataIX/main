@@ -166,14 +166,12 @@ my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 my $kmem = ( $ktext + $kdata );
-my $ktext_perc = 100*( $ktext / $kmem );
-my $kdata_perc = 100*( $kdata / $kmem );
 
 hline();
 printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory,2));
 printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem,2));
-printf("DATA:\t\t\t\t\t%0.2f%%\t%s\n", $kdata_perc, fBytes($kdata,2));
-printf("TEXT:\t\t\t\t\t%0.2f%%\t%s\n", $ktext_perc, fBytes($ktext,2));
+printf("DATA:\t\t\t\t\t%0.2f%%\t%s\n", fPerc($kdata ,$kmem), fBytes($kdata,2));
+printf("TEXT:\t\t\t\t\t%s\t%s\n", fPerc($ktext, $kmem), fBytes($ktext,2));
 
 my $Kstat;
 my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
