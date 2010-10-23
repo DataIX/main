@@ -48,7 +48,7 @@
 
 use strict;
 
-my $useheader = 1;	# Change to 1 to enable FreeBSD header.
+my $useheader = 0;	# Change to 1 to enable FreeBSD header.
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
 sub hline(){
@@ -123,6 +123,25 @@ sub fHits {
     }
     elsif ( $Hits == 0 ) { return sprintf( '%d', 0 ); }
     else { return sprintf( '%d', $Hits ); }
+}
+
+sub fPerc {
+	my $lVal = $_[0] || 0;
+	defined($lVal) or $lVal = 0;
+
+	my $rVal = $_[1] || 0;
+	defined($rVal) or $rVal = 0;
+
+	my $Decimal = $_[2] || 2;
+	defined($Decimal) or $Decimal = 2;
+
+	if ( $rVal > 0 ) {
+		return sprintf('%0.' . $Decimal . 'f', 100*($lVal / $rVal)) . "%";
+	} elsif ( $rVal = 0 ) {
+		return sprintf('%0.' . $Decimal . 'f', 100) . "%";
+	} else {
+		return sprintf('%0.' . $Decimal . 'f', 0) . "%";
+	}
 }
 
 ### System Information / FreeBSD ###
