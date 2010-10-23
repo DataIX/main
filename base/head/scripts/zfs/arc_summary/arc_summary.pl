@@ -226,7 +226,7 @@ printf("\tTarget Size: (Adaptive)\t\t%s\t%s\n",
 	fPerc($target_size, $target_max_size), fBytes($target_size,2));
 printf("\tMin Size (Hard Limit):\t\t%s\t%s\n",
 	fPerc($target_min_size, $target_max_size), fBytes($target_min_size,2));
-printf("\tMax Size (High Water):\t\t~%d:1\t%s\n",
+printf("\tMax Size (High Water):\t\t%d:1\t%s\n",
 	$target_size_ratio, fBytes($target_max_size,2));
 
 print "\nARC Size Breakdown:\n";
