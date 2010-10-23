@@ -107,7 +107,7 @@ sub fHits {
     my $Hits = $_[0] || 0;
     defined($Hits) or $Hits = 0;
 
-    my $Decimal = $_[1] || 3;
+    my $Decimal = $_[1] || 2;
 
     if ( $Hits >= $thits ) {
         return sprintf( '%0.' . $Decimal . 'f', $Hits / ($thits)) . "t";
