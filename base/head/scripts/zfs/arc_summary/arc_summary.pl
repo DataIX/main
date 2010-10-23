@@ -219,18 +219,15 @@ my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
 my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
 my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
 my $target_size_ratio = ($target_max_size / $target_min_size);
-my $target_size_perc = 100*($target_size / $target_max_size);
-my $target_size_min_perc = 100*($target_min_size / $target_max_size);
 
 my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
-my $arc_size_perc = 100*($arc_size / $target_max_size);
 
-printf("ARC Size:\t\t\t\t%0.2f%%\t%s\n",
-	$arc_size_perc,  fBytes($arc_size,2));
-printf("\tTarget Size: (Adaptive)\t\t%0.2f%%\t%s\n",
-	$target_size_perc, fBytes($target_size,2));
-printf("\tMin Size (Hard Limit):\t\t%0.2f%%\t%s\n",
-	$target_size_min_perc, fBytes($target_min_size,2));
+printf("ARC Size:\t\t\t\t%s\t%s\n",
+	fPerc($arc_size, $target_max_size),  fBytes($arc_size,2));
+printf("\tTarget Size: (Adaptive)\t\t%s\t%s\n",
+	fPerc($target_size, $target_max_size), fBytes($target_size,2));
+printf("\tMin Size (Hard Limit):\t\t%s\t%s\n",
+	fPerc($target_min_size, $target_max_size), fBytes($target_min_size,2));
 printf("\tMax Size (High Water):\t\t~%d:1\t%s\n",
 	$target_size_ratio, fBytes($target_max_size,2));
 
