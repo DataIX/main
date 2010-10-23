@@ -56,73 +56,73 @@ sub hline(){
 }
 
 sub fBytes {
-    my $kbytes = ( 1024 );
-    my $mbytes = ( $kbytes * $kbytes );
-    my $gbytes = ( $mbytes * $kbytes );
-    my $tbytes = ( $gbytes * $kbytes );
-    my $pbytes = ( $tbytes * $kbytes );
-    my $ebytes = ( $pbytes * $kbytes );
-    my $zbytes = ( $ebytes * $kbytes );
-    my $ybytes = ( $zbytes * $kbytes );
+    my $kbytes = (1024);
+    my $mbytes = ($kbytes * $kbytes);
+    my $gbytes = ($mbytes * $kbytes);
+    my $tbytes = ($gbytes * $kbytes);
+    my $pbytes = ($tbytes * $kbytes);
+    my $ebytes = ($pbytes * $kbytes);
+    my $zbytes = ($ebytes * $kbytes);
+    my $ybytes = ($zbytes * $kbytes);
 
     my $Bytes = $_[0] || 0;
     defined($Bytes) or $Bytes = 0;
 
     my $Decimal = $_[1] || 2;
 
-    if ( $Bytes >= $ybytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ybytes ) . " YiB";
+    if ($Bytes >= $ybytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $ybytes)) . " YiB";
     }
-    elsif ( $Bytes >= $zbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $zbytes ) . "\tZiB";
+    elsif ($Bytes >= $zbytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $zbytes)) . "\tZiB";
     }
-    elsif ( $Bytes >= $ebytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $ebytes ) . "\tEiB";
+    elsif ($Bytes >= $ebytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $ebytes)) . "\tEiB";
     }
-    elsif ( $Bytes >= $pbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $pbytes ) . "\tPiB";
+    elsif ($Bytes >= $pbytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $pbytes)) . "\tPiB";
     }
-    elsif ( $Bytes >= $tbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $tbytes ) . "\tTiB";
+    elsif ($Bytes >= $tbytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $tbytes)) . "\tTiB";
     }
-    elsif ( $Bytes >= $gbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $gbytes ) . "\tGiB";
+    elsif ($Bytes >= $gbytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $gbytes)) . "\tGiB";
     }
-    elsif ( $Bytes >= $mbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $mbytes ) . "\tMiB";
+    elsif ($Bytes >= $mbytes) {
+        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $mbytes)) . "\tMiB";
     }
-    elsif ( $Bytes >= $kbytes ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Bytes / $kbytes ) . "\tKiB";
+    elsif ($Bytes >= $kbytes) {
+        return sprintf( '%0.' . $Decimal . 'f', ($Bytes / $kbytes)) . "\tKiB";
     }
-    elsif ( $Bytes == 0 ) { return sprintf( '%d', 0 . "\tBytes" ); }
-    else { return sprintf( '%d', $Bytes ) . "\tBytes"; }
+    elsif ($Bytes == 0) { return sprintf('%d', 0 . "\tBytes"); }
+    else { return sprintf('%d', $Bytes) . "\tBytes"; }
 }
 
 sub fHits {
-    my $khits = ( 1000 );
-    my $mhits = ( $khits * $khits );
-    my $bhits = ( $mhits * $khits );
-    my $thits = ( $bhits * $khits );
+    my $khits = (1000);
+    my $mhits = ($khits * $khits);
+    my $bhits = ($mhits * $khits);
+    my $thits = ($bhits * $khits);
 
     my $Hits = $_[0] || 0;
     defined($Hits) or $Hits = 0;
 
     my $Decimal = $_[1] || 2;
 
-    if ( $Hits >= $thits ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($thits)) . "t";
+    if ($Hits >= $thits) {
+        return sprintf('%0.' . $Decimal . 'f', ($Hits / $thits)) . "t";
     }
-    elsif ( $Hits >= $bhits ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($bhits)) . "b";
+    elsif ($Hits >= $bhits) {
+        return sprintf('%0.' . $Decimal . 'f', ($Hits / $bhits)) . "b";
     }
-    elsif ( $Hits >= $mhits ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($mhits)) . "m";
+    elsif ($Hits >= $mhits) {
+        return sprintf('%0.' . $Decimal . 'f', ($Hits / $mhits)) . "m";
     }
-    elsif ( $Hits >= $khits ) {
-        return sprintf( '%0.' . $Decimal . 'f', $Hits / ($khits)) . "k";
+    elsif ($Hits >= $khits) {
+        return sprintf('%0.' . $Decimal . 'f', ($Hits / $khits)) . "k";
     }
-    elsif ( $Hits == 0 ) { return sprintf( '%d', 0 ); }
-    else { return sprintf( '%d', $Hits ); }
+    elsif ($Hits == 0) { return printf("%d", 0); }
+    else { return printf("%d", $Hits); }
 }
 
 sub fPerc {
@@ -135,7 +135,7 @@ sub fPerc {
 	my $Decimal = $_[2] || 2;
 	defined($Decimal) or $Decimal = 2;
 
-	if ( $rVal > 0 ) {
+	if ($rVal > 0) {
 		return sprintf('%0.' . $Decimal . 'f', 100*($lVal / $rVal)) . "%";
 	} else {
 		return sprintf('%0.' . $Decimal . 'f', 100) . "%";
@@ -524,13 +524,13 @@ my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
 my $vdev_cache_total = ( $vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations );
 
 hline();
-printf("VDEV Cache Summary:\t\t\t\t%d\n", $vdev_cache_total);
-printf("\tHit Ratio:\t\t\t%s\t%d\n",
-	fPerc($vdev_cache_hits, $vdev_cache_total), $vdev_cache_hits);
-printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
-	fPerc($vdev_cache_misses, $vdev_cache_total), $vdev_cache_misses);
-printf("\tDelegations:\t\t\t%s\t%d\n",
-	fPerc($vdev_cache_delegations, $vdev_cache_total), $vdev_cache_delegations);
+printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
+printf("\tHit Ratio:\t\t\t%s\t%s\n",
+	fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
+printf("\tMiss Ratio:\t\t\t%0.2f%%\t%s\n",
+	fPerc($vdev_cache_misses, $vdev_cache_total), fHits($vdev_cache_misses));
+printf("\tDelegations:\t\t\t%s\t%s\n",
+	fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
 
 if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
