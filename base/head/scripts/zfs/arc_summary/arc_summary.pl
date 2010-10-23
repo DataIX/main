@@ -170,7 +170,7 @@ my $kmem = ( $ktext + $kdata );
 hline();
 printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory,2));
 printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem,2));
-printf("DATA:\t\t\t\t\t%0.2f%%\t%s\n", fPerc($kdata ,$kmem), fBytes($kdata,2));
+printf("DATA:\t\t\t\t\t%s\t%s\n", fPerc($kdata ,$kmem), fBytes($kdata,2));
 printf("TEXT:\t\t\t\t\t%s\t%s\n", fPerc($ktext, $kmem), fBytes($ktext,2));
 
 my $Kstat;
