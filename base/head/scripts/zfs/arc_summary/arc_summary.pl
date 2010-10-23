@@ -56,73 +56,61 @@ sub hline(){
 }
 
 sub fBytes {
-    my $kbytes = (1024);
-    my $mbytes = ($kbytes * $kbytes);
-    my $gbytes = ($mbytes * $kbytes);
-    my $tbytes = ($gbytes * $kbytes);
-    my $pbytes = ($tbytes * $kbytes);
-    my $ebytes = ($pbytes * $kbytes);
-    my $zbytes = ($ebytes * $kbytes);
-    my $ybytes = ($zbytes * $kbytes);
+	my $kbytes = (1024);
+	my $mbytes = ($kbytes * $kbytes);
+	my $gbytes = ($mbytes * $kbytes);
+	my $tbytes = ($gbytes * $kbytes);
+	my $pbytes = ($tbytes * $kbytes);
+	my $ebytes = ($pbytes * $kbytes);
+	my $zbytes = ($ebytes * $kbytes);
+	my $ybytes = ($zbytes * $kbytes);
 
-    my $Bytes = $_[0] || 0;
-    defined($Bytes) or $Bytes = 0;
+	my $Bytes = $_[0] || 0;
+	defined($Bytes) or $Bytes = 0;
 
-    my $Decimal = $_[1] || 2;
+	my $Decimal = $_[1] || 2;
 
-    if ($Bytes >= $ybytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $ybytes)) . " YiB";
-    }
-    elsif ($Bytes >= $zbytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $zbytes)) . "\tZiB";
-    }
-    elsif ($Bytes >= $ebytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $ebytes)) . "\tEiB";
-    }
-    elsif ($Bytes >= $pbytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $pbytes)) . "\tPiB";
-    }
-    elsif ($Bytes >= $tbytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $tbytes)) . "\tTiB";
-    }
-    elsif ($Bytes >= $gbytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $gbytes)) . "\tGiB";
-    }
-    elsif ($Bytes >= $mbytes) {
-        return sprintf('%0.' . $Decimal . 'f', ($Bytes / $mbytes)) . "\tMiB";
-    }
-    elsif ($Bytes >= $kbytes) {
-        return sprintf( '%0.' . $Decimal . 'f', ($Bytes / $kbytes)) . "\tKiB";
-    }
-    elsif ($Bytes == 0) { return sprintf('%d', 0 . "\tBytes"); }
-    else { return sprintf('%d', $Bytes) . "\tBytes"; }
+	if ($Bytes >= $ybytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $ybytes)) . "\tYiB";
+	} elsif ($Bytes >= $zbytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $zbytes)) . "\tZiB";
+	} elsif ($Bytes >= $ebytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $ebytes)) . "\tEiB";
+	} elsif ($Bytes >= $pbytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $pbytes)) . "\tPiB";
+	} elsif ($Bytes >= $tbytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $tbytes)) . "\tTiB";
+	} elsif ($Bytes >= $gbytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $gbytes)) . "\tGiB";
+	} elsif ($Bytes >= $mbytes) {
+		return sprintf('%0.' . $Decimal . 'f', ($Bytes / $mbytes)) . "\tMiB";
+	} elsif ($Bytes >= $kbytes) {
+		return sprintf( '%0.' . $Decimal . 'f', ($Bytes / $kbytes)) . "\tKiB";
+	} elsif ($Bytes == 0) { return sprintf('%d', 0 . "\tBytes");
+	} else { return sprintf('%d', $Bytes) . "\tBytes"; }
 }
 
 sub fHits {
-    my $khits = (1000);
-    my $mhits = ($khits * $khits);
-    my $bhits = ($mhits * $khits);
-    my $thits = ($bhits * $khits);
+	my $khits = (1000);
+	my $mhits = ($khits * $khits);
+	my $bhits = ($mhits * $khits);
+	my $thits = ($bhits * $khits);
 
-    my $Hits = $_[0] || 0;
-    defined($Hits) or $Hits = 0;
+	my $Hits = $_[0] || 0;
+	defined($Hits) or $Hits = 0;
 
-    my $Decimal = $_[1] || 2;
+	my $Decimal = $_[1] || 2;
 
-    if ($Hits >= $thits) {
-        return sprintf('%0.' . $Decimal . 'f', ($Hits / $thits)) . "t";
-    }
-    elsif ($Hits >= $bhits) {
-        return sprintf('%0.' . $Decimal . 'f', ($Hits / $bhits)) . "b";
-    }
-    elsif ($Hits >= $mhits) {
-        return sprintf('%0.' . $Decimal . 'f', ($Hits / $mhits)) . "m";
-    }
-    elsif ($Hits >= $khits) {
-        return sprintf('%0.' . $Decimal . 'f', ($Hits / $khits)) . "k";
-    }
-    elsif ($Hits == 0) { return sprintf("%d", 0); }
-    else { return sprintf("%d", $Hits); }
+	if ($Hits >= $thits) {
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $thits)) . "t";
+	} elsif ($Hits >= $bhits) {
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $bhits)) . "b";
+	} elsif ($Hits >= $mhits) {
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $mhits)) . "m";
+	} elsif ($Hits >= $khits) {
+		return sprintf('%0.' . $Decimal . 'f', ($Hits / $khits)) . "k";
+	} elsif ($Hits == 0) { return sprintf("%d", 0);
+	} else { return sprintf("%d", $Hits); }
 }
 
 sub fPerc {
@@ -137,9 +125,7 @@ sub fPerc {
 
 	if ($rVal > 0) {
 		return sprintf('%0.' . $Decimal . 'f', 100*($lVal / $rVal)) . "%";
-	} else {
-		return sprintf('%0.' . $Decimal . 'f', 100) . "%";
-	}
+	} else { return sprintf('%0.' . $Decimal . 'f', 100) . "%"; }
 }
 
 ### System Information / FreeBSD ###
