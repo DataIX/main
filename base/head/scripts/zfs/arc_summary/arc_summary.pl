@@ -255,16 +255,12 @@ my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
 my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
 
 print "ARC Hash Breakdown:\n";
-printf("\tElements Max:\t\t\t\t%d\n",
-	$hash_elements_max);
+printf("\tElements Max:\t\t\t\t%d\n", $hash_elements_max);
 printf("\tElements Current:\t\t%s\t%d\n",
 	fPerc($hash_elements, $hash_elements_max), $hash_elements);
-printf("\tCollisions:\t\t\t\t%d\n",
-	$hash_collisions);
-printf("\tChain Max:\t\t\t\t%d\n",
-	$hash_chain_max);
-printf("\tChains:\t\t\t\t\t%d\n",
-	$hash_chains);
+printf("\tCollisions:\t\t\t\t%d\n", $hash_collisions);
+printf("\tChain Max:\t\t\t\t%d\n", $hash_chain_max);
+printf("\tChains:\t\t\t\t\t%d\n", $hash_chains);
 print "\n";
 
 ### ARC Efficency ###
@@ -290,8 +286,7 @@ my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metad
 my $prefetch_data_total = ( $prefetch_data_hits + $prefetch_data_misses );
 my $demand_data_total = ( $demand_data_hits + $demand_data_misses );
 
-printf("ARC Efficiency:\t\t\t\t\t%d\n",
-	$arc_accesses_total);
+printf("ARC Efficiency:\t\t\t\t\t%d\n",	$arc_accesses_total);
 printf("\tCache Hit Ratio:\t\t%s\t%d\n",
 	fPerc($arc_hits, $arc_accesses_total), $arc_hits);
 printf("\tCache Miss Ratio:\t\t%s\t%d\n",
@@ -385,26 +380,16 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	} else {
 		print "(HEALTHY)\n";
 	};
-	printf("\tPassed Headroom:\t\t\t%d\n",
-		$l2_write_passed_headroom);
-	printf("\tTried Lock Failures:\t\t\t%d\n",
-		$l2_write_trylock_fail);
-	printf("\tIO In Progress:\t\t\t\t%d\n",
-		$l2_write_io_in_progress);
-	printf("\tLow Memory Aborts:\t\t\t%d\n",
-		$l2_abort_lowmem);
-	printf("\tFree on Write:\t\t\t\t%d\n",
-		$l2_free_on_write);
-	printf("\tWrites While Full:\t\t\t%d\n",
-		$l2_write_full);
-	printf("\tR/W Clashes:\t\t\t\t%d\n",
-		$l2_rw_clash);
-	printf("\tBad Checksums:\t\t\t\t%d\n",
-		$l2_cksum_bad);
-	printf("\tIO Errors:\t\t\t\t%d\n",
-		$l2_io_error);
-	printf("\tSPA Mismatch:\t\t\t\t%d\n",
-		$l2_write_spa_mismatch);
+	printf("\tPassed Headroom:\t\t\t%d\n", $l2_write_passed_headroom);
+	printf("\tTried Lock Failures:\t\t\t%d\n", $l2_write_trylock_fail);
+	printf("\tIO In Progress:\t\t\t\t%d\n", $l2_write_io_in_progress);
+	printf("\tLow Memory Aborts:\t\t\t%d\n", $l2_abort_lowmem);
+	printf("\tFree on Write:\t\t\t\t%d\n", $l2_free_on_write);
+	printf("\tWrites While Full:\t\t\t%d\n", $l2_write_full);
+	printf("\tR/W Clashes:\t\t\t\t%d\n", $l2_rw_clash);
+	printf("\tBad Checksums:\t\t\t\t%d\n", $l2_cksum_bad);
+	printf("\tIO Errors:\t\t\t\t%d\n", $l2_io_error);
+	printf("\tSPA Mismatch:\t\t\t\t%d\n", $l2_write_spa_mismatch);
 	print "\n";
 	
 	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size,2));
@@ -414,20 +399,16 @@ if ($l2_size > 0 & $l2_access_total > 0) {
 	
 	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
 		print "L2 ARC Evicts:\n";
-		printf("\tLock Retries:\t\t\t\t%d\n",
-			$l2_evict_lock_retry);
-		printf("\tUpon Reading:\t\t\t\t%d\n",
-			$l2_evict_reading);
+		printf("\tLock Retries:\t\t\t\t%d\n", $l2_evict_lock_retry);
+		printf("\tUpon Reading:\t\t\t\t%d\n", $l2_evict_reading);
 		print "\n";
 	}
-	printf("L2 ARC Breakdown:\t\t\t\t%d\n",
-		$l2_access_total);
+	printf("L2 ARC Breakdown:\t\t\t\t%d\n", $l2_access_total);
 	printf("\tHit Ratio:\t\t\t%s\t%d\n",
 		fPerc($l2_hits, $l2_access_total), $l2_hits);
 	printf("\tMiss Ratio:\t\t\t%s\t%d\n",
 		fPerc($l2_misses, $l2_access_total), $l2_misses);
-	printf("\tFeeds:\t\t\t\t\t%d\n",
-		$l2_feeds);
+	printf("\tFeeds:\t\t\t\t\t%d\n", $l2_feeds);
 	print "\n";
 
 	print "L2 ARC Buffer:\n";
@@ -488,24 +469,21 @@ if ($zfetch_access_total > 0) {
 	} else {
 		print "(HEALTHY)\n\n";
 	};
-	printf("DMU Efficiency:\t\t\t\t\t%d\n",
-		$zfetch_access_total);
+	printf("DMU Efficiency:\t\t\t\t\t%d\n",	$zfetch_access_total);
 	printf("\tHit Ratio:\t\t\t%s\t%d\n",
 		fPerc($zfetch_hits, $zfetch_access_total), $zfetch_hits);
 	printf("\tMiss Ratio:\t\t\t%s\t%d\n",
 		fPerc($zfetch_misses, $zfetch_access_total), $zfetch_misses);
 	print "\n";
 
-	printf("\tColinear:\t\t\t\t%d\n",
-		$zfetch_colinear_total);
+	printf("\tColinear:\t\t\t\t%d\n", $zfetch_colinear_total);
 	printf("\t  Hit Ratio:\t\t\t%s\t%d\n",
 		fPerc($zfetch_colinear_hits, $zfetch_colinear_total), $zfetch_colinear_hits);
 	printf("\t  Miss Ratio:\t\t\t%0.2f%%\t%d\n",
 		fPerc($zfetch_colinear_misses, $zfetch_colinear_total), $zfetch_colinear_misses);
 	print "\n";
 
-	printf("\tStride:\t\t\t\t\t%d\n",
-		$zfetch_stride_total);
+	printf("\tStride:\t\t\t\t\t%d\n", $zfetch_stride_total);
 	printf("\t  Hit Ratio:\t\t\t%s\t%d\n",
 		fPerc($zfetch_stride_hits, $zfetch_stride_total), $zfetch_stride_hits);
 	printf("\t  Miss Ratio:\t\t\t%s\t%d\n",
@@ -517,20 +495,17 @@ if ($zfetch_access_total > 0) {
         } else {
                 print "DMU Misc:\n";
         };
-	printf("\tReclaim:\t\t\t\t%d\n",
-		$zfetch_reclaim_total);
+	printf("\tReclaim:\t\t\t\t%d\n", $zfetch_reclaim_total);
 	printf("\t  Successes:\t\t\t%s\t%d\n",
 		fPerc($zfetch_reclaim_successes, $zfetch_reclaim_total), $zfetch_reclaim_successes);
 	printf("\t  Failures:\t\t\t%s\t%d\n",
 		fPerc($zfetch_reclaim_failures, $zfetch_reclaim_total), $zfetch_reclaim_failures);
-	printf("\n\tStreams:\t\t\t\t%d\n",
-		$zfetch_streams_total);
+	printf("\n\tStreams:\t\t\t\t%d\n", $zfetch_streams_total);
 	printf("\t  +Resets:\t\t\t%s\t%d\n",
 		fPerc($zfetch_streams_resets, $zfetch_streams_total), $zfetch_streams_resets);
 	printf("\t  -Resets:\t\t\t%s\t%d\n",
 		fPerc($zfetch_streams_noresets, $zfetch_streams_total), $zfetch_streams_noresets);
-	printf("\t  Bogus:\t\t\t\t%d\n",
-		$zfetch_bogus_streams);
+	printf("\t  Bogus:\t\t\t\t%d\n", $zfetch_bogus_streams);
 }
 
 ### VDEV Cache Stats ###
@@ -549,8 +524,7 @@ my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
 my $vdev_cache_total = ( $vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations );
 
 hline();
-printf("VDEV Cache Summary:\t\t\t\t%d\n",
-	$vdev_cache_total);
+printf("VDEV Cache Summary:\t\t\t\t%d\n", $vdev_cache_total);
 printf("\tHit Ratio:\t\t\t%s\t%d\n",
 	fPerc($vdev_cache_hits, $vdev_cache_total), $vdev_cache_hits);
 printf("\tMiss Ratio:\t\t\t%0.2f%%\t%d\n",
