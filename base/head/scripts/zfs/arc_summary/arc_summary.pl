@@ -183,18 +183,18 @@ foreach my $arcstats (@arcstats) {
 
 my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
 my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
-my $throttle = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
+my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 hline();
 print "ARC Summary: ";
-if ($throttle > 0) {
+if ($memory_throttle_count > 0) {
 	print "(THROTTLED)\n";
 } else {
 	print "(HEALTHY)\n";
 };
 printf("\tStorage pool Version:\t\t\t%d\n", $spa);
 printf("\tFilesystem Version:\t\t\t%d\n", $zpl);
-printf("\tMemory Throttle Count:\t\t\t%d\n", $throttle);
+printf("\tMemory Throttle Count:\t\t\t%d\n", $memory_throttle_count);
 print "\n";
 
 ### ARC Misc. ###
