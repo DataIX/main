@@ -163,7 +163,7 @@ if ($useheader != 0) {
 my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
-my $kmem = ( $ktext + $kdata );
+my $kmem = ($ktext + $kdata);
 my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
 my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
 
@@ -285,8 +285,8 @@ my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
 my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
 my $prefetch_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_misses};
 my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_misses};
-my $prefetch_data_total = ( $prefetch_data_hits + $prefetch_data_misses );
-my $demand_data_total = ( $demand_data_hits + $demand_data_misses );
+my $prefetch_data_total = ($prefetch_data_hits + $prefetch_data_misses);
+my $demand_data_total = ($demand_data_hits + $demand_data_misses);
 
 printf("ARC Efficiency:\t\t\t\t\t%s\n",	fHits($arc_accesses_total));
 printf("\tCache Hit Ratio:\t\t%s\t%s\n",
@@ -357,8 +357,8 @@ my $l2_cksum_bad = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_cksum_bad};
 my $l2_io_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_io_error};
 my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
 my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
-my $l2_access_total = ( $l2_hits + $l2_misses );
-my $l2_health_count = ( $l2_writes_error + $l2_cksum_bad + $l2_io_error );
+my $l2_access_total = ($l2_hits + $l2_misses);
+my $l2_health_count = ($l2_writes_error + $l2_cksum_bad + $l2_io_error);
 my $l2_write_bytes = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_bytes};
 my $l2_write_trylock_fail = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_trylock_fail};
 my $l2_write_passed_headroom = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_passed_headroom};
@@ -451,12 +451,12 @@ my $zfetch_reclaim_failures = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{reclaim_fai
 my $zfetch_streams_resets = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{streams_resets};
 my $zfetch_streams_noresets = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{streams_noresets};
 my $zfetch_bogus_streams = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{bogus_streams};
-my $zfetch_access_total = ( $zfetch_hits + $zfetch_misses );
-my $zfetch_colinear_total = ( $zfetch_colinear_hits + $zfetch_colinear_misses );
-my $zfetch_stride_total = ( $zfetch_stride_hits + $zfetch_stride_misses );
-my $zfetch_streams_total = ( $zfetch_streams_resets + $zfetch_streams_noresets + $zfetch_bogus_streams );
-my $zfetch_reclaim_total = ( $zfetch_reclaim_successes + $zfetch_reclaim_failures );
-my $zfetch_health_count = ( $zfetch_bogus_streams );
+my $zfetch_access_total = ($zfetch_hits + $zfetch_misses);
+my $zfetch_colinear_total = ($zfetch_colinear_hits + $zfetch_colinear_misses);
+my $zfetch_stride_total = ($zfetch_stride_hits + $zfetch_stride_misses);
+my $zfetch_streams_total = ($zfetch_streams_resets + $zfetch_streams_noresets + $zfetch_bogus_streams);
+my $zfetch_reclaim_total = ($zfetch_reclaim_successes + $zfetch_reclaim_failures);
+my $zfetch_health_count = ($zfetch_bogus_streams);
 
 if ($zfetch_access_total > 0) {
 	hline();
@@ -524,7 +524,7 @@ foreach my $vdev_cache_stats (@vdev_cache_stats) {
 my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
 my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
 my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
-my $vdev_cache_total = ( $vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations );
+my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations);
 
 hline();
 printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
