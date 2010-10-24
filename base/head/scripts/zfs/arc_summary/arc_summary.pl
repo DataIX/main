@@ -526,14 +526,16 @@ my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
 my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
 my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations);
 
-hline();
-printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
-printf("\tHit Ratio:\t\t\t%s\t%s\n",
-	fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
-printf("\tMiss Ratio:\t\t\t%s\t%s\n",
-	fPerc($vdev_cache_misses, $vdev_cache_total), fHits($vdev_cache_misses));
-printf("\tDelegations:\t\t\t%s\t%s\n",
-	fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
+if ($vdev_cache_total > 0) {
+	hline();
+	printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
+	printf("\tHit Ratio:\t\t\t%s\t%s\n",
+		fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
+	printf("\tMiss Ratio:\t\t\t%s\t%s\n",
+		fPerc($vdev_cache_misses, $vdev_cache_total), fHits($vdev_cache_misses));
+	printf("\tDelegations:\t\t\t%s\t%s\n",
+		fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
+}
 
 if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
