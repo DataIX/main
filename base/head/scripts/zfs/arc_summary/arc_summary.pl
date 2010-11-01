@@ -540,8 +540,6 @@ if ($vdev_cache_total > 0) {
 if ($usetunable != 0) {
 	### Tunables FreeBSD  ###
 	my @Tunable = qw(
-		hw.availpages
-		hw.physmem
 		kern.maxusers
 		vfs.zfs
 		vm.kmem_size
