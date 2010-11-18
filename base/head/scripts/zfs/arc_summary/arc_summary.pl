@@ -33,9 +33,6 @@
 # If you are having troubles when using this script from cron(8) please try
 # adjusting your PATH before reporting problems.
 #
-# This script as of this version of FreeBSD that coincides with the date and
-# revision at the top of this file uses the binaries from:
-#
 # /usr/bin & /sbin
 #
 # Binaries used are:
@@ -48,7 +45,6 @@
 
 use strict;
 
-my $useheader = 0;	# Change to 1 to enable FreeBSD header.
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
 sub hline(){
@@ -142,23 +138,10 @@ sub fPerc {
 	} else { return sprintf('%0.' . $Decimal . 'f', 100) . "%"; }
 }
 
-### System Information / FreeBSD ###
 my $daydate = localtime; chomp $daydate;
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
-
-if ($useheader != 0) {
-	my @osinfo = `sysctl -n kern.ostype kern.osrelease kern.osreldate`; chomp @osinfo;
-	my $unamem = `sysctl -n hw.machine`; chomp $unamem;
-	my $unamep = `sysctl -n hw.machine_arch`; chomp $unamep;
-	my $sysuptime = `uptime`; chomp $sysuptime;
-	hline();
-	printf("%s %s\t\t\t\t%s\n", @osinfo);
-	printf("Hardware Platform:\t\t\t\t%s\n", $unamem);
-	printf("Processor Architecture:\t\t\t\t%s\n\n", $unamep);
-	printf("%s\n", $sysuptime);
-}
 
 my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
@@ -538,7 +521,6 @@ if ($vdev_cache_total > 0) {
 }
 
 if ($usetunable != 0) {
-	### Tunables FreeBSD  ###
 	my @Tunable = qw(
 		kern.maxusers
 		vfs.zfs
