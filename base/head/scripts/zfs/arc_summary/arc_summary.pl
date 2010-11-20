@@ -44,6 +44,7 @@
 # dc(1), uptime(1) & sed(1)
 
 use strict;
+use Switch;
 
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
@@ -520,21 +521,31 @@ if ($vdev_cache_total > 0) {
 		fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
 }
 
-if ($usetunable != 0) {
-	my @Tunable = qw(
-		kern.maxusers
-		vfs.zfs
-		vm.kmem_size
-		vm.kmem_size_scale
-		vm.kmem_size_min
-		vm.kmem_size_max
-	);
-	my @tunable = `sysctl -e @Tunable`;
-	hline();
-	print "ZFS Tunable (sysctl):\n";
-	foreach my $tunable (@tunable){
-		chomp($tunable);
-		print "\t$tunable\n";
+sub _page_sysctl(){
+	if ($usetunable != 0) {
+		my @Tunable = qw(
+			kern.maxusers
+			vfs.zfs
+			vm.kmem_size
+			vm.kmem_size_scale
+			vm.kmem_size_min
+			vm.kmem_size_max
+		);
+		my @tunable = `sysctl -e @Tunable`;
+		hline();
+		print "ZFS Tunable (sysctl):\n";
+		foreach my $tunable (@tunable){
+			chomp($tunable);
+			print "\t$tunable\n";
+		}
+	}
+}
+
+switch($ARGV[0]){
+	case(6){
+		_page_sysctl;
+	} else {
+		_page_sysctl;
 	}
 }
 
