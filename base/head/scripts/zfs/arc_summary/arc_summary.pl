@@ -248,79 +248,80 @@ printf("\tChain Max:\t\t\t\t%s\n", fHits($hash_chain_max));
 printf("\tChains:\t\t\t\t\t%s\n", fHits($hash_chains));
 print "\n";
 
-### ARC Efficency ###
-my $arc_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{hits};
-my $arc_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{misses};
-my $demand_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_hits};
-my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
-my $demand_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_hits};
-my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
-my $mfu_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mfu_ghost_hits};
-my $mfu_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mfu_hits};
-my $mru_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_ghost_hits};
-my $mru_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_hits};
-my $prefetch_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_hits};
-my $prefetch_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_misses};
-my $prefetch_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_hits};
-my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_misses};
+sub _arc_efficiency(){
+	my $arc_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{hits};
+	my $arc_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{misses};
+	my $demand_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_hits};
+	my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
+	my $demand_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_hits};
+	my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
+	my $mfu_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mfu_ghost_hits};
+	my $mfu_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mfu_hits};
+	my $mru_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_ghost_hits};
+	my $mru_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_hits};
+	my $prefetch_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_hits};
+	my $prefetch_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_misses};
+	my $prefetch_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_hits};
+	my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_misses};
 
-my $anon_hits = $arc_hits - ($mfu_hits + $mru_hits + $mfu_ghost_hits + $mru_ghost_hits);
-my $arc_accesses_total = ($arc_hits + $arc_misses);
-my $demand_data_total = ($demand_data_hits + $demand_data_misses);
-my $prefetch_data_total = ($prefetch_data_hits + $prefetch_data_misses);
-my $real_hits = ($mfu_hits + $mru_hits);
+	my $anon_hits = $arc_hits - ($mfu_hits + $mru_hits + $mfu_ghost_hits + $mru_ghost_hits);
+	my $arc_accesses_total = ($arc_hits + $arc_misses);
+	my $demand_data_total = ($demand_data_hits + $demand_data_misses);
+	my $prefetch_data_total = ($prefetch_data_hits + $prefetch_data_misses);
+	my $real_hits = ($mfu_hits + $mru_hits);
 
-printf("ARC Efficiency:\t\t\t\t\t%s\n",	fHits($arc_accesses_total));
-printf("\tCache Hit Ratio:\t\t%s\t%s\n",
-	fPerc($arc_hits, $arc_accesses_total), fHits($arc_hits));
-printf("\tCache Miss Ratio:\t\t%s\t%s\n",
-	fPerc($arc_misses, $arc_accesses_total), fHits($arc_misses));
-printf("\tActual Hit Ratio:\t\t%s\t%s\n",
-	fPerc($real_hits, $arc_accesses_total), fHits($real_hits));
-print "\n";
-printf("\tData Demand Efficiency:\t\t%s\t%s\n",
-	fPerc($demand_data_hits, $demand_data_total), fHits($demand_data_total));
+	printf("ARC Efficiency:\t\t\t\t\t%s\n",	fHits($arc_accesses_total));
+	printf("\tCache Hit Ratio:\t\t%s\t%s\n",
+		fPerc($arc_hits, $arc_accesses_total), fHits($arc_hits));
+	printf("\tCache Miss Ratio:\t\t%s\t%s\n",
+		fPerc($arc_misses, $arc_accesses_total), fHits($arc_misses));
+	printf("\tActual Hit Ratio:\t\t%s\t%s\n",
+		fPerc($real_hits, $arc_accesses_total), fHits($real_hits));
+	print "\n";
+	printf("\tData Demand Efficiency:\t\t%s\t%s\n",
+		fPerc($demand_data_hits, $demand_data_total), fHits($demand_data_total));
 
-if ($prefetch_data_total > 0){ 
-	printf("\tData Prefetch Efficiency:\t%s\t%s\n",
-		fPerc($prefetch_data_hits, $prefetch_data_total), fHits($prefetch_data_total));
+	if ($prefetch_data_total > 0){ 
+		printf("\tData Prefetch Efficiency:\t%s\t%s\n",
+			fPerc($prefetch_data_hits, $prefetch_data_total), fHits($prefetch_data_total));
+	}
+	print "\n";
+
+	print "\tCACHE HITS BY CACHE LIST:\n";
+	if ( $anon_hits > 0 ){
+		printf("\t  Anonymously Used:\t\t%s\t%s\n",
+			fPerc($anon_hits, $arc_hits), fHits($anon_hits));
+	}
+
+	printf("\t  Most Recently Used:\t\t%s\t%s\n",
+		fPerc($mru_hits, $arc_hits), fHits($mru_hits));
+	printf("\t  Most Frequently Used:\t\t%s\t%s\n",
+		fPerc($mfu_hits, $arc_hits), fHits($mfu_hits));
+	printf("\t  Most Recently Used Ghost:\t%s\t%s\n",
+		fPerc($mru_ghost_hits, $arc_hits), fHits($mru_ghost_hits));
+	printf("\t  Most Frequently Used Ghost:\t%s\t%s\n",
+		fPerc($mfu_ghost_hits, $arc_hits), fHits($mfu_ghost_hits));
+
+	print "\n\tCACHE HITS BY DATA TYPE:\n";
+	printf("\t  Demand Data:\t\t\t%s\t%s\n",
+		fPerc($demand_data_hits, $arc_hits), fHits($demand_data_hits));
+	printf("\t  Prefetch Data:\t\t%s\t%s\n",
+		fPerc($prefetch_data_hits, $arc_hits), fHits($prefetch_data_hits));
+	printf("\t  Demand Metadata:\t\t%s\t%s\n",
+		fPerc($demand_metadata_hits, $arc_hits), fHits($demand_metadata_hits));
+	printf("\t  Prefetch Metadata:\t\t%s\t%s\n",
+		fPerc($prefetch_metadata_hits, $arc_hits), fHits($prefetch_metadata_hits));
+
+	print "\n\tCACHE MISSES BY DATA TYPE:\n";
+	printf("\t  Demand Data:\t\t\t%s\t%s\n",
+		fPerc($demand_data_misses, $arc_misses), fHits($demand_data_misses));
+	printf("\t  Prefetch Data:\t\t%s\t%s\n",
+		fPerc($prefetch_data_misses, $arc_misses), fHits($prefetch_data_misses));
+	printf("\t  Demand Metadata:\t\t%s\t%s\n",
+		fPerc($demand_metadata_misses, $arc_misses), fHits($demand_metadata_misses));
+	printf("\t  Prefetch Metadata:\t\t%s\t%s\n",
+		fPerc($prefetch_metadata_misses, $arc_misses), fHits($prefetch_metadata_misses));
 }
-print "\n";
-
-print "\tCACHE HITS BY CACHE LIST:\n";
-if ( $anon_hits > 0 ){
-	printf("\t  Anonymously Used:\t\t%s\t%s\n",
-		fPerc($anon_hits, $arc_hits), fHits($anon_hits));
-}
-
-printf("\t  Most Recently Used:\t\t%s\t%s\n",
-	fPerc($mru_hits, $arc_hits), fHits($mru_hits));
-printf("\t  Most Frequently Used:\t\t%s\t%s\n",
-	fPerc($mfu_hits, $arc_hits), fHits($mfu_hits));
-printf("\t  Most Recently Used Ghost:\t%s\t%s\n",
-	fPerc($mru_ghost_hits, $arc_hits), fHits($mru_ghost_hits));
-printf("\t  Most Frequently Used Ghost:\t%s\t%s\n",
-	fPerc($mfu_ghost_hits, $arc_hits), fHits($mfu_ghost_hits));
-
-print "\n\tCACHE HITS BY DATA TYPE:\n";
-printf("\t  Demand Data:\t\t\t%s\t%s\n",
-	fPerc($demand_data_hits, $arc_hits), fHits($demand_data_hits));
-printf("\t  Prefetch Data:\t\t%s\t%s\n",
-	fPerc($prefetch_data_hits, $arc_hits), fHits($prefetch_data_hits));
-printf("\t  Demand Metadata:\t\t%s\t%s\n",
-	fPerc($demand_metadata_hits, $arc_hits), fHits($demand_metadata_hits));
-printf("\t  Prefetch Metadata:\t\t%s\t%s\n",
-	fPerc($prefetch_metadata_hits, $arc_hits), fHits($prefetch_metadata_hits));
-
-print "\n\tCACHE MISSES BY DATA TYPE:\n";
-printf("\t  Demand Data:\t\t\t%s\t%s\n",
-	fPerc($demand_data_misses, $arc_misses), fHits($demand_data_misses));
-printf("\t  Prefetch Data:\t\t%s\t%s\n",
-	fPerc($prefetch_data_misses, $arc_misses), fHits($prefetch_data_misses));
-printf("\t  Demand Metadata:\t\t%s\t%s\n",
-	fPerc($demand_metadata_misses, $arc_misses), fHits($demand_metadata_misses));
-printf("\t  Prefetch Metadata:\t\t%s\t%s\n",
-	fPerc($prefetch_metadata_misses, $arc_misses), fHits($prefetch_metadata_misses));
 
 sub _l2arc_stats(){
 	my $l2_abort_lowmem = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_abort_lowmem};
@@ -543,11 +544,13 @@ sub _page_sysctl(){
 }
 
 switch($ARGV[0]){
+	case(2){ _arc_efficiency; }
 	case(3){ _l2arc_stats; }
 	case(4){ _dmu_stats; }
 	case(5){ _vdev_stats; } 
 	case(6){ _page_sysctl; }
 	else {
+		_arc_efficiency;
 		_l2arc_stats;
 		_dmu_stats;
 		_vdev_stats;
