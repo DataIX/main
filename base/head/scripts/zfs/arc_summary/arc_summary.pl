@@ -145,19 +145,21 @@ print "\n-----------------------------------------------------------------------
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 hline();
 
-my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
-my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
-my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
-my $kmem = ($ktext + $kdata);
-my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
-my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
+sub _system_summary(){
+	my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
+	my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
+	my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
+	my $kmem = ($ktext + $kdata);
+	my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
+	my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
 
-printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory));
-printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
-printf("\tData:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
-printf("\tText:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
-printf("\t Map:\t\t\t\t\t%s\n", fBytes($kmem_map_size));
-printf("\t   Free:\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
+	printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory));
+	printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
+	printf("\tData:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
+	printf("\tText:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
+	printf("\t Map:\t\t\t\t\t%s\n", fBytes($kmem_map_size));
+	printf("\t   Free:\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
+}
 
 my $Kstat;
 my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
@@ -169,34 +171,35 @@ foreach my $arcstats (@arcstats) {
         ${Kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
 }
 
-my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
-my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
-my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
+sub _arc_summary(){
+	my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
+	my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
+	my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
-hline();
-print "ARC Summary: ";
-if ($memory_throttle_count > 0) {
-	print "(THROTTLED)\n";
-} else { print "(HEALTHY)\n"; }
-printf("\tStorage pool Version:\t\t\t%d\n", $spa);
-printf("\tFilesystem Version:\t\t\t%d\n", $zpl);
-printf("\tMemory Throttle Count:\t\t\t%s\n", fHits($memory_throttle_count));
-print "\n";
+	hline();
+	print "ARC Summary: ";
+	if ($memory_throttle_count > 0) {
+		print "(THROTTLED)\n";
+	} else { print "(HEALTHY)\n"; }
+	printf("\tStorage pool Version:\t\t\t%d\n", $spa);
+	printf("\tFilesystem Version:\t\t\t%d\n", $zpl);
+	printf("\tMemory Throttle Count:\t\t\t%s\n", fHits($memory_throttle_count));
+	print "\n";
 
-### ARC Misc. ###
-my $deleted = ${Kstat}->{zfs}->{0}->{arcstats}->{deleted};
-my $evict_skip = ${Kstat}->{zfs}->{0}->{arcstats}->{evict_skip};
-my $mutex_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{mutex_miss};
-my $recycle_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{recycle_miss};
+	### ARC Misc. ###
+	my $deleted = ${Kstat}->{zfs}->{0}->{arcstats}->{deleted};
+	my $evict_skip = ${Kstat}->{zfs}->{0}->{arcstats}->{evict_skip};
+	my $mutex_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{mutex_miss};
+	my $recycle_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{recycle_miss};
 
-print "ARC Misc:\n";
-printf("\tDeleted:\t\t\t\t%s\n", fHits($deleted));
-printf("\tRecycle Misses:\t\t\t\t%s\n", fHits($recycle_miss));
-printf("\tMutex Misses:\t\t\t\t%s\n", fHits($mutex_miss));
-printf("\tEvict Skips:\t\t\t\t%s\n", fHits($mutex_miss));
-print "\n";
+	print "ARC Misc:\n";
+	printf("\tDeleted:\t\t\t\t%s\n", fHits($deleted));
+	printf("\tRecycle Misses:\t\t\t\t%s\n", fHits($recycle_miss));
+	printf("\tMutex Misses:\t\t\t\t%s\n", fHits($mutex_miss));
+	printf("\tEvict Skips:\t\t\t\t%s\n", fHits($mutex_miss));
+	print "\n";
 
-sub _arc_sizing(){
+	### ARC Sizing ###
 	my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
 	my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
 	my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
@@ -231,9 +234,8 @@ sub _arc_sizing(){
 			fPerc($mfu_size, $target_size), fBytes($mfu_size));
 	}
 	print "\n";
-}
 
-sub _arc_hash(){
+	### ARC Hash Breakdown ###
 	my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
 	my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
 	my $hash_collisions = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_collisions};
@@ -325,7 +327,7 @@ sub _arc_efficiency(){
 		fPerc($prefetch_metadata_misses, $arc_misses), fHits($prefetch_metadata_misses));
 }
 
-sub _l2arc_stats(){
+sub _l2arc_summary(){
 	my $l2_abort_lowmem = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_abort_lowmem};
 	my $l2_cksum_bad = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_cksum_bad};
 	my $l2_evict_lock_retry = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_lock_retry};
@@ -415,7 +417,7 @@ sub _l2arc_stats(){
 	}
 }
 
-sub _dmu_stats(){
+sub _dmu_summary(){
 	my @zfetch_stats = `sysctl 'kstat.zfs.misc.zfetchstats'`;
 	foreach my $zfetch_stats (@zfetch_stats) {
 		chomp $zfetch_stats;
@@ -498,7 +500,7 @@ sub _dmu_stats(){
 	}
 }
 
-sub _vdev_stats(){
+sub _vdev_summary(){
 	my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
 	foreach my $vdev_cache_stats (@vdev_cache_stats) {
 		chomp $vdev_cache_stats;
@@ -525,7 +527,7 @@ sub _vdev_stats(){
 	}
 }
 
-sub _page_sysctl(){
+sub _sysctl_summary(){
 	if ($usetunable != 0) {
 		my @Tunable = qw(
 			kern.maxusers
@@ -546,21 +548,21 @@ sub _page_sysctl(){
 }
 
 switch($ARGV[0]){
-	case(0){ _arc_sizing; }
-	case(1){ _arc_hash; }
+	case(0){ _system_summary; }
+	case(1){ _arc_summary; }
 	case(2){ _arc_efficiency; }
-	case(3){ _l2arc_stats; }
-	case(4){ _dmu_stats; }
-	case(5){ _vdev_stats; } 
-	case(6){ _page_sysctl; }
+	case(3){ _l2arc_summary; }
+	case(4){ _dmu_summary; }
+	case(5){ _vdev_summary; } 
+	case(6){ _sysctl_summary; }
 	else {
-		_arc_sizing;
-		_arc_hash;
+		_system_summary;
+		_arc_summary;
 		_arc_efficiency;
-		_l2arc_stats;
-		_dmu_stats;
-		_vdev_stats;
-		_page_sysctl;
+		_l2arc_summary;
+		_dmu_summary;
+		_vdev_summary;
+		_sysctl_summary;
 	}
 }
 
