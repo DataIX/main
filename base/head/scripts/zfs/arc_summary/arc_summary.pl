@@ -232,21 +232,22 @@ if ($arc_size < $target_size) {
 }
 print "\n";
 
-### ARC Hash ###
-my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
-my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
-my $hash_collisions = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_collisions};
-my $hash_elements = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements};
-my $hash_elements_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements_max};
+sub _arc_hash(){
+	my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
+	my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
+	my $hash_collisions = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_collisions};
+	my $hash_elements = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements};
+	my $hash_elements_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements_max};
 
-print "ARC Hash Breakdown:\n";
-printf("\tElements Max:\t\t\t\t%s\n", fHits($hash_elements_max));
-printf("\tElements Current:\t\t%s\t%s\n",
-	fPerc($hash_elements, $hash_elements_max), fHits($hash_elements));
-printf("\tCollisions:\t\t\t\t%s\n", fHits($hash_collisions));
-printf("\tChain Max:\t\t\t\t%s\n", fHits($hash_chain_max));
-printf("\tChains:\t\t\t\t\t%s\n", fHits($hash_chains));
-print "\n";
+	print "ARC Hash Breakdown:\n";
+	printf("\tElements Max:\t\t\t\t%s\n", fHits($hash_elements_max));
+	printf("\tElements Current:\t\t%s\t%s\n",
+		fPerc($hash_elements, $hash_elements_max), fHits($hash_elements));
+	printf("\tCollisions:\t\t\t\t%s\n", fHits($hash_collisions));
+	printf("\tChain Max:\t\t\t\t%s\n", fHits($hash_chain_max));
+	printf("\tChains:\t\t\t\t\t%s\n", fHits($hash_chains));
+	print "\n";
+}
 
 sub _arc_efficiency(){
 	my $arc_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{hits};
@@ -544,12 +545,14 @@ sub _page_sysctl(){
 }
 
 switch($ARGV[0]){
+	case(1){ _arc_hash; }
 	case(2){ _arc_efficiency; }
 	case(3){ _l2arc_stats; }
 	case(4){ _dmu_stats; }
 	case(5){ _vdev_stats; } 
 	case(6){ _page_sysctl; }
 	else {
+		_arc_hash;
 		_arc_efficiency;
 		_l2arc_stats;
 		_dmu_stats;
