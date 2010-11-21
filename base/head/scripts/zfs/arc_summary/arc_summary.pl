@@ -143,6 +143,7 @@ my $daydate = localtime; chomp $daydate;
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
+hline();
 
 my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
@@ -151,7 +152,6 @@ my $kmem = ($ktext + $kdata);
 my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
 my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
 
-hline();
 printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory));
 printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
 printf("\tData:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
@@ -196,41 +196,42 @@ printf("\tMutex Misses:\t\t\t\t%s\n", fHits($mutex_miss));
 printf("\tEvict Skips:\t\t\t\t%s\n", fHits($mutex_miss));
 print "\n";
 
-### ARC Sizing ###
-my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
-my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
-my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
-my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
-my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
+sub _arc_sizing(){
+	my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
+	my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
+	my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
+	my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
+	my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
 
-my $target_size_ratio = ($target_max_size / $target_min_size);
+	my $target_size_ratio = ($target_max_size / $target_min_size);
 
-printf("ARC Size:\t\t\t\t%s\t%s\n",
-	fPerc($arc_size, $target_max_size),  fBytes($arc_size));
-printf("\tTarget Size: (Adaptive)\t\t%s\t%s\n",
-	fPerc($target_size, $target_max_size), fBytes($target_size));
-printf("\tMin Size (Hard Limit):\t\t%s\t%s\n",
-	fPerc($target_min_size, $target_max_size), fBytes($target_min_size));
-printf("\tMax Size (High Water):\t\t%d:1\t%s\n",
-	$target_size_ratio, fBytes($target_max_size));
+	printf("ARC Size:\t\t\t\t%s\t%s\n",
+		fPerc($arc_size, $target_max_size),  fBytes($arc_size));
+	printf("\tTarget Size: (Adaptive)\t\t%s\t%s\n",
+		fPerc($target_size, $target_max_size), fBytes($target_size));
+	printf("\tMin Size (Hard Limit):\t\t%s\t%s\n",
+		fPerc($target_min_size, $target_max_size), fBytes($target_min_size));
+	printf("\tMax Size (High Water):\t\t%d:1\t%s\n",
+		$target_size_ratio, fBytes($target_max_size));
 
-print "\nARC Size Breakdown:\n";
-if ($arc_size > $target_size) {
-	my $mfu_size = ($arc_size - $mru_size);
-	printf("\tRecently Used Cache Size:\t%s\t%s\n",
-		fPerc($mru_size, $arc_size), fBytes($mru_size));
-	printf("\tFrequently Used Cache Size:\t%s\t%s\n",
-		fPerc($mfu_size, $arc_size), fBytes($mfu_size));
+	print "\nARC Size Breakdown:\n";
+	if ($arc_size > $target_size) {
+		my $mfu_size = ($arc_size - $mru_size);
+		printf("\tRecently Used Cache Size:\t%s\t%s\n",
+			fPerc($mru_size, $arc_size), fBytes($mru_size));
+		printf("\tFrequently Used Cache Size:\t%s\t%s\n",
+			fPerc($mfu_size, $arc_size), fBytes($mfu_size));
+	}
+
+	if ($arc_size < $target_size) {
+		my $mfu_size = ($target_size - $mru_size);
+		printf("\tRecently Used Cache Size:\t%s\t%s\n",
+			fPerc($mru_size, $target_size), fBytes($mru_size));
+		printf("\tFrequently Used Cache Size:\t%s\t%s\n",
+			fPerc($mfu_size, $target_size), fBytes($mfu_size));
+	}
+	print "\n";
 }
-
-if ($arc_size < $target_size) {
-	my $mfu_size = ($target_size - $mru_size);
-	printf("\tRecently Used Cache Size:\t%s\t%s\n",
-		fPerc($mru_size, $target_size), fBytes($mru_size));
-	printf("\tFrequently Used Cache Size:\t%s\t%s\n",
-		fPerc($mfu_size, $target_size), fBytes($mfu_size));
-}
-print "\n";
 
 sub _arc_hash(){
 	my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
@@ -545,6 +546,7 @@ sub _page_sysctl(){
 }
 
 switch($ARGV[0]){
+	case(0){ _arc_sizing; }
 	case(1){ _arc_hash; }
 	case(2){ _arc_efficiency; }
 	case(3){ _l2arc_stats; }
@@ -552,6 +554,7 @@ switch($ARGV[0]){
 	case(5){ _vdev_stats; } 
 	case(6){ _page_sysctl; }
 	else {
+		_arc_sizing;
 		_arc_hash;
 		_arc_efficiency;
 		_l2arc_stats;
