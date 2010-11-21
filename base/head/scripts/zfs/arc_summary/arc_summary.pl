@@ -248,7 +248,6 @@ sub _arc_summary(){
 	printf("\tCollisions:\t\t\t\t%s\n", fHits($hash_collisions));
 	printf("\tChain Max:\t\t\t\t%s\n", fHits($hash_chain_max));
 	printf("\tChains:\t\t\t\t\t%s\n", fHits($hash_chains));
-	print "\n";
 }
 
 sub _arc_efficiency(){
@@ -543,7 +542,9 @@ sub _sysctl_summary(){
 }
 
 switch($ARGV[0]){
-	case(0){ _system_summary; }
+	# Print system memory before anything else.
+	_system_summary;	hline;
+
 	case(1){ _arc_summary; }
 	case(2){ _arc_efficiency; }
 	case(3){ _l2arc_summary; }
@@ -551,12 +552,11 @@ switch($ARGV[0]){
 	case(5){ _vdev_summary; } 
 	case(6){ _sysctl_summary; }
 	else {
-		_system_summary; hline;
-		_arc_summary; hline;
-		_arc_efficiency; hline;
-		_l2arc_summary; hline;
-		_dmu_summary; hline;
-		_vdev_summary; hline;
+		_arc_summary;		hline;
+		_arc_efficiency;	hline;
+		_l2arc_summary;		hline;
+		_dmu_summary;		hline;
+		_vdev_summary;		hline;
 		_sysctl_summary;
 	}
 }
