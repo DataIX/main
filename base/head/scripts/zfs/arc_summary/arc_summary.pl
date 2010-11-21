@@ -495,30 +495,31 @@ if ($zfetch_access_total > 0) {
 	printf("\t  Bogus:\t\t\t\t%s\n", fHits($zfetch_bogus_streams));
 }
 
-### VDEV Cache Stats ###
-my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
-foreach my $vdev_cache_stats (@vdev_cache_stats) {
-	chomp $vdev_cache_stats;
-	my ($name,$value) = split /:/, $vdev_cache_stats;
-	my @z = split /\./, $name;
-	my $n = pop @z;
-	${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{$n} = $value;
-}
+sub _vdev_stats(){
+	my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
+	foreach my $vdev_cache_stats (@vdev_cache_stats) {
+		chomp $vdev_cache_stats;
+		my ($name,$value) = split /:/, $vdev_cache_stats;
+		my @z = split /\./, $name;
+		my $n = pop @z;
+		${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{$n} = $value;
+	}
 
-my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
-my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
-my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
-my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations);
+	my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
+	my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
+	my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
+	my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations);
 
-if ($vdev_cache_total > 0) {
-	hline();
-	printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
-	printf("\tHit Ratio:\t\t\t%s\t%s\n",
-		fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
-	printf("\tMiss Ratio:\t\t\t%s\t%s\n",
-		fPerc($vdev_cache_misses, $vdev_cache_total), fHits($vdev_cache_misses));
-	printf("\tDelegations:\t\t\t%s\t%s\n",
-		fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
+	if ($vdev_cache_total > 0) {
+		hline();
+		printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
+		printf("\tHit Ratio:\t\t\t%s\t%s\n",
+			fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
+		printf("\tMiss Ratio:\t\t\t%s\t%s\n",
+			fPerc($vdev_cache_misses, $vdev_cache_total), fHits($vdev_cache_misses));
+		printf("\tDelegations:\t\t\t%s\t%s\n",
+			fPerc($vdev_cache_delegations, $vdev_cache_total), fHits($vdev_cache_delegations));
+	}
 }
 
 sub _page_sysctl(){
@@ -542,9 +543,10 @@ sub _page_sysctl(){
 }
 
 switch($ARGV[0]){
-	case(6){
-		_page_sysctl;
-	} else {
+	case(5){ _vdev_stats; } 
+	case(6){ _page_sysctl; }
+	else {
+		_vdev_stats;
 		_page_sysctl;
 	}
 }
