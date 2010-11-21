@@ -176,7 +176,6 @@ sub _arc_summary(){
 	my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 	my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
-	hline();
 	print "ARC Summary: ";
 	if ($memory_throttle_count > 0) {
 		print "(THROTTLED)\n";
@@ -362,7 +361,6 @@ sub _l2arc_summary(){
 	my $l2_health_count = ($l2_writes_error + $l2_cksum_bad + $l2_io_error);
 
 	if ($l2_size > 0 && $l2_access_total > 0) {
-		hline();
 		print "L2 ARC Summary: ";
 		if ($l2_health_count > 0) {
 			print "(DEGRADED)\n";
@@ -447,7 +445,6 @@ sub _dmu_summary(){
 	my $zfetch_stride_total = ($zfetch_stride_hits + $zfetch_stride_misses);
 
 	if ($zfetch_access_total > 0) {
-		hline();
 		print "File-Level Prefetch: ";
 		if ($zfetch_health_count > 0) {
 			print "(DEGRADED)\n\n";
@@ -516,7 +513,6 @@ sub _vdev_summary(){
 	my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations);
 
 	if ($vdev_cache_total > 0) {
-		hline();
 		printf("VDEV Cache Summary:\t\t\t\t%s\n", fHits($vdev_cache_total));
 		printf("\tHit Ratio:\t\t\t%s\t%s\n",
 			fPerc($vdev_cache_hits, $vdev_cache_total), fHits($vdev_cache_hits));
@@ -538,7 +534,6 @@ sub _sysctl_summary(){
 			vm.kmem_size_max
 		);
 		my @tunable = `sysctl -e @Tunable`;
-		hline();
 		print "ZFS Tunable (sysctl):\n";
 		foreach my $tunable (@tunable){
 			chomp($tunable);
@@ -556,12 +551,12 @@ switch($ARGV[0]){
 	case(5){ _vdev_summary; } 
 	case(6){ _sysctl_summary; }
 	else {
-		_system_summary;
-		_arc_summary;
-		_arc_efficiency;
-		_l2arc_summary;
-		_dmu_summary;
-		_vdev_summary;
+		_system_summary; hline;
+		_arc_summary; hline;
+		_arc_efficiency; hline;
+		_l2arc_summary; hline;
+		_dmu_summary; hline;
+		_vdev_summary; hline;
 		_sysctl_summary;
 	}
 }
