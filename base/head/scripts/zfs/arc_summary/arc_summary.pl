@@ -542,7 +542,7 @@ sub _sysctl_summary(){
 }
 
 switch($ARGV[0]){
-	# Print system memory before anything else.
+	# Print system information header.
 	_system_summary;	hline;
 
 	case(1){ _arc_summary; }
