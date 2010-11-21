@@ -322,94 +322,94 @@ printf("\t  Demand Metadata:\t\t%s\t%s\n",
 printf("\t  Prefetch Metadata:\t\t%s\t%s\n",
 	fPerc($prefetch_metadata_misses, $arc_misses), fHits($prefetch_metadata_misses));
 
-### L2 ARC Stats Sysctl's ###
-my $l2_abort_lowmem = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_abort_lowmem};
-my $l2_cksum_bad = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_cksum_bad};
-my $l2_evict_lock_retry = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_lock_retry};
-my $l2_evict_reading = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_reading};
-my $l2_feeds = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_feeds};
-my $l2_free_on_write = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_free_on_write};
-my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
-my $l2_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hits};
-my $l2_io_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_io_error};
-my $l2_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_misses};
-my $l2_rw_clash = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_rw_clash};
-my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
-my $l2_write_buffer_bytes_scanned = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_bytes_scanned};
-my $l2_write_buffer_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_iter};
-my $l2_write_buffer_list_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_iter};
-my $l2_write_buffer_list_null_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_null_iter};
-my $l2_write_bytes = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_bytes};
-my $l2_write_full = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_full};
-my $l2_write_in_l2 = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_in_l2};
-my $l2_write_io_in_progress = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_io_in_progress};
-my $l2_write_not_cacheable = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_not_cacheable};
-my $l2_write_passed_headroom = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_passed_headroom};
-my $l2_write_pios = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_pios};
-my $l2_write_spa_mismatch = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_spa_mismatch};
-my $l2_write_trylock_fail = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_trylock_fail};
-my $l2_writes_done = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_done};
-my $l2_writes_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_error};
-my $l2_writes_hdr_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_hdr_miss};
-my $l2_writes_sent = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_sent};
+sub _l2arc_stats(){
+	my $l2_abort_lowmem = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_abort_lowmem};
+	my $l2_cksum_bad = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_cksum_bad};
+	my $l2_evict_lock_retry = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_lock_retry};
+	my $l2_evict_reading = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_reading};
+	my $l2_feeds = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_feeds};
+	my $l2_free_on_write = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_free_on_write};
+	my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
+	my $l2_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hits};
+	my $l2_io_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_io_error};
+	my $l2_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_misses};
+	my $l2_rw_clash = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_rw_clash};
+	my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
+	my $l2_write_buffer_bytes_scanned = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_bytes_scanned};
+	my $l2_write_buffer_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_iter};
+	my $l2_write_buffer_list_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_iter};
+	my $l2_write_buffer_list_null_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_null_iter};
+	my $l2_write_bytes = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_bytes};
+	my $l2_write_full = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_full};
+	my $l2_write_in_l2 = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_in_l2};
+	my $l2_write_io_in_progress = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_io_in_progress};
+	my $l2_write_not_cacheable = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_not_cacheable};
+	my $l2_write_passed_headroom = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_passed_headroom};
+	my $l2_write_pios = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_pios};
+	my $l2_write_spa_mismatch = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_spa_mismatch};
+	my $l2_write_trylock_fail = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_trylock_fail};
+	my $l2_writes_done = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_done};
+	my $l2_writes_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_error};
+	my $l2_writes_hdr_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_hdr_miss};
+	my $l2_writes_sent = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_sent};
 
-my $l2_access_total = ($l2_hits + $l2_misses);
-my $l2_health_count = ($l2_writes_error + $l2_cksum_bad + $l2_io_error);
+	my $l2_access_total = ($l2_hits + $l2_misses);
+	my $l2_health_count = ($l2_writes_error + $l2_cksum_bad + $l2_io_error);
 
-### L2 ARC ###
-if ($l2_size > 0 && $l2_access_total > 0) {
-	hline();
-	print "L2 ARC Summary: ";
-	if ($l2_health_count > 0) {
-		print "(DEGRADED)\n";
-	} else { print "(HEALTHY)\n"; }
-	printf("\tPassed Headroom:\t\t\t%s\n", fHits($l2_write_passed_headroom));
-	printf("\tTried Lock Failures:\t\t\t%s\n", fHits($l2_write_trylock_fail));
-	printf("\tIO In Progress:\t\t\t\t%s\n", fHits($l2_write_io_in_progress));
-	printf("\tLow Memory Aborts:\t\t\t%s\n", fHits($l2_abort_lowmem));
-	printf("\tFree on Write:\t\t\t\t%s\n", fHits($l2_free_on_write));
-	printf("\tWrites While Full:\t\t\t%s\n", fHits($l2_write_full));
-	printf("\tR/W Clashes:\t\t\t\t%s\n", fHits($l2_rw_clash));
-	printf("\tBad Checksums:\t\t\t\t%s\n", fHits($l2_cksum_bad));
-	printf("\tIO Errors:\t\t\t\t%s\n", fHits($l2_io_error));
-	printf("\tSPA Mismatch:\t\t\t\t%s\n", fHits($l2_write_spa_mismatch));
-	print "\n";
-	
-	printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size));
-	printf("\tHeader Size:\t\t\t%s\t%s\n",
-		fPerc($l2_hdr_size, $l2_size), fBytes($l2_hdr_size));
-	print "\n";
-	
-	if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
-		print "L2 ARC Evicts:\n";
-		printf("\tLock Retries:\t\t\t\t%s\n", fHits($l2_evict_lock_retry));
-		printf("\tUpon Reading:\t\t\t\t%s\n", fHits($l2_evict_reading));
+	if ($l2_size > 0 && $l2_access_total > 0) {
+		hline();
+		print "L2 ARC Summary: ";
+		if ($l2_health_count > 0) {
+			print "(DEGRADED)\n";
+		} else { print "(HEALTHY)\n"; }
+		printf("\tPassed Headroom:\t\t\t%s\n", fHits($l2_write_passed_headroom));
+		printf("\tTried Lock Failures:\t\t\t%s\n", fHits($l2_write_trylock_fail));
+		printf("\tIO In Progress:\t\t\t\t%s\n", fHits($l2_write_io_in_progress));
+		printf("\tLow Memory Aborts:\t\t\t%s\n", fHits($l2_abort_lowmem));
+		printf("\tFree on Write:\t\t\t\t%s\n", fHits($l2_free_on_write));
+		printf("\tWrites While Full:\t\t\t%s\n", fHits($l2_write_full));
+		printf("\tR/W Clashes:\t\t\t\t%s\n", fHits($l2_rw_clash));
+		printf("\tBad Checksums:\t\t\t\t%s\n", fHits($l2_cksum_bad));
+		printf("\tIO Errors:\t\t\t\t%s\n", fHits($l2_io_error));
+		printf("\tSPA Mismatch:\t\t\t\t%s\n", fHits($l2_write_spa_mismatch));
 		print "\n";
-	}
-	printf("L2 ARC Breakdown:\t\t\t\t%s\n", fHits($l2_access_total));
-	printf("\tHit Ratio:\t\t\t%s\t%s\n",
-		fPerc($l2_hits, $l2_access_total), fHits($l2_hits));
-	printf("\tMiss Ratio:\t\t\t%s\t%s\n",
-		fPerc($l2_misses, $l2_access_total), fHits($l2_misses));
-	printf("\tFeeds:\t\t\t\t\t%s\n", fHits($l2_feeds));
-	print "\n";
-
-	print "L2 ARC Buffer:\n";
-	printf("\tBytes Scanned:\t\t\t\t%s\n", fBytes($l2_write_buffer_bytes_scanned));
-	printf("\tBuffer Iterations:\t\t\t%s\n", fHits($l2_write_buffer_iter));
-	printf("\tList Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_iter));
-	printf("\tNULL List Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_null_iter));
-	print "\n";
 	
-	print "L2 ARC Writes:\n";
-	if ($l2_writes_done != $l2_writes_sent) {
-		printf("\tWrites Sent: (%s)\t\t\t\t%s\n",
-			"FAULTED", fHits($l2_writes_sent));
-		printf("\t  Done Ratio:\t\t\t%s\t%s\n",
-			fPerc($l2_writes_done, $l2_writes_sent), fHits($l2_writes_done));
-		printf("\t  Error Ratio:\t\t\t%s\t%s\n",
-			fPerc($l2_writes_error, $l2_writes_sent), fHits($l2_writes_error));
-	} else { printf("\tWrites Sent:\t\t\t%s\t%s\n",	fPerc(100), fHits($l2_writes_sent)); }
+		printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size));
+		printf("\tHeader Size:\t\t\t%s\t%s\n",
+			fPerc($l2_hdr_size, $l2_size), fBytes($l2_hdr_size));
+		print "\n";
+
+		if (($l2_evict_lock_retry + $l2_evict_reading) > 0) {
+			print "L2 ARC Evicts:\n";
+			printf("\tLock Retries:\t\t\t\t%s\n", fHits($l2_evict_lock_retry));
+			printf("\tUpon Reading:\t\t\t\t%s\n", fHits($l2_evict_reading));
+			print "\n";
+		}
+		printf("L2 ARC Breakdown:\t\t\t\t%s\n", fHits($l2_access_total));
+		printf("\tHit Ratio:\t\t\t%s\t%s\n",
+			fPerc($l2_hits, $l2_access_total), fHits($l2_hits));
+		printf("\tMiss Ratio:\t\t\t%s\t%s\n",
+			fPerc($l2_misses, $l2_access_total), fHits($l2_misses));
+		printf("\tFeeds:\t\t\t\t\t%s\n", fHits($l2_feeds));
+		print "\n";
+
+		print "L2 ARC Buffer:\n";
+		printf("\tBytes Scanned:\t\t\t\t%s\n", fBytes($l2_write_buffer_bytes_scanned));
+		printf("\tBuffer Iterations:\t\t\t%s\n", fHits($l2_write_buffer_iter));
+		printf("\tList Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_iter));
+		printf("\tNULL List Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_null_iter));
+		print "\n";
+	
+		print "L2 ARC Writes:\n";
+		if ($l2_writes_done != $l2_writes_sent) {
+			printf("\tWrites Sent: (%s)\t\t\t\t%s\n",
+				"FAULTED", fHits($l2_writes_sent));
+			printf("\t  Done Ratio:\t\t\t%s\t%s\n",
+				fPerc($l2_writes_done, $l2_writes_sent), fHits($l2_writes_done));
+			printf("\t  Error Ratio:\t\t\t%s\t%s\n",
+				fPerc($l2_writes_error, $l2_writes_sent), fHits($l2_writes_error));
+		} else { printf("\tWrites Sent:\t\t\t%s\t%s\n",	fPerc(100), fHits($l2_writes_sent)); }
+	}
 }
 
 sub _dmu_stats(){
@@ -543,10 +543,12 @@ sub _page_sysctl(){
 }
 
 switch($ARGV[0]){
+	case(3){ _l2arc_stats; }
 	case(4){ _dmu_stats; }
 	case(5){ _vdev_stats; } 
 	case(6){ _page_sysctl; }
 	else {
+		_l2arc_stats;
 		_dmu_stats;
 		_vdev_stats;
 		_page_sysctl;
