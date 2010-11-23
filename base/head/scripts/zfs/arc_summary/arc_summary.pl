@@ -44,6 +44,7 @@
 # dc(1), uptime(1) & sed(1)
 
 use strict;
+use Getopt::Std;
 use Switch;
 
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
@@ -171,7 +172,7 @@ foreach my $arcstats (@arcstats) {
         ${Kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
 }
 
-sub _arc_summary(){
+sub _arc_summary {
 	my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
 	my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
 	my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
@@ -250,7 +251,7 @@ sub _arc_summary(){
 	printf("\tChains:\t\t\t\t\t%s\n", fHits($hash_chains));
 }
 
-sub _arc_efficiency(){
+sub _arc_efficiency {
 	my $arc_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{hits};
 	my $arc_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{misses};
 	my $demand_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_hits};
@@ -325,7 +326,7 @@ sub _arc_efficiency(){
 		fPerc($prefetch_metadata_misses, $arc_misses), fHits($prefetch_metadata_misses));
 }
 
-sub _l2arc_summary(){
+sub _l2arc_summary {
 	my $l2_abort_lowmem = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_abort_lowmem};
 	my $l2_cksum_bad = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_cksum_bad};
 	my $l2_evict_lock_retry = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_lock_retry};
@@ -414,7 +415,7 @@ sub _l2arc_summary(){
 	}
 }
 
-sub _dmu_summary(){
+sub _dmu_summary {
 	my @zfetch_stats = `sysctl 'kstat.zfs.misc.zfetchstats'`;
 	foreach my $zfetch_stats (@zfetch_stats) {
 		chomp $zfetch_stats;
@@ -496,7 +497,7 @@ sub _dmu_summary(){
 	}
 }
 
-sub _vdev_summary(){
+sub _vdev_summary {
 	my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
 	foreach my $vdev_cache_stats (@vdev_cache_stats) {
 		chomp $vdev_cache_stats;
@@ -522,7 +523,7 @@ sub _vdev_summary(){
 	}
 }
 
-sub _sysctl_summary(){
+sub _sysctl_summary {
 	if ($usetunable != 0) {
 		my @Tunable = qw(
 			kern.maxusers
@@ -541,26 +542,40 @@ sub _sysctl_summary(){
 	}
 }
 
-switch($ARGV[0]){
-	# Print system information header.
-	_system_summary;	hline;
+my @unSub = qw(
+	_system_summary
+	_arc_summary
+	_arc_efficiency
+	_l2arc_summary
+	_dmu_summary
+	_vdev_summary
+	_sysctl_summary
+);
 
-	case(1){ _arc_summary; }
-	case(2){ _arc_efficiency; }
-	case(3){ _l2arc_summary; }
-	case(4){ _dmu_summary; }
-	case(5){ _vdev_summary; } 
-	case(6){ _sysctl_summary; }
-	else {
-		_arc_summary;		hline;
-		_arc_efficiency;	hline;
-		_l2arc_summary;		hline;
-		_dmu_summary;		hline;
-		_vdev_summary;		hline;
-		_sysctl_summary;
+sub _call_all {
+	foreach my $unsub (@unSub) {
+		eval $unsub;
+		hline;
 	}
 }
 
-print "\n------------------------------------------------------------------------\n";
+my %opt;
+getopt("p:", \%opt);
+if (%opt) {
+	switch($opt{p}) {
+		case 0 { eval $unSub[0]; hline; }
+		case 1 { eval $unSub[1]; hline; }
+		case 2 { eval $unSub[2]; hline; }
+		case 3 { eval $unSub[3]; hline; }
+		case 4 { eval $unSub[4]; hline; }
+		case 5 { eval $unSub[5]; hline; }
+		case 6 { eval $unSub[6]; hline; }
+		else {
+			_call_all;
+		}
+	}	
+} else {
+	_call_all;
+}
 
 __END__
