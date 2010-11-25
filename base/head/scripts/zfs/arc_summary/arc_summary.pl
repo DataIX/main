@@ -49,7 +49,7 @@ use Switch;
 
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
-sub hline(){
+sub hline {
 	print "\n------------------------------------------------------------------------\n\n";
 }
 
@@ -146,7 +146,7 @@ print "\n-----------------------------------------------------------------------
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 hline();
 
-sub _system_summary(){
+sub _system_summary {
 	my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 	my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 	my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
@@ -553,8 +553,10 @@ my @unSub = qw(
 );
 
 sub _call_all {
+	my $page = 0;
 	foreach my $unsub (@unSub) {
 		eval $unsub;
+		print "\t\t\t\t\t\t\t\tPage: $page"; ++$page;
 		hline;
 	}
 }
