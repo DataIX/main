@@ -556,7 +556,7 @@ sub _call_all {
 	my $page = 0;
 	foreach my $unsub (@unSub) {
 		eval $unsub;
-		print "\t\t\t\t\t\t\t\tPage: $page"; ++$page;
+		printf("\t\t\t\t\t\t\t\tPage: %2d", $page); ++$page;
 		hline;
 	}
 }
