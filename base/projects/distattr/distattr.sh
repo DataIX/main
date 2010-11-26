@@ -42,22 +42,22 @@ SETATTR="setextattr ${NAMESPACE}"
 NOW="`date`"
 
 for file in $@; do
-  if [ -r $file -a -f $file ]; then
-      [ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
-    echo -e "FILE:   $file"
-    echo -n "${MESGSPACE}Setting "
-    echo -n "NAME"
-      [ x"$file" != x"" ] && $SETATTR NAME "$file" $file
-    echo -n ", MD5"
-      [ -x /sbin/md5 ] && $SETATTR MD5 `/sbin/md5 -q $file` $file
-    echo -n ", SHA256"
-      [ -x /sbin/sha256 ] && $SETATTR SHA256 `/sbin/sha256 -q $file` $file
-    echo -n ", SIZE"
-      [ x"$st_size" != x"" ] && $SETATTR SIZE $st_size $file
-    echo -n ", CREATED"
-      [ x"$st_birthtime" != x"" ] && $SETATTR CREATED "`date -j -r $st_birthtime`" $file
-    echo -n ", TIMESTAMP"
-      [ x"$NOW" != x"" ] && $SETATTR TIMESTAMP "`date`" $file
-    echo "... [DONE]"
-  fi
+	if [ -r $file -a -f $file ]; then
+		[ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
+		echo -e "FILE:   $file"
+		echo -n "${MESGSPACE}Setting "
+		echo -n "NAME"
+		[ x"$file" != x"" ] && $SETATTR NAME "$file" $file
+		echo -n ", MD5"
+		[ -x /sbin/md5 ] && $SETATTR MD5 `/sbin/md5 -q $file` $file
+		echo -n ", SHA256"
+		[ -x /sbin/sha256 ] && $SETATTR SHA256 `/sbin/sha256 -q $file` $file
+		echo -n ", SIZE"
+		[ x"$st_size" != x"" ] && $SETATTR SIZE $st_size $file
+		echo -n ", CREATED"
+		[ x"$st_birthtime" != x"" ] && $SETATTR CREATED "`date -j -r $st_birthtime`" $file
+		echo -n ", TIMESTAMP"
+		[ x"$NOW" != x"" ] && $SETATTR TIMESTAMP "`date`" $file
+		echo "... [DONE]"
+	fi
 done
