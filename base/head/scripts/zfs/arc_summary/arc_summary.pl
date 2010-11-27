@@ -45,7 +45,7 @@
 
 use strict;
 use Getopt::Std;
-use Switch;
+use Switch 'Perl5', 'Perl6';
 
 my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
 
