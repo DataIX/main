@@ -32,7 +32,7 @@
 
 for file in $@; do
 	if [ -r $file -a -f $file ]; then
-		[ -x /sbin/md5 ] && /sbin/md5 $file
+		[ "`/sbin/sysctl -n kern.osreldate`" -lt "801501" ] && /sbin/md5 $file
 		[ "`/sbin/sysctl -n kern.osreldate`" -ge "600034" ] && /sbin/sha256 $file || :
 		[ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
 		[ "$st_size" != "" ] && echo "SIZE ($file) = $st_size"
