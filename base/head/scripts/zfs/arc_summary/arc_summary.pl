@@ -559,7 +559,7 @@ sub _call_all {
 		printf("\t\t\t\t\t\t\t\tPage: %2d", $page) &&
 		hline; ++$page;
 	}
-	printf("\t\t\t\t\t\t\t\tPage: %2d", $page);
+	printf("\t\t\t\t\t\t\t\tPage: %2d", --$page);
 	hline;
 }
 
