@@ -553,13 +553,13 @@ my @unSub = qw(
 );
 
 sub _call_all {
-	my $page = 0;
+	my $page = 1;
 	foreach my $unsub (@unSub) {
 		eval $unsub &&
-		printf("\t\t\t\t\t\t\t\tPage: %2d", ++$page) &&
-		hline;
+		printf("\t\t\t\t\t\t\t\tPage: %2d", $page) &&
+		hline; ++$page;
 	}
-	printf("\t\t\t\t\t\t\t\tPage: %2d", ++$page);
+	printf("\t\t\t\t\t\t\t\tPage: %2d", $page);
 	hline;
 }
 
