@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 #
 # $Id$
 #
@@ -555,23 +555,25 @@ my @unSub = qw(
 sub _call_all {
 	my $page = 0;
 	foreach my $unsub (@unSub) {
-		eval $unsub;
-		printf("\t\t\t\t\t\t\t\tPage: %2d", $page); ++$page;
+		eval $unsub &&
+		printf("\t\t\t\t\t\t\t\tPage: %2d", ++$page) &&
 		hline;
 	}
+	printf("\t\t\t\t\t\t\t\tPage: %2d", ++$page);
+	hline;
 }
 
 my %opt;
 getopt("p:", \%opt);
 if (%opt) {
 	switch($opt{p}) {
-		case 0 { eval $unSub[0]; hline; }
-		case 1 { eval $unSub[1]; hline; }
-		case 2 { eval $unSub[2]; hline; }
-		case 3 { eval $unSub[3]; hline; }
-		case 4 { eval $unSub[4]; hline; }
-		case 5 { eval $unSub[5]; hline; }
-		case 6 { eval $unSub[6]; hline; }
+		case 1 { eval $unSub[0]; hline; }
+		case 2 { eval $unSub[1]; hline; }
+		case 3 { eval $unSub[2]; hline; }
+		case 4 { eval $unSub[3]; hline; }
+		case 5 { eval $unSub[4]; hline; }
+		case 6 { eval $unSub[5]; hline; }
+		case 7 { eval $unSub[6]; hline; }
 		else {
 			_call_all;
 		}
