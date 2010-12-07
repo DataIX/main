@@ -3,8 +3,8 @@
 # $Id$
 #
 # Copyright (c) 2008 Ben Rockwood <benr@cuddletech.com>,
-# Copyright (c) 2010 Jason J. Hellenthal <jhell@dataix.net>,
 # Copyright (c) 2010 Martin Matuska <mm@FreeBSD.org>,
+# Copyright (c) 2010-2011 Jason J. Hellenthal <jhell@dataix.net>,
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
