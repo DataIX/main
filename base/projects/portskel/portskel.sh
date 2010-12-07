@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2009-2010 Jason J. Hellenthal <jhell@dataix.net>,
+# Copyright (c) 2009-2011 Jason J. Hellenthal <jhell@DataIX.net>,
 # All rights reserved.
 #
 # $Id$
