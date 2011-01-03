@@ -140,26 +140,82 @@ sub fPerc {
 	} else { return sprintf('%0.' . $Decimal . 'f', 100) . "%"; }
 }
 
+sub _system_memory {
+	my $sysctl = {};
+	my $sysctl_output = `/sbin/sysctl hw.physmem hw.pagesize vm.stats.vm`;
+	foreach my $line (split(/\n/, $sysctl_output)) {
+		if ($line =~ m/^([^:]+):\s+(.+)\s*$/s) {
+			$sysctl->{$1} = $2;
+		}
+	}
+
+	sub mem_rounded {
+	    my ($mem_size) = @_;
+	    my $chip_size  = 1;
+	    my $chip_guess = ($mem_size / 8) - 1;
+	    while ($chip_guess != 0) {
+	        $chip_guess >>= 1;
+	        $chip_size <<= 1;
+	    }
+	    my $mem_round = (int($mem_size / $chip_size) + 1) * $chip_size;
+	    return $mem_round;
+	}
+
+	my $mem_hw = &mem_rounded($sysctl->{"hw.physmem"});
+	my $mem_phys = $sysctl->{"hw.physmem"};
+	my $mem_all = $sysctl->{"vm.stats.vm.v_page_count"} * $sysctl->{"hw.pagesize"};
+	my $mem_wire = $sysctl->{"vm.stats.vm.v_wire_count"} * $sysctl->{"hw.pagesize"};
+	my $mem_active = $sysctl->{"vm.stats.vm.v_active_count"} * $sysctl->{"hw.pagesize"};
+	my $mem_inactive = $sysctl->{"vm.stats.vm.v_inactive_count"} * $sysctl->{"hw.pagesize"};
+	my $mem_cache = $sysctl->{"vm.stats.vm.v_cache_count"} * $sysctl->{"hw.pagesize"};
+	my $mem_free = $sysctl->{"vm.stats.vm.v_free_count"} * $sysctl->{"hw.pagesize"};
+
+	my $mem_gap_vm = $mem_all - ($mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free);
+	#my $mem_gap_sys = $mem_phys - $mem_all;
+	#my $mem_gap_hw = $mem_hw - $mem_phys;
+
+	my $mem_total = $mem_hw;
+	my $mem_avail = $mem_inactive + $mem_cache + $mem_free;
+	my $mem_used  = $mem_total - $mem_avail;
+
+	print "System Memory:\n";
+	printf("\t%s\t%s Active,\t", fPerc($mem_active,$mem_all), fBytes($mem_active));
+	printf("%s\t%s Inact\n", fPerc($mem_inactive,$mem_all), fBytes($mem_inactive));
+	printf("\t%s\t%s Wired,\t", fPerc($mem_wire,$mem_all), fBytes($mem_wire));
+	printf("%s\t%s Cache\n", fPerc($mem_cache,$mem_all), fBytes($mem_cache));
+	printf("\t%s\t%s Free,\t", fPerc($mem_free,$mem_all), fBytes($mem_free));
+	printf("%s\t%s Gap\n", fPerc($mem_gap_vm,$mem_all), fBytes($mem_gap_vm));
+	print "\n";
+	printf("\tReal Installed:\t\t\t\t%s\n", fBytes($mem_hw));
+	printf("\tReal Available:\t\t\t\t%s\n", fBytes($mem_phys));
+	printf("\tReal Managed:\t\t\t\t%s\n", fBytes($mem_all));
+	print "\n";
+	printf("\tLogical Total:\t\t\t\t%s\n", fBytes($mem_total));
+	printf("\tLogical Used:\t\t\t%s\t%s\n", fPerc($mem_used,$mem_total), fBytes($mem_used));
+	printf("\tLogical Free:\t\t\t%s\t%s\n", fPerc($mem_avail,$mem_total), fBytes($mem_avail));
+	print "\n";
+}
+
 my $daydate = localtime; chomp $daydate;
 
 print "\n------------------------------------------------------------------------\n";
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 hline();
 
+_system_memory;
+
 sub _system_summary {
-	my $phys_memory = `sysctl -n hw.physmem`; chomp $phys_memory;
 	my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 	my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 	my $kmem = ($ktext + $kdata);
 	my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
 	my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
 
-	printf("Physical Memory:\t\t\t\t%s\n\n", fBytes($phys_memory));
 	printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
-	printf("\tData:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
-	printf("\tText:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
-	printf("\t Map:\t\t\t\t\t%s\n", fBytes($kmem_map_size));
-	printf("\t   Free:\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
+	printf("\tDATA:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
+	printf("\tTEXT:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
+	printf("\tKMAP:\t\t\t\t\t%s\n", fBytes($kmem_map_size));
+	printf("\tFREE:\t\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
 }
 
 my $Kstat;
