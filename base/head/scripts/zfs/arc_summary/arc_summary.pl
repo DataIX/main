@@ -171,8 +171,6 @@ sub _system_memory {
 	my $mem_free = $sysctl->{"vm.stats.vm.v_free_count"} * $sysctl->{"hw.pagesize"};
 
 	my $mem_gap_vm = $mem_all - ($mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free);
-	#my $mem_gap_sys = $mem_phys - $mem_all;
-	#my $mem_gap_hw = $mem_hw - $mem_phys;
 
 	my $mem_total = $mem_hw;
 	my $mem_avail = $mem_inactive + $mem_cache + $mem_free;
