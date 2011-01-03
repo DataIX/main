@@ -200,14 +200,14 @@ print "\n-----------------------------------------------------------------------
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 hline();
 
-_system_memory;
-
 sub _system_summary {
 	my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
 	my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
 	my $kmem = ($ktext + $kdata);
 	my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
 	my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
+
+	_system_memory;
 
 	printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
 	printf("\tDATA:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
