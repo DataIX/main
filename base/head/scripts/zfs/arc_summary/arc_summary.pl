@@ -41,7 +41,7 @@
 #
 # Binaries that I am working on phasing out are:
 #
-# dc(1), uptime(1) & sed(1)
+# dc(1) & sed(1)
 
 use strict;
 use Getopt::Std;
