@@ -201,11 +201,11 @@ printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 hline();
 
 sub _system_summary {
-	my $ktext = `kldstat |awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |dc`;
-	my $kdata = `vmstat -m |sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |dc`;
+	my $ktext = `/sbin/kldstat |/usr/bin/awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |/usr/bin/dc`;
+	my $kdata = `/usr/bin/vmstat -m |/usr/bin/sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |/usr/bin/dc`;
 	my $kmem = ($ktext + $kdata);
-	my $kmem_map_size = `sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
-	my $kmem_map_free = `sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
+	my $kmem_map_size = `/sbin/sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
+	my $kmem_map_free = `/sbin/sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
 
 	_system_memory;
 
@@ -217,7 +217,7 @@ sub _system_summary {
 }
 
 my $Kstat;
-my @arcstats = `sysctl 'kstat.zfs.misc.arcstats'`;
+my @arcstats = `/sbin/sysctl 'kstat.zfs.misc.arcstats'`;
 foreach my $arcstats (@arcstats) {
         chomp $arcstats;
         my ($name,$value) = split /:/, $arcstats;
@@ -227,8 +227,8 @@ foreach my $arcstats (@arcstats) {
 }
 
 sub _arc_summary {
-	my $spa = `sysctl -n 'vfs.zfs.version.spa'`;
-	my $zpl = `sysctl -n 'vfs.zfs.version.zpl'`;
+	my $spa = `/sbin/sysctl -n 'vfs.zfs.version.spa'`;
+	my $zpl = `/sbin/sysctl -n 'vfs.zfs.version.zpl'`;
 	my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
 
 	print "ARC Summary: ";
@@ -470,7 +470,7 @@ sub _l2arc_summary {
 }
 
 sub _dmu_summary {
-	my @zfetch_stats = `sysctl 'kstat.zfs.misc.zfetchstats'`;
+	my @zfetch_stats = `/sbin/sysctl 'kstat.zfs.misc.zfetchstats'`;
 	foreach my $zfetch_stats (@zfetch_stats) {
 		chomp $zfetch_stats;
 		my ($name,$value) = split /:/, $zfetch_stats;
@@ -552,7 +552,7 @@ sub _dmu_summary {
 }
 
 sub _vdev_summary {
-	my @vdev_cache_stats = `sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
+	my @vdev_cache_stats = `/sbin/sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
 	foreach my $vdev_cache_stats (@vdev_cache_stats) {
 		chomp $vdev_cache_stats;
 		my ($name,$value) = split /:/, $vdev_cache_stats;
@@ -587,7 +587,7 @@ sub _sysctl_summary {
 			vm.kmem_size_min
 			vm.kmem_size_max
 		);
-		my @tunable = `sysctl -e @Tunable`;
+		my @tunable = `/sbin/sysctl -e @Tunable`;
 		print "ZFS Tunable (sysctl):\n";
 		foreach my $tunable (@tunable){
 			chomp($tunable);
