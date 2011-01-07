@@ -140,15 +140,26 @@ sub fPerc {
 	} else { return sprintf('%0.' . $Decimal . 'f', 100) . "%"; }
 }
 
-sub _system_memory {
-	my $sysctl = {};
-	my $sysctl_output = `/sbin/sysctl hw.physmem hw.pagesize vm.stats.vm`;
-	foreach my $line (split(/\n/, $sysctl_output)) {
-		if ($line =~ m/^([^:]+):\s+(.+)\s*$/s) {
-			$sysctl->{$1} = $2;
-		}
-	}
+my @Kstats = qw(
+	hw.pagesize
+	hw.physmem
+	kstat.zfs
+	vfs.zfs.version
+	vm.kmem_map_free
+	vm.kmem_map_size
+	vm.stats
+);
 
+my $Kstat;
+my @Kstat_pull = `/sbin/sysctl @Kstats`;
+foreach my $kstat (@Kstat_pull) {
+	chomp $kstat;
+	if ($kstat =~ m/^([^:]+):\s+(.+)\s*$/s) {
+		$Kstat->{$1} = $2;
+	};
+};
+
+sub _system_memory {
 	sub mem_rounded {
 	    my ($mem_size) = @_;
 	    my $chip_size  = 1;
@@ -161,14 +172,14 @@ sub _system_memory {
 	    return $mem_round;
 	}
 
-	my $mem_hw = &mem_rounded($sysctl->{"hw.physmem"});
-	my $mem_phys = $sysctl->{"hw.physmem"};
-	my $mem_all = $sysctl->{"vm.stats.vm.v_page_count"} * $sysctl->{"hw.pagesize"};
-	my $mem_wire = $sysctl->{"vm.stats.vm.v_wire_count"} * $sysctl->{"hw.pagesize"};
-	my $mem_active = $sysctl->{"vm.stats.vm.v_active_count"} * $sysctl->{"hw.pagesize"};
-	my $mem_inactive = $sysctl->{"vm.stats.vm.v_inactive_count"} * $sysctl->{"hw.pagesize"};
-	my $mem_cache = $sysctl->{"vm.stats.vm.v_cache_count"} * $sysctl->{"hw.pagesize"};
-	my $mem_free = $sysctl->{"vm.stats.vm.v_free_count"} * $sysctl->{"hw.pagesize"};
+	my $mem_hw = &mem_rounded($Kstat->{"hw.physmem"});
+	my $mem_phys = $Kstat->{"hw.physmem"};
+	my $mem_all = $Kstat->{"vm.stats.vm.v_page_count"} * $Kstat->{"hw.pagesize"};
+	my $mem_wire = $Kstat->{"vm.stats.vm.v_wire_count"} * $Kstat->{"hw.pagesize"};
+	my $mem_active = $Kstat->{"vm.stats.vm.v_active_count"} * $Kstat->{"hw.pagesize"};
+	my $mem_inactive = $Kstat->{"vm.stats.vm.v_inactive_count"} * $Kstat->{"hw.pagesize"};
+	my $mem_cache = $Kstat->{"vm.stats.vm.v_cache_count"} * $Kstat->{"hw.pagesize"};
+	my $mem_free = $Kstat->{"vm.stats.vm.v_free_count"} * $Kstat->{"hw.pagesize"};
 
 	my $mem_gap_vm = $mem_all - ($mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free);
 
@@ -192,22 +203,12 @@ sub _system_memory {
 	printf("\tLogical Used:\t\t\t%s\t%s\n", fPerc($mem_used,$mem_total), fBytes($mem_used));
 	printf("\tLogical Free:\t\t\t%s\t%s\n", fPerc($mem_avail,$mem_total), fBytes($mem_avail));
 	print "\n";
-}
 
-my $daydate = localtime; chomp $daydate;
-
-print "\n------------------------------------------------------------------------\n";
-printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
-hline();
-
-sub _system_summary {
 	my $ktext = `/sbin/kldstat |/usr/bin/awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |/usr/bin/dc`;
 	my $kdata = `/usr/bin/vmstat -m |/usr/bin/sed -Ee '1s/.*/0/;s/.* ([0-9]+)K.*/\\1+/;\$s/\$/1024*p/' |/usr/bin/dc`;
 	my $kmem = ($ktext + $kdata);
-	my $kmem_map_size = `/sbin/sysctl -n vm.kmem_map_size`; chomp $kmem_map_size;
-	my $kmem_map_free = `/sbin/sysctl -n vm.kmem_map_free`; chomp $kmem_map_free;
-
-	_system_memory;
+	my $kmem_map_size = $Kstat->{"vm.kmem_map_size"};
+	my $kmem_map_free = $Kstat->{"vm.kmem_map_free"};
 
 	printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
 	printf("\tDATA:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
@@ -216,20 +217,15 @@ sub _system_summary {
 	printf("\tFREE:\t\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
 }
 
-my $Kstat;
-my @arcstats = `/sbin/sysctl 'kstat.zfs.misc.arcstats'`;
-foreach my $arcstats (@arcstats) {
-        chomp $arcstats;
-        my ($name,$value) = split /:/, $arcstats;
-        my @z = split /\./, $name;
-        my $n = pop @z;
-        ${Kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
-}
+my $daydate = localtime; chomp $daydate;
+print "\n------------------------------------------------------------------------\n";
+printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
+hline();
 
 sub _arc_summary {
-	my $spa = `/sbin/sysctl -n 'vfs.zfs.version.spa'`;
-	my $zpl = `/sbin/sysctl -n 'vfs.zfs.version.zpl'`;
-	my $memory_throttle_count = ${Kstat}->{zfs}->{0}->{arcstats}->{memory_throttle_count};
+	my $spa = $Kstat->{"vfs.zfs.version.spa"};
+	my $zpl = $Kstat->{"vfs.zfs.version.zpl"};
+	my $memory_throttle_count = $Kstat->{"kstat.zfs.misc.arcstats.memory_throttle_count"};
 
 	print "ARC Summary: ";
 	if ($memory_throttle_count > 0) {
@@ -241,10 +237,10 @@ sub _arc_summary {
 	print "\n";
 
 	### ARC Misc. ###
-	my $deleted = ${Kstat}->{zfs}->{0}->{arcstats}->{deleted};
-	my $evict_skip = ${Kstat}->{zfs}->{0}->{arcstats}->{evict_skip};
-	my $mutex_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{mutex_miss};
-	my $recycle_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{recycle_miss};
+	my $deleted = $Kstat->{"kstat.zfs.misc.arcstats.deleted"};
+	my $evict_skip = $Kstat->{"kstat.zfs.misc.arcstats.evict_skip"};
+	my $mutex_miss = $Kstat->{"kstat.zfs.misc.arcstats.mutex_miss"};
+	my $recycle_miss = $Kstat->{"kstat.zfs.misc.arcstats.recycle_miss"};
 
 	print "ARC Misc:\n";
 	printf("\tDeleted:\t\t\t\t%s\n", fHits($deleted));
@@ -254,11 +250,11 @@ sub _arc_summary {
 	print "\n";
 
 	### ARC Sizing ###
-	my $arc_size = ${Kstat}->{zfs}->{0}->{arcstats}->{size};
-	my $mru_size = ${Kstat}->{zfs}->{0}->{arcstats}->{p};
-	my $target_max_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_max};
-	my $target_min_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c_min};
-	my $target_size = ${Kstat}->{zfs}->{0}->{arcstats}->{c};
+	my $arc_size = $Kstat->{"kstat.zfs.misc.arcstats.size"};
+	my $mru_size = $Kstat->{"kstat.zfs.misc.arcstats.p"};
+	my $target_max_size = $Kstat->{"kstat.zfs.misc.arcstats.c_max"};
+	my $target_min_size = $Kstat->{"kstat.zfs.misc.arcstats.c_min"};
+	my $target_size = $Kstat->{"kstat.zfs.misc.arcstats.c"};
 
 	my $target_size_ratio = ($target_max_size / $target_min_size);
 
@@ -290,11 +286,11 @@ sub _arc_summary {
 	print "\n";
 
 	### ARC Hash Breakdown ###
-	my $hash_chain_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chain_max};
-	my $hash_chains = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_chains};
-	my $hash_collisions = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_collisions};
-	my $hash_elements = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements};
-	my $hash_elements_max = ${Kstat}->{zfs}->{0}->{arcstats}->{hash_elements_max};
+	my $hash_chain_max = $Kstat->{"kstat.zfs.misc.arcstats.hash_chain_max"};
+	my $hash_chains = $Kstat->{"kstat.zfs.misc.arcstats.hash_chains"};
+	my $hash_collisions = $Kstat->{"kstat.zfs.misc.arcstats.hash_collisions"};
+	my $hash_elements = $Kstat->{"kstat.zfs.misc.arcstats.hash_elements"};
+	my $hash_elements_max = $Kstat->{"kstat.zfs.misc.arcstats.hash_elements_max"};
 
 	print "ARC Hash Breakdown:\n";
 	printf("\tElements Max:\t\t\t\t%s\n", fHits($hash_elements_max));
@@ -306,20 +302,20 @@ sub _arc_summary {
 }
 
 sub _arc_efficiency {
-	my $arc_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{hits};
-	my $arc_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{misses};
-	my $demand_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_hits};
-	my $demand_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_data_misses};
-	my $demand_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_hits};
-	my $demand_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{demand_metadata_misses};
-	my $mfu_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mfu_ghost_hits};
-	my $mfu_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mfu_hits};
-	my $mru_ghost_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_ghost_hits};
-	my $mru_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{mru_hits};
-	my $prefetch_data_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_hits};
-	my $prefetch_data_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_data_misses};
-	my $prefetch_metadata_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_hits};
-	my $prefetch_metadata_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{prefetch_metadata_misses};
+	my $arc_hits = $Kstat->{"kstat.zfs.misc.arcstats.hits"};
+	my $arc_misses = $Kstat->{"kstat.zfs.misc.arcstats.misses"};
+	my $demand_data_hits = $Kstat->{"kstat.zfs.misc.arcstats.demand_data_hits"};
+	my $demand_data_misses = $Kstat->{"kstat.zfs.misc.arcstats.demand_data_misses"};
+	my $demand_metadata_hits = $Kstat->{"kstat.zfs.misc.arcstats.demand_metadata_hits"};
+	my $demand_metadata_misses = $Kstat->{"kstat.zfs.misc.arcstats.demand_metadata_misses"};
+	my $mfu_ghost_hits = $Kstat->{"kstat.zfs.misc.arcstats.mfu_ghost_hits"};
+	my $mfu_hits = $Kstat->{"kstat.zfs.misc.arcstats.mfu_hits"};
+	my $mru_ghost_hits = $Kstat->{"kstat.zfs.misc.arcstats.mru_ghost_hits"};
+	my $mru_hits = $Kstat->{"kstat.zfs.misc.arcstats.mru_hits"};
+	my $prefetch_data_hits = $Kstat->{"kstat.zfs.misc.arcstats.prefetch_data_hits"};
+	my $prefetch_data_misses = $Kstat->{"kstat.zfs.misc.arcstats.prefetch_data_misses"};
+	my $prefetch_metadata_hits = $Kstat->{"kstat.zfs.misc.arcstats.prefetch_metadata_hits"};
+	my $prefetch_metadata_misses = $Kstat->{"kstat.zfs.misc.arcstats.prefetch_metadata_misses"};
 
 	my $anon_hits = $arc_hits - ($mfu_hits + $mru_hits + $mfu_ghost_hits + $mru_ghost_hits);
 	my $arc_accesses_total = ($arc_hits + $arc_misses);
@@ -381,35 +377,35 @@ sub _arc_efficiency {
 }
 
 sub _l2arc_summary {
-	my $l2_abort_lowmem = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_abort_lowmem};
-	my $l2_cksum_bad = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_cksum_bad};
-	my $l2_evict_lock_retry = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_lock_retry};
-	my $l2_evict_reading = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_evict_reading};
-	my $l2_feeds = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_feeds};
-	my $l2_free_on_write = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_free_on_write};
-	my $l2_hdr_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hdr_size};
-	my $l2_hits = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_hits};
-	my $l2_io_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_io_error};
-	my $l2_misses = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_misses};
-	my $l2_rw_clash = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_rw_clash};
-	my $l2_size = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_size};
-	my $l2_write_buffer_bytes_scanned = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_bytes_scanned};
-	my $l2_write_buffer_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_iter};
-	my $l2_write_buffer_list_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_iter};
-	my $l2_write_buffer_list_null_iter = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_buffer_list_null_iter};
-	my $l2_write_bytes = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_bytes};
-	my $l2_write_full = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_full};
-	my $l2_write_in_l2 = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_in_l2};
-	my $l2_write_io_in_progress = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_io_in_progress};
-	my $l2_write_not_cacheable = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_not_cacheable};
-	my $l2_write_passed_headroom = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_passed_headroom};
-	my $l2_write_pios = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_pios};
-	my $l2_write_spa_mismatch = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_spa_mismatch};
-	my $l2_write_trylock_fail = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_write_trylock_fail};
-	my $l2_writes_done = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_done};
-	my $l2_writes_error = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_error};
-	my $l2_writes_hdr_miss = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_hdr_miss};
-	my $l2_writes_sent = ${Kstat}->{zfs}->{0}->{arcstats}->{l2_writes_sent};
+	my $l2_abort_lowmem = $Kstat->{"kstat.zfs.misc.arcstats.l2_abort_lowmem"};
+	my $l2_cksum_bad = $Kstat->{"kstat.zfs.misc.arcstats.l2_cksum_bad"};
+	my $l2_evict_lock_retry = $Kstat->{"kstat.zfs.misc.arcstats.l2_evict_lock_retry"};
+	my $l2_evict_reading = $Kstat->{"kstat.zfs.misc.arcstats.l2_evict_reading"};
+	my $l2_feeds = $Kstat->{"kstat.zfs.misc.arcstats.l2_feeds"};
+	my $l2_free_on_write = $Kstat->{"kstat.zfs.misc.arcstats.l2_free_on_write"};
+	my $l2_hdr_size = $Kstat->{"kstat.zfs.misc.arcstats.l2_hdr_size"};
+	my $l2_hits = $Kstat->{"kstat.zfs.misc.arcstats.l2_hits"};
+	my $l2_io_error = $Kstat->{"kstat.zfs.misc.arcstats.l2_io_error"};
+	my $l2_misses = $Kstat->{"kstat.zfs.misc.arcstats.l2_misses"};
+	my $l2_rw_clash = $Kstat->{"kstat.zfs.misc.arcstats.l2_rw_clash"};
+	my $l2_size = $Kstat->{"kstat.zfs.misc.arcstats.l2_size"};
+	my $l2_write_buffer_bytes_scanned = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_buffer_bytes_scanned"};
+	my $l2_write_buffer_iter = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_buffer_iter"};
+	my $l2_write_buffer_list_iter = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_buffer_list_iter"};
+	my $l2_write_buffer_list_null_iter = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_buffer_list_null_iter"};
+	my $l2_write_bytes = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_bytes"};
+	my $l2_write_full = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_full"};
+	my $l2_write_in_l2 = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_in_l2"};
+	my $l2_write_io_in_progress = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_io_in_progress"};
+	my $l2_write_not_cacheable = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_not_cacheable"};
+	my $l2_write_passed_headroom = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_passed_headroom"};
+	my $l2_write_pios = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_pios"};
+	my $l2_write_spa_mismatch = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_spa_mismatch"};
+	my $l2_write_trylock_fail = $Kstat->{"kstat.zfs.misc.arcstats.l2_write_trylock_fail"};
+	my $l2_writes_done = $Kstat->{"kstat.zfs.misc.arcstats.l2_writes_done"};
+	my $l2_writes_error = $Kstat->{"kstat.zfs.misc.arcstats.l2_writes_error"};
+	my $l2_writes_hdr_miss = $Kstat->{"kstat.zfs.misc.arcstats.l2_writes_hdr_miss"};
+	my $l2_writes_sent = $Kstat->{"kstat.zfs.misc.arcstats.l2_writes_sent"};
 
 	my $l2_access_total = ($l2_hits + $l2_misses);
 	my $l2_health_count = ($l2_writes_error + $l2_cksum_bad + $l2_io_error);
@@ -470,26 +466,17 @@ sub _l2arc_summary {
 }
 
 sub _dmu_summary {
-	my @zfetch_stats = `/sbin/sysctl 'kstat.zfs.misc.zfetchstats'`;
-	foreach my $zfetch_stats (@zfetch_stats) {
-		chomp $zfetch_stats;
-		my ($name,$value) = split /:/, $zfetch_stats;
-		my @z = split /\./, $name;
-		my $n = pop @z;
-		${Kstat}->{zfs}->{0}->{zfetch_stats}->{$n} = $value;
-	}
-
-	my $zfetch_bogus_streams = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{bogus_streams};
-	my $zfetch_colinear_hits = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{colinear_hits};
-	my $zfetch_colinear_misses = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{colinear_misses};
-	my $zfetch_hits = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{hits};
-	my $zfetch_misses = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{misses};
-	my $zfetch_reclaim_failures = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{reclaim_failures};
-	my $zfetch_reclaim_successes = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{reclaim_successes};
-	my $zfetch_streams_noresets = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{streams_noresets};
-	my $zfetch_streams_resets = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{streams_resets};
-	my $zfetch_stride_hits = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{stride_hits};
-	my $zfetch_stride_misses = ${Kstat}->{zfs}->{0}->{zfetch_stats}->{stride_misses};
+	my $zfetch_bogus_streams = $Kstat->{"kstat.zfs.misc.zfetch_stats.bogus_streams"};
+	my $zfetch_colinear_hits = $Kstat->{"kstat.zfs.misc.zfetch_stats.colinear_hits"};
+	my $zfetch_colinear_misses = $Kstat->{"kstat.zfs.misc.zfetch_stats.colinear_misses"};
+	my $zfetch_hits = $Kstat->{"kstat.zfs.misc.zfetch_stats.hits"};
+	my $zfetch_misses = $Kstat->{"kstat.zfs.misc.zfetch_stats.misses"};
+	my $zfetch_reclaim_failures = $Kstat->{"kstat.zfs.misc.zfetch_stats.reclaim_failures"};
+	my $zfetch_reclaim_successes = $Kstat->{"kstat.zfs.misc.zfetch_stats.reclaim_successes"};
+	my $zfetch_streams_noresets = $Kstat->{"kstat.zfs.misc.zfetch_stats.streams_noresets"};
+	my $zfetch_streams_resets = $Kstat->{"kstat.zfs.misc.zfetch_stats.streams_resets"};
+	my $zfetch_stride_hits = $Kstat->{"kstat.zfs.misc.zfetch_stats.stride_hits"};
+	my $zfetch_stride_misses = $Kstat->{"kstat.zfs.misc.zfetch_stats.stride_misses"};
 
 	my $zfetch_access_total = ($zfetch_hits + $zfetch_misses);
 	my $zfetch_colinear_total = ($zfetch_colinear_hits + $zfetch_colinear_misses);
@@ -552,18 +539,9 @@ sub _dmu_summary {
 }
 
 sub _vdev_summary {
-	my @vdev_cache_stats = `/sbin/sysctl 'kstat.zfs.misc.vdev_cache_stats'`;
-	foreach my $vdev_cache_stats (@vdev_cache_stats) {
-		chomp $vdev_cache_stats;
-		my ($name,$value) = split /:/, $vdev_cache_stats;
-		my @z = split /\./, $name;
-		my $n = pop @z;
-		${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{$n} = $value;
-	}
-
-	my $vdev_cache_delegations = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{delegations};
-	my $vdev_cache_misses = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{misses};
-	my $vdev_cache_hits = ${Kstat}->{zfs}->{0}->{vdev_cache_stats}->{hits};
+	my $vdev_cache_delegations = $Kstat->{"kstat.zfs.misc.vdev_cache_stats.delegations"};
+	my $vdev_cache_misses = $Kstat->{"kstat.zfs.misc.vdev_cache_stats.misses"};
+	my $vdev_cache_hits = $Kstat->{"kstat.zfs.misc.vdev_cache_stats.hits"};
 	my $vdev_cache_total = ($vdev_cache_misses + $vdev_cache_hits + $vdev_cache_delegations);
 
 	if ($vdev_cache_total > 0) {
@@ -597,7 +575,7 @@ sub _sysctl_summary {
 }
 
 my @unSub = qw(
-	_system_summary
+	_system_memory
 	_arc_summary
 	_arc_efficiency
 	_l2arc_summary
