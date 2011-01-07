@@ -143,10 +143,15 @@ sub fPerc {
 my @Kstats = qw(
 	hw.pagesize
 	hw.physmem
+	kern.maxusers
 	kstat.zfs
-	vfs.zfs.version
+	vfs.zfs
 	vm.kmem_map_free
 	vm.kmem_map_size
+	vm.kmem_size
+	vm.kmem_size_max
+	vm.kmem_size_min
+	vm.kmem_size_scale
 	vm.stats
 );
 
