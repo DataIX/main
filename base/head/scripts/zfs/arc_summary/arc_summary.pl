@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env -iS perl
 #
 # $Id$
 #
@@ -471,17 +471,17 @@ sub _l2arc_summary {
 }
 
 sub _dmu_summary {
-	my $zfetch_bogus_streams = $Kstat->{"kstat.zfs.misc.zfetch_stats.bogus_streams"};
-	my $zfetch_colinear_hits = $Kstat->{"kstat.zfs.misc.zfetch_stats.colinear_hits"};
-	my $zfetch_colinear_misses = $Kstat->{"kstat.zfs.misc.zfetch_stats.colinear_misses"};
-	my $zfetch_hits = $Kstat->{"kstat.zfs.misc.zfetch_stats.hits"};
-	my $zfetch_misses = $Kstat->{"kstat.zfs.misc.zfetch_stats.misses"};
-	my $zfetch_reclaim_failures = $Kstat->{"kstat.zfs.misc.zfetch_stats.reclaim_failures"};
-	my $zfetch_reclaim_successes = $Kstat->{"kstat.zfs.misc.zfetch_stats.reclaim_successes"};
-	my $zfetch_streams_noresets = $Kstat->{"kstat.zfs.misc.zfetch_stats.streams_noresets"};
-	my $zfetch_streams_resets = $Kstat->{"kstat.zfs.misc.zfetch_stats.streams_resets"};
-	my $zfetch_stride_hits = $Kstat->{"kstat.zfs.misc.zfetch_stats.stride_hits"};
-	my $zfetch_stride_misses = $Kstat->{"kstat.zfs.misc.zfetch_stats.stride_misses"};
+	my $zfetch_bogus_streams = $Kstat->{"kstat.zfs.misc.zfetchstats.bogus_streams"};
+	my $zfetch_colinear_hits = $Kstat->{"kstat.zfs.misc.zfetchstats.colinear_hits"};
+	my $zfetch_colinear_misses = $Kstat->{"kstat.zfs.misc.zfetchstats.colinear_misses"};
+	my $zfetch_hits = $Kstat->{"kstat.zfs.misc.zfetchstats.hits"};
+	my $zfetch_misses = $Kstat->{"kstat.zfs.misc.zfetchstats.misses"};
+	my $zfetch_reclaim_failures = $Kstat->{"kstat.zfs.misc.zfetchstats.reclaim_failures"};
+	my $zfetch_reclaim_successes = $Kstat->{"kstat.zfs.misc.zfetchstats.reclaim_successes"};
+	my $zfetch_streams_noresets = $Kstat->{"kstat.zfs.misc.zfetchstats.streams_noresets"};
+	my $zfetch_streams_resets = $Kstat->{"kstat.zfs.misc.zfetchstats.streams_resets"};
+	my $zfetch_stride_hits = $Kstat->{"kstat.zfs.misc.zfetchstats.stride_hits"};
+	my $zfetch_stride_misses = $Kstat->{"kstat.zfs.misc.zfetchstats.stride_misses"};
 
 	my $zfetch_access_total = ($zfetch_hits + $zfetch_misses);
 	my $zfetch_colinear_total = ($zfetch_colinear_hits + $zfetch_colinear_misses);
