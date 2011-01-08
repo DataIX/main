@@ -201,8 +201,8 @@ sub _system_memory {
 	printf("%s\t%s Gap\n", fPerc($mem_gap_vm, $mem_all), fBytes($mem_gap_vm));
 	print "\n";
 	printf("\tReal Installed:\t\t\t\t%s\n", fBytes($mem_hw));
-	printf("\tReal Available:\t\t\t\t%s\n", fBytes($mem_phys));
-	printf("\tReal Managed:\t\t\t\t%s\n", fBytes($mem_all));
+	printf("\tReal Available:\t\t\t%s\t%s\n", fPerc($mem_phys, $mem_hw), fBytes($mem_phys));
+	printf("\tReal Managed:\t\t\t%s\t%s\n", fPerc($mem_all, $mem_phys), fBytes($mem_all));
 	print "\n";
 	printf("\tLogical Total:\t\t\t\t%s\n", fBytes($mem_total));
 	printf("\tLogical Used:\t\t\t%s\t%s\n", fPerc($mem_used, $mem_total), fBytes($mem_used));
