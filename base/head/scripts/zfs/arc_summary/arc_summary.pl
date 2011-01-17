@@ -144,8 +144,6 @@ my @Kstats = qw(
 	hw.pagesize
 	hw.physmem
 	kern.maxusers
-	kstat.zfs
-	vfs.zfs
 	vm.kmem_map_free
 	vm.kmem_map_size
 	vm.kmem_size
@@ -153,6 +151,8 @@ my @Kstats = qw(
 	vm.kmem_size_min
 	vm.kmem_size_scale
 	vm.stats
+	kstat.zfs
+	vfs.zfs
 );
 
 my $Kstat;
