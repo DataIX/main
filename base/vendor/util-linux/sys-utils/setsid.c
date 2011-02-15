@@ -9,18 +9,19 @@
  * 2001-01-18 John Fremlin <vii@penguinpowered.com>
  * - fork in case we are process group leader
  *
+ * 2011-02-14 Jason J. Hellenthal <jhell@DataIX.net>
+ * - removed nls support for this simple command.
+ *
  */
 
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "nls.h"
+
+#define _(Text) (Text)
 
 int
 main(int argc, char *argv[]) {
-	setlocale(LC_ALL, "");
-	bindtextdomain(PACKAGE, LOCALEDIR);
-	textdomain(PACKAGE);
 	
 	if (argc < 2) {
 		fprintf(stderr, _("usage: %s program [arg ...]\n"),
