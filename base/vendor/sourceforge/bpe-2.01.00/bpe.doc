@@ -1,0 +1,1056 @@
+
+
+
+BPE(1)							BPE(1)
+
+
+NAME
+       bpe - examine and patch binary files
+
+SYNOPSIS
+       bpe [ -abcdeEhkKLmrwxy ] [ -Bext ] [ -ln ] [ -ooffset ]
+	   [ -sn ] file ...
+       bpe -H
+       bpe -v
+       bpe -V
+
+DESCRIPTION
+       bpe  is a simple, screen-oriented editor for searching and
+       editing ordinary files  in  either  ASCII  or  hexadecimal
+       modes (directories can be searched on many systems but not
+       edited). Files are displayed in n-byte pages (where n is a
+       function	of  the  terminal/window size) in separate ASCII
+       and hexadecimal windows	and  it	is  possible  to  switch
+       between the two windows as required.
+
+       The  size  of  files  that can be edited is not limited by
+       available memory.
+
+   Command-Line Options
+       -a	align	a  searched-for	string	or  a	selected
+		 address at the first column of each window - the
+		 default is for the  display  to  be  aligned  on
+		 16-byte boundaries.
+
+       -b	create	a backup file with the default extension
+		 .bak - the filename must be no longer	than  the
+		 maximum  number  of  characters  allowed  for	a
+		 directory entry less the characters required for
+		 the extension.
+
+		 The  backup file is created automatically in the
+		 current directory with the user's effective UID,
+		 with  the  GID as specified in creat(2) and with
+		 the same  modes  and  modification-time  as  the
+		 original  file.  If  a	file  of  the	same name
+		 already exists the user will be given the option
+		 of replacing it. The backup file is created only
+		 on the first access of a given file in the  cur-
+		 rent bpe session.
+
+		 A  backup  file  will	not be created for a file
+		 that is opened in read-only mode or that is  not
+		 an  ordinary  file  or	if  a	lockfile-error is
+		 detected.
+
+       -Bext	specify an extension for backup files instead of
+		 the default - apart from restrictions imposed by
+		 the file-system, ext can be no	longer	than  15
+		 characters.  Note  that  the  -b option or the B
+		 command is still required to actually	create	a
+
+
+
+LOCAL MANUAL		November 09 1998			1
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+		 backup file.
+
+       -c	set the cursor position on entry to an edit mode
+		 to the top, left-hand corner of the  appropriate
+		 window	-  by default the cursor position is set
+		 to  the  first	character  of	a   searched-for
+		 ASCII/hex  string after a search operation or to
+		 the  window  position	representing  a	selected
+		 address  after	a  set-current-address operation
+		 (the C command can be	used  to  toggle  cursor-
+		 positioning on/off).
+
+       -d	clear	the display before accessing each file in
+		 the file list and when toggling between the help
+		 screens  -  by	default,  bpe updates only those
+		 parts of the display that need	to  be	changed.
+		 However,  this	can  cause  problems  with  some
+		 curses/terminal combinations  that  leave  "old"
+		 data  in  the	display. Using the -d option will
+		 overcome the problem (the D command can be  used
+		 to toggle display-clear on/off).
+
+       -e	disable  error-bell for command and file errors.
+
+       -E	disable error-bell  in	edit  modes  and  during
+		 string/address data-entry.
+
+       -h	disable  highlighting	-  by  default,	bpe uses
+		 highlighting	in   several   areas   but   some
+		 curses/terminal  combinations	have trouble with
+		 mixed highlighted  and	non-highlighted  charac-
+		 ters,	particularly  over  slow  lines.  The  -h
+		 option will solve the problem although	some  of
+		 the  visual convenience of bpe will be lost (the
+		 H command can be  used	to  toggle  highlighting
+		 on/off).
+
+       -k	disable  ESC  as  escape character - by default,
+		 ESC (0x1b) is one of the characters that can  be
+		 used	to   exit   edit-mode	and   to   abort
+		 string/address/data entry. This can cause timing
+		 problems,  particularly  over	slow  lines, with
+		 terminals that use the escape character  in  the
+		 strings  sent	by  the	cursor	keys.	If the -k
+		 option is used, ESC will  no  longer  be  inter-
+		 preted	as  an	escape character. This option is
+		 really of significance only if bpe has been com-
+		 piled with keypad enabled.
+
+       -K	disable keypad - this option, which is available
+		 only  if  bpe	has  been  compiled  with  keypad
+		 enabled,  can	be  useful  with  some	terminals
+		 (check the compile-time  defaults  with  the  -V
+		 option).  The	"vi-style"  cursor-movement  keys
+
+
+
+LOCAL MANUAL		November 09 1998			2
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+		 remain available if the -K option is  used  (see
+		 under Editing below).
+
+       -ln	set the position of the target line after search
+		 and set-current-address  operations  to  line	n
+		 where	n  is  an  integer between 1 and 15 - the
+		 default is for the target line to be  positioned
+		 at the top of the windows (i.e.  n = 1).
+
+       -L	disable  file-locking - by default a lockfile is
+		 created for a file opened in read/write mode and
+		 any  other  attempt  to  open	the same file for
+		 read/write will result in the file being  opened
+		 in read-only mode. The -L option disables normal
+		 creation of the lockfile although  it	is  still
+		 created  (but	removed	as  soon  as the file is
+		 open) as a check for its prior	existence.  This
+		 option,  which is available only if bpe has been
+		 compiled with file-locking  enabled,  should  be
+		 used with caution!
+
+       -m	disable  message-receive  - by default the modes
+		 of the user's tty are	left  unchanged.  The  -m
+		 option	will  clear  group-write and world-write
+		 access.  The  original	modes	are  restored  on
+		 quitting bpe or when exiting to a shell.
+
+       -ooffset	specify the start-address of the first page of a
+		 file that will be displayed when a file is first
+		 accessed  instead  of	the default of 0x00 - the
+		 offset-address, which should  be  in  the  range
+		 from 0x01 to EOF inclusive, can be either octal,
+		 decimal or hexadecimal. An octal address  should
+		 have a leading 0 and a hex address should have a
+		 leading 0x. If there is no leading 0 or 0x it is
+		 taken to be a decimal address.
+
+		 The  start-address will be set to 0x00 if offset
+		 is outside the legal range for a given file and,
+		 in  any  case, will have no effect if a file has
+		 already been accessed in the  current	bpe  ses-
+		 sion.
+
+       -r	open all files in read-only mode. A file will be
+		 opened in read-only mode  automatically  regard-
+		 less  of the use of the -r option if it does not
+		 have write access but is otherwise accessible or
+		 if  a	lockfile  exists  for  that  file (see -L
+		 above).
+
+       -sn	set the number of lines to be scrolled with  the
+		 +  and	-  commands  to  n where n is an integer
+		 greater than 1 - the default is half the size of
+		 the  editing  window  (i.e. 8 lines on a 24-line
+
+
+
+LOCAL MANUAL		November 09 1998			3
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+		 terminal).
+
+       -w	force bpe to use a 24-line by 80-column  display
+		 over-riding any window-size information obtained
+		 at run-time (see Window Size below).
+
+       -x	do not disable XON-XOFF flow-control. It is dis-
+		 abled	by default, partly to avoid the possibil-
+		 ity of an unintended CTRL-S  seeming  to  "lock"
+		 the   terminal.  However,  flow-control  may  be
+		 needed	with  slow  terminals	(particularly  on
+		 dial-up lines) but will be available with the -x
+		 option only if it is the default state.
+
+       -y	disable display of the file-address  represented
+		 by  the cursor-position during editing and file-
+		 address display during searching (useful on slow
+		 systems and, particularly, with slow terminals -
+		 the Y command can be used to toggle address-dis-
+		 play on/off).
+
+       A  brief	explanation  of the command-line options will be
+       displayed if bpe is called with the -H option. The version
+       number  and  date will be displayed with the -v option. If
+       the -V option is used the compile-time defaults will  also
+       be listed.
+
+   Environment-Variable Options
+       Any of the command-line options (other than -H, -v and -V)
+       can also be placed in the environment  variable,	BPE,  to
+       set  user-preferred, run-time defaults and should take the
+       form, for example,  BPE='abcedeEhkKLmrwxyBext lnsnooffset'
+       where  n	is an integer, ext is the required extension for
+       any backup files and offset is the address at which  file-
+       display	should	start  (see -o under Command-Line Options
+       for the format). Note that, if B or o  is  given,  ext  or
+       offset  respectively  must  be followed by a space and the
+       entire argument properly-enclosed in quotes if it  is  not
+       the last option on the line. The form given is appropriate
+       for the Bourne and Korn shells.
+
+       Any of the BPE options used without a  corresponding  com-
+       mand-line  option  (or  vice-versa)  will  have the effect
+       listed under Command-Line  Options.   However,  an  option
+       given  on the command line that is already set in BPE will
+       have its action reversed.
+
+       As an example, BPE=r will put bpe into read-only mode as a
+       run-time default but the use of the -r command-line option
+       will then enable read/write mode.
+
+       Four exceptions to this general rule are the -Bext, -ooff-
+       set,  -ln  and  -sn command-line options where the strings
+       ext and offset and the values for n will be used in  place
+
+
+
+LOCAL MANUAL		November 09 1998			4
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       of anything set in BPE.
+
+   Buffers
+       bpe maintains three main buffers - an edit buffer, a last-
+       write buffer and an original-data buffer. The size of  the
+       buffers	is determined by the number of lines in the edit-
+       ing windows but would be 256 bytes for a "standard"  24	x
+       80 terminal.
+
+       The edit buffer contains the data that is displayed in the
+       editing windows.
+
+       The last-write buffer reflects any changes that have  been
+       written	to  disk and is updated at each write. It is used
+       to restore the contents of the edit buffer  to  the  state
+       that obtained before any modifications were made after the
+       last write. The last-write buffer's contents will  be  the
+       same  as	that of the original-data buffer if no write has
+       taken place.
+
+       The original-data buffer contains the data read	from  the
+       disk before any edit session for that page where a page is
+       defined as any editing-window-sized segment of  the  file.
+       The current page is that editing-window-sized segment con-
+       tained within the buffers' boundaries.
+
+       Note, therefore, that any movement  outside  the	current-
+       page boundaries, i.e.  moving to another page, will change
+       the buffers' boundaries and, therefore, their contents.
+
+       The start-address of the current page is displayed at  the
+       top-right-hand corner of the screen.
+
+       bpe  also  maintains buffers for each file in the argument
+       list.  Various file-attributes are saved when  a	file  is
+       first  accessed which speeds-up operations during any sub-
+       sequent access in the current bpe session.
+
+       The current-page, marker, last-edited-page,  last-set-cur-
+       rent-address,   last-successfully-searched-for-string  and
+       cursor-offset addresses are also saved for each file  mak-
+       ing it possible to return to a file with all previous set-
+       tings intact - including any highlighting  from	a  search
+       operation.
+
+   Window Size
+       The  window-size	is  determined	at  run  time.	bpe will
+       attempt to use all of the available lines (unless  the  -w
+       option  has  been  used) but the 80-column width is fixed.
+       bpe will abort with an error if	the  window/terminal  has
+       fewer  than  80	columns or if it has fewer lines than the
+       minimum set at compile-time (this can be checked with  the
+       -V  option)  or	fewer  than 24 lines if the -w option has
+       been used.
+
+
+
+LOCAL MANUAL		November 09 1998			5
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       This version of bpe does not respond to a  SIGWINCH,  i.e.
+       the display cannot be resized dynamically.
+
+   Edit-Mode Commands
+       CTRL-E	 toggle edit-mode - can be used after enter-
+		      ing an edit mode with either  the	a  or	h
+		      commands.
+       CTRL-V	 escape  next  edit  character  - allows the
+		      entry of non-printing ASCII  characters  in
+		      ASCII-edit mode and of single ASCII charac-
+		      ters in hex-edit mode.
+       CTRL-R	 redraw current screen (see below).
+       CTRL-X	 set marker [a to z] to address  represented
+		      by current cursor-position.
+       DEL	    single-character	undo - available only for
+		      changes that have not been written to disk.
+       ESC or CTRL-C  exit  edit mode and abort data-entry at any
+		      prompt in command-mode (CTRL-D can also  be
+		      used  -  it  has	been included to maintain
+		      "compatibility" with the first versions  of
+		      bpe).
+
+   Command-Mode Commands
+       N	      move to next file in arg list.
+       P	      move to previous file in arg list.
+       F	      display/select-from file list.
+       A	      add file to list.
+       E	      edit new file.
+       j	      jump to file number from arg list.
+       J	      jump to file name from arg list.
+       t or #	 toggle  between  two-most-recently-accessed
+		      files.
+       T	      show  names  of  two-most-recently-accessed
+		      files on status-line - the name of the cur-
+		      rent file will be highlighted.
+       b or g	 display first page.
+       e or G	 display last page.
+       n or SPACE     display next page.
+       p	      display previous page.
+       CTRL-J	 scroll forward 1 line.
+       +	      scroll forward 8 lines (the number of lines
+		      to  be  scrolled	with the + and - commands
+		      can be set with the -sn option).
+       CTRL-K	 scroll back 1 line.
+       -	      scroll back 8 lines.
+       s	      set current address.
+       m	      set marker [a to z]  to  the  current  file
+		      address.
+       M	      set marker [a to z] to specific address.
+       k	      clear markers.
+       X	      display  marker,	current-page,  last-edit-
+		      page, set-address, string-search and offset
+		      addresses.  Note that any legal bpe command
+		      can be entered at the address-screen prompt
+
+
+
+LOCAL MANUAL		November 09 1998			6
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+		      although	user-confirmation   is	required
+		      before  quitting	bpe  directly  from   the
+		      prompt.
+       ` or '	 goto address represented by marker [a to z]
+       @	      goto last set-current-address
+       o	      goto offset address entered on the  command
+		      line.
+       x	      goto start-address of last-edited page.
+       f or /	 find ASCII string (from current address)
+       l	      locate hex bytes (from current address)
+       L	      goto address of last successfully-searched-
+		      for string.
+       a	      edit in ASCII window.
+       h	      edit in hex window.
+       C	      toggle cursor-positioning on/off
+       u	      undo all changes to the window-buffer  that
+		      have not been written to disk.
+       U	      undo  changes  after  the window-buffer has
+		      been written to disk  -  this  facility  is
+		      available	only if the current file address
+		      has not been changed.
+       w	      write modified window-buffer to disk.
+       CTRL-E	 edit last command-mode entry at  the  file-
+		      name,  search-string  and	address  prompts
+		      (see under Command Editing below).
+       c	      clear status-line
+       D	      toggle display-clear on/off
+       H	      toggle highlighting on/off - any highlight-
+		      ing  already in the display will be removed
+		      when highlighting is  turned  off.  Turning
+		      highlighting on will restore any highlight-
+		      ing that would have been in the display had
+		      highlighting  not been off or that had been
+		      there before highlighting	was  turned  off
+		      with  the	exception  of	any string-search
+		      highlighting that had been removed with the
+		      r command.
+       r	      remove highlighting - any highlighting from
+		      a search or edit will be	removed	but,  in
+		      the latter case, the window-buffer contents
+		      will not be changed.  Highlighting will not
+		      be  turned-off.  This  command will have no
+		      effect if highlighting is off.
+       d	      display highlighting -  restore  any  high-
+		      lighting	that  has been removed with the r
+		      command. The d command can also be used  to
+		      restore  highlighting  to	a  searched-for-
+		      string that was removed by entering an edit
+		      mode as long as there are no unwritten win-
+		      dow-buffer-modifications	present	in   the
+		      display  and the string itself has not been
+		      edited. Once again, this command will  have
+		      no effect if highlighting is turned-off.
+       R or CTRL-R    redraw current screen - useful for removing
+
+
+
+LOCAL MANUAL		November 09 1998			7
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+		      mailer messages and the  like.  The  CTRL-R
+		      form can be used from within the edit modes
+		      and during data entry at any prompt.
+       Y	      toggle address-display on/off
+       B	      create a backup of the current  file  (even
+		      if  it  has  been opened in read-only mode)
+		      regardless of whether the	-b  command-line
+		      option  has been used. A backup can be cre-
+		      ated only of an ordinary file.
+       W	      write (part-of) the current file to  a  new
+		      file.
+       O	      show  status  of	address-display,  cursor-
+		      positioning, display-clear and highlighting
+		      options.
+       S	      show  file  information  and window-buffer,
+		      file-mod,	backup,  lockfile  and	string-
+		      search status.
+       V	      show version number.
+       q	      quit bpe.
+       Q	      unconditional quit.
+       !	      shell-escape (no arguments accepted) - runs
+		      shell set in the SHELL environment variable
+		      or defaults to /bin/sh if SHELL is not set.
+		      CTRL-Z can  also	be  used  to  initiate	a
+		      shell-escape  on	systems on which job-con-
+		      trol is not available or has been disabled.
+       ?	      display  help  screens  -	the help screens
+		      will, where  appropriate,	reflect  compile
+		      and  run-time  defaults. As with the X com-
+		      mand, any legal bpe command can be  entered
+		      at  the  help-screen prompts although user-
+		      confirmation is  required	before	quitting
+		      bpe directly from help.
+
+   Command Editing
+       Simple	line-editing	is   available	when	entering
+       string/address data at an appropriate prompt.  CTRL-H  (or
+       left-arrow  key	if keypad is enabled) will move backwards
+       and CTRL-L (or right-arrow key) will move forwards through
+       an  already-entered  string.  DEL  will	delete the single
+       character before the cursor or at the  cursor  if  at  the
+       beginning  of the string. Insert mode is always on and any
+       legal character will be inserted before the cursor.
+
+       Entering CTRL-E will retrieve any  string  entered  previ-
+       ously  at that prompt and make it available for editing. A
+       string for a particular prompt is carried across from file
+       to file.
+
+       A maximum of 63 characters can be entered at any prompt at
+       which command editing  is  available.  Data-entry  can  be
+       aborted by entering ESC, CTRL-C or CTRL-D.
+
+
+
+
+
+LOCAL MANUAL		November 09 1998			8
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+   Selecting Files
+       Move through the files in the argument list with the N, P,
+       F, j, J and t commands.
+
+       The N and P commands will move to the  next  and	previous
+       files in the argument list respectively.
+
+       The  F  command	will display a numbered list of the files
+       with the name of the current file highlighted  (or  marked
+       with  square  brackets  if  highlighting	is turned off) -
+       select the required file by number. Enter  the  number  of
+       the  current file or RETURN on its own to continue editing
+       the current file. Note that the length of  the  file  name
+       (or  path name) in the display is limited to 19 characters
+       - only the last 18 characters are displayed, with a  lead-
+       ing  > to indicate that truncation has taken place, if the
+       name is longer than the 19-character limit (only the  last
+       16  are	displayed for the current file if highlighting is
+       turned off). Note, too, that the same truncation from  the
+       left  is	used when necessary for the file-name display at
+       the top-left of the screen and, when appropriate,  on  the
+       status-line.
+
+       The  j command will prompt for a number from the file list
+       - enter the number of the current file or  RETURN  on  its
+       own to continue editing the current file. Use of this com-
+       mand assumes that the user has already  viewed  that  list
+       and, thus, knows the number. It provides a quick method of
+       switching between files without having to display the full
+       list  each  time. If there are only two files in the list,
+       the j command will toggle between them.
+
+       The J command will prompt for a name from the file list	-
+       note  that the only names that can be used are those which
+       were present on the command-line when bpe  was  called  or
+       which  were added with the A or E commands. Once again, if
+       there are only two files in the list, the J  command  will
+       toggle between them.
+
+       The  t  or  #  commands	will toggle between the two most-
+       recently-accessed files from the file list. The	names  of
+       the  two	files, with that of the current file highlighted
+       (or marked with square brackets if highlighting is  turned
+       off),  can be shown on the status-line with the T command.
+       The commands will have no effect until at least two  files
+       have been accessed.
+
+       The  A  or  E  commands	can  be	used to access files not
+       already in the file list. Both commands will prompt for	a
+       file name and add the name to the file list. The E command
+       will also change the current file to the	new  file.  Note
+       that there can be no more than 60 files in the list.
+
+
+
+
+
+LOCAL MANUAL		November 09 1998			9
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+   Moving Through a File
+       Any  of	the  file-position  commands  can be used to move
+       through a file.
+
+       The s command will prompt for a legal address which can be
+       either  octal,  decimal	or  hexadecimal. An octal address
+       should have a leading 0 and a hex address  should  have	a
+       leading	0x. If there is no leading 0 or 0x it is taken to
+       be a decimal address. Note that bpe defines the first byte
+       of  a  file as being at address 0x00 which may cause minor
+       confusion when using addresses given by some other  utili-
+       ties that insist that the first byte is at 0x01.
+
+       Several	"shorthand" codes can also be used at the prompt.
+
+       A legal marker [a to z] that has already been  set  to  an
+       address	can  be	entered in response instead of an actual
+       address, a B or E will give the address of  the	beginning
+       or  the	end  of	the file respectively, a C will give the
+       start-address of the current  page,  a  G  will	give  the
+       start-address of the last page, an L will give the address
+       of the last successfully-search-for string, an O will give
+       the  offset address entered on the command line, an X will
+       give the start-address of the last-edited page, an S  will
+       give  the  address entered for the last set-address opera-
+       tion and entering just a RETURN will give the last address
+       entered at that prompt (this action is duplicated by the @
+       command). The last-address string  can  be  retrieved  for
+       editing	with CTRL-E but the addresses represented by pre-
+       viously-entered "shorthand" codes are not available.
+
+       A set-current-address  operation	can  be  aborted  during
+       address-entry  (as  can	any  data-entry	at  a prompt) by
+       entering ESC, CTRL-C or CTRL-D.
+
+       Markers can be used to store  addresses	to  enable  rapid
+       movement through a file.
+
+       Set  a  marker  with  the  m  command  followed by a valid
+       marker-identifier [a to z] at  the  prompt.  The	selected
+       marker  will  be	set  to the start-address of the current
+       page.
+
+       Set a marker to a specific address with the M command fol-
+       lowed, as before, by a valid marker-identifier [a to z] at
+       the marker prompt and then a legal address or  "shorthand"
+       code (see above) at the address prompt.
+
+       A  marker  can  be  set	from  within  an edit mode to the
+       address represented by the current  cursor  position  with
+       CTRL-X
+
+       All markers can be cleared with the k command.
+
+
+
+
+LOCAL MANUAL		November 09 1998		      10
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       Move  to	the  address  represented by a marker with the '
+       command followed by a valid marker-identifier [a to z]  at
+       the prompt.
+
+       Move  to the address of the last successfully-searched-for
+       string, be it hex or ASCII, with the L command (see  under
+       Searching). The string will be highlighted in both windows
+       if it has not been modified since the search.
+
+       Move to the start-address of the last page that was edited
+       with the x command.
+
+       The  current-page, marker, last-edited-page, last-set-cur-
+       rent-address   and   last-successfully-searched-for-string
+       addresses  are  saved  for  each	file but are not carried
+       across from file to file.
+
+   Editing
+       Enter edit mode with a for ASCII or h for hex editing.
+
+       Unless the -c option has been used,  the	cursor	will  be
+       placed  at  the	start  of a searched-for string or at the
+       window-position representing a selected address. If the -c
+       option  has  been  used or if the editing session does not
+       follow a search or set-current-address operation the  cur-
+       sor  will  be placed in the upper, left-hand corner of the
+       appropriate window.
+
+       Use the "vi-style" cursor-movement keys -  CTRL-J  (down),
+       CTRL-K  (up),  CTRL-H  (left),  CTRL-L  (right) and CTRL-^
+       (home) - to place the cursor on the  byte  to  be  changed
+       (the arrow-keys can also be used if bpe was appropriately-
+       compiled and there is a valid termcap/terminfo entry).
+
+       Enter a printing ASCII character, i.e. from 0x20	to  0x7e
+       (32  to 126) inclusive, or a two-digit hex value depending
+       on the mode.  Prefixing each character with CTRL-V  allows
+       characters  outside the printing-ASCII range to be entered
+       in ASCII-edit mode or single characters to be  entered  in
+       hex-edit mode.
+
+       Note  that  non-printing	ASCII	characters will be repre-
+       sented in the ASCII window by the . (0x2e) character.
+
+       Any changes will be highlighted and will be  reflected  in
+       both  windows.  However,	any "changes" that correspond to
+       the last-write buffer contents will not be highlighted.
+
+       Any single ASCII character or  hexadecimal  digit  can  be
+       returned to its former value with DEL (0x7f).
+
+       Exit  edit  mode by with ESC or CTRL-C and write the modi-
+       fied window-buffer to disk with w.
+
+
+
+
+LOCAL MANUAL		November 09 1998		      11
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       A warning will be given if an attempt is made to	move  to
+       another	page, to scroll the display, to edit another file
+       or to quit the program if the modified edit buffer has not
+       been  written  to disk. The edit buffer can be returned to
+       its state after the last write with the u command.  The	Q
+       command	can  be	used to quit bpe unconditionally after a
+       user-confirmation check even if buffer-modifications exist
+       that have not been written to disk.
+
+       If  the	modified edit buffer has been written to disk the
+       changes can still be undone with the U command if the cur-
+       rent  file  address,  i.e.  the current page, has not been
+       changed since the write. Any  changes  made  to	the  edit
+       buffer  after  the  last write to disk of that buffer will
+       also be undone by the U command. Only the page represented
+       by the edit buffer will be affected - any changes to other
+       pages previously written to disk will not be undone.
+
+       The file-modification time will be restored on  exit  with
+       the  q  command or when moving to another file with any of
+       the file-selection commands if all changes written to disk
+       have been undone using the U command.
+
+       The  display  can  be refreshed to remove any highlighting
+       without altering the buffer contents with the r command.
+
+   Searching
+       Search for hex data with the l command and a string of hex
+       digits  - a leading x or 0 or a trailing h is not required
+       but a leading 0 will be added if an odd number of  charac-
+       ters  is entered. The search can be aborted during string-
+       entry by entering ESC, CTRL-C or CTRL-D.
+
+       To search again for the same string, enter the  l  command
+       and  press  RETURN  - if the starting address has not been
+       adjusted the search will	start	one  character	past  the
+       location	of the last occurrence found. The last-searched-
+       for-string can be edited after entering CTRL-E and is car-
+       ried across from file to file.
+
+       Search  for an ASCII string with the f or / command. Enter
+       a string at the prompt followed by RETURN  -  once  again,
+       the  previous  pattern is used if no pattern is specified.
+       Searching is case-sensitive and proceeds as  with  a  hex-
+       data search.
+
+       Searching  is  forward from the current file address which
+       remains unchanged if the string is not found. Search oper-
+       ations do not wrap around after end-of-file.
+
+       Following  a successful search, the display is adjusted to
+       put the first byte of the string in the line at the top of
+       the screen unless the -ln option has been used.
+
+
+
+
+LOCAL MANUAL		November 09 1998		      12
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       The  string will be highlighted in both windows unless the
+       -h option has been used. Any highlighting of the searched-
+       for  string  will  be  retained following a partial-screen
+       scroll as long as all of the string is still in	the  win-
+       dows  but it will be removed if another search is made. It
+       will also be removed when entering an edit mode	to  avoid
+       confusion  with	the  highlighting of modified data. The S
+       command can be used to check if any  highlighting  is  the
+       result of a string-search.
+
+       It  is  possible to return to the file-address of the last
+       successfully-searched-for string (which is saved for  each
+       file)  with  the	L  command  (see  under Moving Through a
+       File).
+
+   Backups and Copies
+       For obvious reasons, it is suggested that  a  backup  copy
+       should  be  made	before	patching  any file for which the
+       source is not available. Backups can be made automatically
+       with  the  -b  command-line  option or manually with the B
+       command (see above).
+
+       The current file, or any part of	the  current  file,  can
+       also be written to a new file with the W command.
+
+       The  user  will be prompted for a filename and, as before,
+       previously-entered strings can be used  by  entering  just
+       RETURN or by entering CTRL-E for editing. If a file of the
+       same name already exists the user will be given the option
+       of replacing it, appending to it or quitting.
+
+       The  user  will	then  be  prompted  for	the current-file
+       addresses for the segment of the file that is to be  writ-
+       ten  to the new file. Enter a legal address at each prompt
+       (see under Moving Through a File for  the  format).   Note
+       that,  if  the  current	page  is included in the address-
+       range, any buffer-modifications that have not been written
+       to disk will not be written to the new file.
+
+       The new file will be created with the user's effective UID
+       and GID and default permissions.
+
+   Status
+       The S command will show the following information  on  the
+       status-line.
+
+       [ordinary file]	the	file being examined or patched is
+			   an ordinary file.
+       [directory]	 the file being examined is a directory
+			   -  it  will	have been opened in read-
+			   only mode even if the  -r  option  has
+			   not been used.
+       [file-error]	the file does not exist, it is a zero-
+			   byte	file,	its  permissions  do  not
+
+
+
+LOCAL MANUAL		November 09 1998		      13
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+			   allow  access or it is a special file.
+       [read/write]	the file has been opened  for  reading
+			   and writing (normal default).
+       [read-only]	 the	file has been opened in read-only
+			   mode because the -r	option	has  been
+			   used	or  the file is a directory or a
+			   file-error or lockfile-error has  been
+			   detected.
+       [lockfile]	  a  lockfile	has  been created for the
+			   file being edited  -	any  attempt  by
+			   another  user  to  edit  the same file
+			   will result	in  it	being  opened  in
+			   read-only mode.
+       [nolockfile]	no  lockfile	has  been created either
+			   because the file has	been  opened  in
+			   read-only   mode  or	because  the  -L
+			   option has been used.
+       [lockfile exists]   a lockfile for the file  being  edited
+			   has	been created by another user - as
+			   a result,  the  file	will  have  been
+			   opened in read-only mode.
+       [lockfile-error]	an  error was detected when attempting
+			   to create, read,  write-to  or  delete
+			   the lockfile.
+       [nobackup]	  no backup file has been created.
+       [backup]		a  backup file has been created either
+			   by use of the -b option or the B  com-
+			   mand.
+       [backup-error]	an  error was detected when attempting
+			   to create a backup file.
+       [nomod]		no modifications have been made to the
+			   edit buffer or written to disk.
+       [buffermod]	 modifications  have	been  made to the
+			   edit buffer that have not been written
+			   to disk.
+       [filemod]	   modifications  have	been  written  to
+			   disk.
+       [search]		any highlighting in the  edit  windows
+			   is  the result of a successful search.
+
+ENVIRONMENT VARIABLES
+       bpe checks the BPE environment variable	for  any  default
+       run-time	options,  the SHELL environment variable for the
+       default shell if the shell escape is used and, of  course,
+       the TERM environment variable.
+
+DIAGNOSTICS
+       Self  explanatory.  Error  messages are highlighted on the
+       status line unless the -h option has been used -	informa-
+       tion messages are not highlighted.
+
+       Program-termination is not forced on any lseek(2), read(2)
+       or write(2) error but the user should take any  subsequent
+       actions with care. The Q command will quit the program and
+
+
+
+LOCAL MANUAL		November 09 1998		      14
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       avoid further disk accesses apart from any associated with
+       the file close.
+
+       However,	program-termination  is  forced  on any close(2)
+       error or on other than  a  permission-related  error  when
+       resetting  the file-modification time (if appropriate) and
+       the last error message is retained on the display.
+
+RETURN VALUE
+       bpe returns 1 on error, otherwise zero.
+
+FILES
+       /tmp/BPE..filename
+
+SEE ALSO
+       dd(1), dump(1), od(1)
+
+AUTHOR
+       v1.1 written by Andreas Pleschutznig, Teichhofweg 2,  8044
+       Graz, Austria (andy@mssx.uucp)
+       Contributions by maart@cs.vu.nl
+       v1.2  features added by Bill Davidsen, Box 8 KW-C206, Sch-
+       enectady, NY 12345
+       v1.3   features	added	by	andy@mssx.uucp,	david-
+       sen@crdos1.uucp	and  jon@joblab	and integrated by david-
+       sen@crdos1.uucp
+       v1.[1-3] bug-fixes, v1.4[0-8] and  v2.00.nn  rewrites/fea-
+       tures-added   and   man	page  written	by  Ralphe  Neill
+       (ran@dgs.monash.edu.au)
+
+BUGS
+       This version of bpe does not respond to a SIGWINCH signal.
+
+       The  help,  marker/address  and file-list screens assume a
+       24-line by 80-column display and are not adjusted  if  the
+       display has fewer than 24 lines.
+
+       The  maximum  number  of characters that can be entered at
+       any prompt where command editing is allowed is limited  to
+       63.
+
+       Initial	write-accessibility checks use the access(2) sys-
+       tem-call - this could lead to  problems	in  some  circum-
+       stances.
+
+       The  naming  convention	used  for lockfiles could lead to
+       ambiguities with similarly-named files. The first  n  -	4
+       characters  of the filename are used for part of the lock-
+       file name where n is  the  maximum  number  of  characters
+       allowed for a filename. The -L option can be used to over-
+       come the problem, should it arise, but it should	be  used
+       with caution (see under Command-Line Options above).
+
+       Lockfile-operation  cannot be relied on when editing files
+
+
+
+LOCAL MANUAL		November 09 1998		      15
+
+
+
+
+
+BPE(1)							BPE(1)
+
+
+       under NFS.
+
+       Some versions of curses(3X) do not check	the  TERMCAP  or
+       TERMINFO environment variables making it impossible to use
+       "custom" terminal definitions.
+
+       This version of bpe cannot be used with special files.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LOCAL MANUAL		November 09 1998		      16
+
+

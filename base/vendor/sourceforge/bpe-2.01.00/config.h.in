@@ -1,0 +1,102 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
+#undef HAVE_SYS_WAIT_H
+
+/* Define to `long' if <sys/types.h> doesn't define.  */
+#undef off_t
+
+/* Define as the return type of signal handlers (int or void).  */
+#undef RETSIGTYPE
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+#undef BPE_OS
+
+/* if defined, we need a prototype for sys_errlist[] */
+#undef NEED_SYS_ERRLIST
+
+/* if defined, we need a prototype for "struct utimbuf" */
+#undef NEED_STRUCT_UTIMBUF
+
+/* if defined, we have ncurses */
+#undef HAVE_NCURSES
+
+/* MINLINES= This should be set to the minimum number of terminal
+ *  lines with which bpe will work. The editing window will
+ *  use (MINLINES - 8) lines so anything less than 10 lines
+ *  would be a bit silly. The default for MINLINES is 24. */
+#undef MINLINES
+
+/* BAKEXT= This can be set (e.g. -DBAKEXT=\".orig\") if you wish
+ *  to change the default extension of ".bak" for backup
+ *  files. */
+#undef BAKEXT
+
+/* LOCKDIR= This can be changed from the default (/tmp) if you wish
+ *  to change the directory used for lock files by adding, 
+ *  e.g. -DLOCKDIR=\"/var/tmp\" */
+#undef LOCKDIR
+
+/* LOCKPREFIX= This can be set if you want to use other than "LCK.."
+ *  for the lockfile prefix, e.g. -DLOCKPREFIX=\"BPE..\" */
+#undef LOCKPREFIX
+
+/* DISABLE_JOBCONTROL  - Disable job control (control-z) */
+#undef NOJOBCONTROL
+
+/* NOSHELL This can be set if shell escapes are to be disallowed. */
+#undef NOSHELL
+
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* The number of bytes in a off_t.  */
+#undef SIZEOF_OFF_T
+
+/* Define if you have the getopt function.  */
+#undef HAVE_GETOPT
+
+/* Define if you have the keypad function.  */
+#undef HAVE_KEYPAD
+
+/* Define if you have the memcpy function.  */
+#undef HAVE_MEMCPY
+
+/* Define if you have the strchr function.  */
+#undef HAVE_STRCHR
+
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the <ncurses.h> header file.  */
+#undef HAVE_NCURSES_H
+
+/* Define if you have the <ncurses/curses.h> header file.  */
+#undef HAVE_NCURSES_CURSES_H
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
+
+/* Define if you have the <sys/cdefs.h> header file.  */
+#undef HAVE_SYS_CDEFS_H
+
+/* Define if you have the <sys/ioctl.h> header file.  */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <sys/termios.h> header file.  */
+#undef HAVE_SYS_TERMIOS_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+

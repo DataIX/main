@@ -1,0 +1,9 @@
+#!/bin/sh -x 
+
+# run this script to regenerate the Makefile.in's and configure script
+# from Makefile.am and configure.in
+
+aclocal
+autoconf
+autoheader
+automake --include-deps --foreign
