@@ -1,0 +1,585 @@
+[ This is a long and tedious list of various changes made since I got
+  my hands on the first version of bpe (some time back in 1990) - it's
+  maintained more for my purposes than anything else and is included
+  here because it has the notices from the original author(s).  But if
+  you're really bored and want to read the whole thing ...  (ran) ]
+
+bpe version history:
+
+Ver.No	Comment						By
+===========================================================================
+1.0 	first version (seems to do things right)   	andy@mssx
+1.1	some bugs fixed (tks to Maarten)		andy@mssx.uucp
+							maart@cs.vu.nl
+1.2	works with NOKEYPAD in all cases		davidsen@crdos1.uucp
+	make + and - move in 2 line increments
+	add 'L' look for hex byte
+	end edit with ^E, ^C gives signal in BSD
+	/ remembers the last search string, can repeat
+1.3	integrate 1.2 (davidsen) and 1.2 (andy/jon)	davidsen@crdos1.uucp
+	find hex string code added, author		jon@joblab
+
+BUG REPORTS:
+============
+	- The offset count in the first column is wrong,
+	  except for the first line; it's 0x10 too high.	(fixed)
+
+	- The test in disp() if a char is printable, fails
+	  for chars >= 0177.					(fixed)
+
+	- Help message for 'H' incorrect			(fixed)
+
+
+I declare this program as freeware, i.e. you may duplicate it, give it
+to your friends, and transfer it to any machine you like, as long as
+you do not change or delete the build in copyright message. (see [1])
+
+	Andreas Pleschutznig
+	Teichhofweg 2
+	8044 Graz
+	Austria 
+
+Comments and bug reports to:
+	andy@mssx	(mcvax!tuvie!mssx!andy)
+
+*****************************************************************************/
+
+bug-fixes/changes/additions (ran)
+
+VERSION 1.40
+
+Unacceptably-slow screen update in edit modes fixed by writing direct to
+window positions instead of calling the old disp() function for EVERY
+character (which involved recalculation of offsets and so on).
+
+Added highlighting for modified ASCII/HEX characters.
+
+Command-line display faults on data-entry error fixed.
+
+Error and information-message presentation standardised (now works as
+with vi).
+
+Differences in various implementations of scanw() meant that an h suffix
+was required on some systems for set-position hex-entry but not for
+search - htoi() added for set-position as a temporary measure.
+
+Set-position and string/hex search failure seeking beyond EOF fixed by
+having bpe return to former file position.
+
+Fixed repeat hex-search finding same entry if ALIGN or CLINES options
+used.
+
+Cursor-movement now wraps at all window boundaries - character-entry and
+cursor-keys no longer "move" beyond EOF if window not full.
+
+Specific "undo" now required before changing file-position or quitting
+with modified buffer if buffer has not been written to disk.
+
+Error-checking added for system calls.
+
+Added shell escape for UNIX.
+
+Added KEY_HOME facility (jumps to home position in window if editing or
+to beginning of file if in command mode) and single-key "jump" to
+beginning or end of file.
+
+dump() now done at start-up instead of waiting for command.
+
+dump command removed although the action is incorporated in other
+commands.
+
+Added refresh routine without calling dump()
+
+Added full-screen-redraw.
+
+Changed context and align compile-time options to command-line options
+(ALIGN and no CLINES is now default).
+
+Added read-only, backup and no-highlighting options.
+
+Added environment-variable checking for user-selectad, run-time
+defaults.
+
+Added entire-buffer and single-character undo and restore of original
+buffer after write to disk.
+
+Added command to check file/buffer status.
+
+Added file-size information to header [see 1].
+
+Separated into modules for maintainability.
+
+Fixed potential mis-match problems caused by unwarranted assumptions
+that pointers, ints and longs were identical - sooner or later it would
+have bitten someone! [and it would have as it has just been compiled on
+a DEC Alpha - May-01-1995]
+
+Stopped lint from complaining about almost every second line.
+
+Rewrote help screen and man page.
+
+VERSION 1.41
+
+Added multiple-file handling.
+
+Changed clines to linepos - this is largely a conceptual change because
+feedback suggested that users thought in terms of the position in the
+window rather than the number of lines above the target line. However,
+it must be admitted that it also made it easier to code the for the user
+to be able to cancel (as opposed to change) an environment-variable
+setting with a command-line argument.
+
+Rewrote help screen and man page.
+
+VERSION 1.42
+
+Added custom input routine instead of using curses routines for string
+entry - the main advantage is that BS and DEL now work during address
+and string data entry although it will also allow special operations for
+other characters.
+
+Added facility to abort search or set-position operation.
+
+Added optional, compile-time facility to disable XON-XOFF to stop an
+unintended CTRL-S from seeming to "lock" the terminal (UNIX only).
+
+Added optional, "cursor-position" display during edit.
+
+Added facility to select file directly from file list instead of having
+to move laboriously through a long list with N or P.
+
+Added -s option to set number of lines scrolled with + and - commands
+with the default changed to 8 lines i.e. half a screen.
+
+Added screen-redraw from within edit mode, during address and string
+data entry and from the help and file-list screens.
+
+A file to which the user does not have write-access but that is
+otherwise-accessible is now opened automatically in read-only mode
+instead of simply being inaccessible if bpe has not been called with the
+-r option (UNIX only).
+
+Rewrote help screen and man page.
+
+VERSION 1.43
+
+Cursor now jumps to start of string when entering edit mode after search
+or to selected address after set-postion operation - defeatable with the
+new -c option.
+
+Changed htoi() for set-position to strtol() and added d command to allow
+decimal as well as hexadecimal address-entry.
+
+Changed XON-XOFF enable/disable to a command-line option (UNIX only).
+
+Added last-selected-position for set-position (as with search).
+
+Directories now opened automatically in read-only mode (UNIX only).
+
+Added file-type to status-display (UNIX only)
+
+Fixed a couple of small display glitches during hex edit.
+
+A bit of general tidying-up and a few minor speed-ups.
+
+Rewrote help screen and man page.
+
+VERSION 1.44
+
+Fixed bug that would cause lseek() error if a negative number was
+entered for set-position.
+
+Terminal beeping on file/command errors can now be defeated with the new
+-e option.
+
+Terminal now beeps if illegal char entered in edit modes or
+string/address data entry - defeatable with new -E option.
+
+Added highlighting for searched-for string - defeatable with the
+existing -h option.
+
+Any legal command can now be entered at the help-screen prompt.
+
+Added set and goto markers with new m and ' commands.
+
+ESC can now be used as well as CTRL-C to terminate string/address/marker
+entry (if NOKEYPAD set).
+
+An address can now be entered in octal as well as hexadecimal and
+decimal forms. This has involved a change to the appropriate command and
+to the way the address is entered (see the man page).
+
+Added user-confirmation requirement for unconditional-quit if buffer
+modifications have not been written to disk.
+
+Removed program name and version from display header (it was just a bit
+PC-ish) and added v command for listing version and version-date (more a
+matter of personal taste than anything else). Version and version-date
+can also be displayed with the new -v option.
+
+A bit more general tidying-up.
+
+Rewrote man page (again).
+
+VERSION 1.45
+
+Fixed file-size display error.
+
+Fixed error-message error with zero-length files.
+
+Fixed bug that would prevent editing of 1-byte files (a major problem)!
+
+Fixed bug that could allow seeking beyond EOF because the
+last-set-position address was being carried across from file to file.
+
+Added default-backup-filename-define-capability to makefile.
+
+User can now select filename extension for backups as a run-time default
+with the new -B option instead of using the compiled default (nominally
+".bak").
+
+Changed backup procedure to allow over-writing of an existing backup
+file.
+
+Backup file now retains modes and mod-time of original file.
+
+Added facility to create/replace backup file interactively with the B
+command whether or not the -b option has been used.
+
+Added facility to write all or part of the current file to new file - an
+already-existing file of the same name as that given for the new file
+can be appended-to or replaced.
+
+Highlighting of a searched-for string now maintained if all or part of
+the string is still in the windows after less than a full-page scroll.
+
+Added facility to jump to last successfully-searched-for string with the
+L command with the string highlighted if it has not been modified.
+
+Several "shorthand codes" can now be used at address-entry prompts. This
+has involved a further change to the way the address is entered (see the
+man page).
+
+Extended marker facility to allow setting to specific address with the
+new M command instead of just start-address of current-page.
+
+Added file-locking for files opened in read/write mode (optional at
+compile-time) - normal creation of locking-file defeatable with the new
+-L option.
+
+Bpe now exits immediately without displaying the normal editing screen
+but with an appropriate error-messge to stderr if a file-access error is
+encountered and there is only one file in the arg list.
+
+Added facility to toggle cursor-positioning on/off while still
+maintaining highlighting of searched-for string.
+
+Added c command to clear status line.
+
+Rewrote help screen and split into two.
+
+Yet more general tidying-up.
+
+Rewrote man page (yet again).
+
+VERSION 1.46
+
+Removed all MS-DOS support (such as it was) - I don't know anywhere near
+enough about MS-DOS (i.e. I know nothing) to be able to ensure that it
+will work under that "system".
+
+"Vi-style" cursor-movement keys can now be used when bpe has been
+compiled with keypad() enabled.
+
+ESC can now be used on many systems as quit/abort key even if keypad()
+enabled.
+
+Added -k option to disable ESC as a "quit" key because of timing
+problems over slow lines with some terminals.
+
+Added -K option to disable keypad().
+
+Added -V option to show compile-time defaults.
+
+Added -m option to turn-off message-receive.
+
+Added -o option to set page-display offset at start-up.
+
+Added j and J commands to go to new file from list without displaying
+list.
+
+Added t command to toggle between the two most-recently-accessed files
+and the T command to display their names.
+
+Added check for TERM environment-variable.
+
+If highlighting is turned-off the current file shown with the F command
+is now marked with [] instead of a trailing * to match the display with
+the T command.
+
+Help-screen modified to fix arrow-key-display bug and to make the
+display more-sensitive to compile and run-time defaults.
+
+A few minor speed-ups.
+
+Rewrote man page (one might hope in vain for the last time).
+
+Ported to BSDI and ANSI prototypes etc. added (gjb@gba.oz.au)
+
+Ported to ULTRIX (known to run under V4.2 Rev. 96)
+
+VERSION 1.47
+
+Bpe now "remembers" all settings for files in the file list that have
+already been accessed.
+
+Enabled CTRL-Z as legal character at the command prompt and added
+job-control for systems that support it - CTRL-Z is a synonym for the !
+command on systems where job-control is unavailable or has been
+disabled.
+
+Added S "shorthand-code".
+
+User-confirmation now required when quitting bpe directly from help.
+
+Fixed bug where a string-not-found message would be cleared if the
+window was less-than-full and already contained highlighting.
+
+Fixed bug where last-successfully-searched-for-string would be
+highlighted after use of L command even if highlighting was turned-off.
+
+Moved file size and file/cursor-position displays one space to right,
+modified the file-list displayed with the F command to handle file/path
+names longer than 19 characters and modified the header and status-line
+displays to handle long file names. (The fact that it's taken this many
+versions to add these features will give some idea of the vintage of
+the system on which bpe is being developed.)
+
+Added optional display-update without display-clear when changing files
+- display-clear can be enabled with the new -d option and toggled with
+the new D command.
+
+Added file-number-range to prompt for j command.
+
+Modified the status-line display for the S command when there is a
+file-error.
+
+Rewrote help screens and man page (sigh).
+
+VERSION 1.48
+
+Fixed bug where page-buffer mods were still flagged if all changes were
+undone by other than the u command.
+
+Fixed bug that failed to create a lockfile if there was a trailing /
+in the filename.
+
+Fixed bug where the string-search address was displayed immediately on
+entering an edit mode if "cursor-position" was turned-off AFTER the
+search was made.
+
+Fixed bug that did not give screen-update if F selected from help menus
+when there was only one file.
+
+Added -H option for brief explanation of options.
+
+Changed -p option to -y (sorry about that). It now disables
+file-position display during search as well as cursor-position display
+during edit - can be toggled with the new Y command.
+
+Added simple string recall/editing for filename/address entry.
+
+Added ability to add or add-and-edit a file to the arg list with new A
+and E commands.
+
+Added toggle-capability for highlighting with new H command.
+
+Added d command to re-display highlighting removed with the r command.
+
+Added o command to go to the offset address.
+
+Added O command to show status of the four options that can be toggled.
+
+Added x command to jump to start-address of page which was last-edited.
+
+Added X command to list marker etc. settings.
+
+Added CTRL-E to toggle between edit modes.
+
+Added CTRL-X to set selected marker to cursor-position in edit-mode.
+
+Added CTRL-V to escape next character in edit modes - allows entry of
+non-ASCII printing char in ASCII-edit and of a single-char in hex-edit
+mode.
+
+Changed v command to V to be consistent in upper-case usage for commands
+that display information on the status line.
+
+Added X and O shorthand-codes.
+
+Added looping so that error on address etc. entry prompts for re-try.
+
+Added check for illegal chars in created file names.
+
+Modified "searching for" information-displays to handle long strings
+properly and moved display to status line.
+
+Modified cursor movement in hex-edit mode - left-cursor will now move
+back to the first of the two chars if the cursor is on the second (i.e.
+if the first has been entered) instead of going back to the previous
+pair.
+
+Changed struct cursor curset to a global.
+
+A couple of speed-ups, a few MAJOR clean-ups and the removal of
+more-than-a-few redundant refresh() calls.
+
+Rewrote help screens and man page (SIGH).
+
+VERSION 2.00.00
+
+Release version
+
+New targets added.
+
+A few "cosmetic" changes to the code to make maintenance easier.
+
+VERSION 2.00.01
+
+A few, minor changes to the main display and help screens.
+
+This is the last version for which compatibility with really-old UNIX
+systems can be promised. This is not particularly-serious because any
+additions are expected to take advantage of features not avilable with
+those systems. However, a "maintenance release" will be issued if any
+bugs-fixes are required that would affect this version.
+
+VERSION 2.00.02
+
+bpe now uses all the lines available on the display.
+
+VERSION 2.00.03
+
+A few more cosmetic changes and a few minor tidy-ups.
+
+The extern char *sys_errlist[]; declaration in bpe.h now #ifdef'd to
+cope with increasing appearance of declaration in other .h files.
+
+version.c and the optional getopt.c combined in misc.c
+
+Global-variable declarations moved to global.c and global.h #include'd
+from bpe.h
+
+Minor changes to bpe.1
+
+VERSION 2.00.04
+
+Removed the upper limits of 63 characters for NAMELENGTH and 255 for
+PATHLENGTH.
+
+NAMELENGTH and PATHLENGTH can now be define'd in Makefile.
+
+Lockfile prefix (default "LCK...") can now be set at compile time.
+
+Improved error handling for lock and backup files.
+
+Fixed bug in display of long filenames.
+
+tty is now reset properly when exiting after receipt of external kill.
+
+Changed the Flag3 enum delaration from {errbak, nobak, bak, notbak} to
+{nobak, bak, notbak, errbak} - no big deal but it has been niggling me
+for years.
+
+Added information to markers display.
+
+A few cosmetic changes.
+
+Minor changes to bpe.1
+
+VERSION 2.00.05
+
+Added more information to markers display.
+
+Added some ioctl error-checking.
+
+VERSION 2.00.06
+
+Changed all long's to off_t's (should have been done ages ago).
+
+Replaced all instances of strtol() with new function str_to_off_t()
+[actually, I MEANT to do this but didn't - sigh]
+
+VERSION 2.00.07
+
+Changes to makefile.dist
+
+VERSION 2.00.08
+
+Added key.h with defines to make key-customisation easier.
+
+TO DO:
+
+Make bpe respond (in some fashion) to a SIGWINCH.
+
+Add sideways-scrolling for command editing.
+
+Fix ULTRIX CTRL-V problem (might have to wait for DEC to fix it).
+
+Port to BSD 4.3
+
+Some optimistic fool (gjb@gba.oz.au) has suggested that it might be nice
+to have two "two-window" windows so that two files could be
+displayed/edited simultaneously. So it might be - but look what happened
+to Bill Joy when he was adding windows to vi ... and, anyway, anybody
+who's anybody is running X11 and can have more than one bpe ... and, one
+day, I might start on xbpe ...
+
+Remove restriction on number of files in arg list. This involves
+arranging primarily for multi-page display and selection. It's far from
+being a priority item as the default of 60 files per editing-session
+ought to be enough for anybody but there are probably enough lazy people
+who edit in large directories ...
+
+Some of the code is still a bit messy - to put it mildly! This is,
+perhaps, almost inevitable when heavily-modifying, adding-to and
+virtually rewriting someone else's code instead of starting from scratch
+(that's my story and I'm sticking to it). It may be rewritten eventually
+to tidy things up a bit and make maintenance easier.
+
+There are also several kludges (and slow-downs) partly because the
+original version used only stdscr for all the on-screen information
+during editing and partly because of problems found with some
+implementations of curses. Later versions, if any, will be rewritten
+using sub-windows (RSN).
+
+Apart from that, bpe has probably reached a level of complexity such
+that any further additions would take it out of the realm of a "simple"
+editor - there are other, more-complex, but harder-to-use, binary
+editors available if such features are really needed.
+
+Write xbpe (RSN).
+
+Please send any suggestions and bug-reports on 2.00.nn to Ralphe Neill
+at ran@sub.net.au
+
+[1] The file-size information occupies the screen-position formerly
+    occupied by the "built-in" copyright notice despite Andreas
+    Pleschutznig's stricture that the notice should not be changed or
+    deleted. At the time this was done, the SOLE reason was that it was
+    the obvious and most-suitable place for it.
+
+    However, it must be stated that, considering that there is so much
+    completely-new and heavily-modified code in version 2.00.nn, that
+    other authors have made major contributions to versions 1.3[1-3]
+    and that I do not cede copyright to the initial bug-fixes or to the
+    additions listed in this file to Andreas Pleschutznig or anybody
+    else, an on-screen copyright notice favouring the original source
+    is simply no longer appropriate or defensible.
+
+    The name of bpe has been retained because the original was so
+    useful to me and because it incorporated some excellent ideas.
+
+Ralphe Neill,
+Melbourne, Australia
+Dec-11-1999

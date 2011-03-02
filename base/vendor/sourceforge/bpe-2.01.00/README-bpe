@@ -1,0 +1,81 @@
+README for bpe 2.01.00
+
+I picked up a copy of the bpe source from Ralphe Neill's web site
+(after quite a bit of searching- the 1.3 version is still the easiest
+to find ;) and decided to convert it to autoconf/automake, rather than 
+the hardcoded list of OS types which it previously used.  It's been
+tested on Linux, Solaris, SunOS 4, FreeBSD, NEXTSTEP, and MacOS X.
+
+Other than changes related to the change to autoconf, there are no
+major functional difference between 2.01.00 and the 2.00.08 release
+upon which it is based.  I have attached the original README below.
+
+Ralphe has been great to work with, and I have obtained his permission 
+to release bpe 2.01.00 under the BSD License on sourceforge.net.  As
+far as I am concerned, this project still belongs to Ralphe.
+
+Many thanks to:
+   Ralphe Neill, bpe's current maintainer, for all of his work to date.
+   Garance Drosehn, for all of his assistance and patches for getting
+                    this working on FreeBSD, NEXTSTEP, and MacOS X.
+   All the other folks who helped me to test the autoconf code out on
+   other plaforms.
+
+-- Josh Wilmes
+   josh@hitchhiker.org   
+   March 20, 2000
+
+------------------------------------------------------------------------------
+
+README for bpe 2.00.08
+
+Bpe is a relatively-simple and easy-to-use, screen-oriented,
+curses-based binary editor. There are no variables that are non-unique
+beyond 7 characters, no function names that are non-unique beyond 6
+characters and only a minimal implementation of curses(3x) is required.
+
+Version 2.00.08 is the current release version which followed a number
+of 1.4n.nn BETA(ish) releases that, in turn, added features to and fixed
+more than a few bugs and problems with 1.3 - in fact, only the general
+layout of the editing-screen display and some of the commands will be
+even vaguely familiar to users of the original versions. However, the
+name "bpe" has been retained because the original version, which, to the
+best of my knowledge, has not been further-developed elsewhere, had a
+good screen layout and a couple of really-good ideas.
+
+The first version that was available generally (and which is, I believe,
+still distributed with Linux) was lacking in many areas but I compiled
+and used it because I needed a binary editor to run under an early SYSV
+release which couldn't handle any of the other editors around without
+major modification.
+
+The most-obvious bugs were fixed first along with some of the major
+shortcomings but creeping-featurism soon reared its head. However, that
+original compatibility with older systems was maintained at least until
+2.00.01 after which version all development work was carried out on a
+Sun workstation. I have endeavoured to maintain that compatibility but I
+no longer have a system on which to test it.
+
+Bpe is "freeware" and is supplied "as is" with no promises or warranty
+other than the fact that it has been tested exhaustively and that there
+are no KNOWN bugs or other problems that could corrupt data in an
+unintended manner.
+
+Copyright is retained by the author(s) but you are free to modify the
+code or port it to other *NIX systems. However, please do NOT distribute
+modified versions. Instead, send your additions/changes to me so that
+they can be incorporated into the "official" version.
+
+The original version of bpe had support for MS-DOS, Amiga-DOS and some
+support for VMS. It was all removed from version 1.4n because it was
+getting to be a maintenance nightmare (i.e. I know nothing about MS-DOS
+or AMIGA-DOS and would prefer to forget that I ever knew anything about
+VMS). If anybody wants to port bpe to those "operating systems" - go
+ahead, but don't expect me to maintain it.
+
+Please send any bug-reports, queries or suggestions on bpe 2.00.nn to
+ran@sub.net.au
+
+Ralphe Neill,
+Melbourne, Australia
+Dec-11-1999
