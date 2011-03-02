@@ -10,4 +10,4 @@ AGENTBIN=/usr/bin/ssh-agent
 test -f /usr/local/bin/ssh-agent && AGENTBIN=/usr/local/bin/ssh-agent
 
 rm -f $HOME/.ssh/ssh-agent
-ps axc -U $LOGNAME |grep ssh-agent >>/dev/null 2>&1 ||$AGENTBIN -a $HOME/.ssh/ssh-agent -s >>/dev/null 2>&1
+pgrep -U $LOGNAME ssh-agent >>/dev/null 2>&1 ||$AGENTBIN -a $HOME/.ssh/ssh-agent -s >>/dev/null 2>&1
