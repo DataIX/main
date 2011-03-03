@@ -1,0 +1,28 @@
+Index: sys/netinet6/icmp6.c
+===================================================================
+--- sys/netinet6/icmp6.c	(revision 219213)
++++ sys/netinet6/icmp6.c	(working copy)
+@@ -2162,8 +2162,21 @@
+ 	}
+ 
+ 	if ((srcp != NULL) && 
+-	    (in6_addrscope(srcp) != in6_addrscope(&ip6->ip6_src)))
+-		srcp = NULL;
++		(in6_addrscope(srcp) != in6_addrscope(&ip6->ip6_src))) {
++			struct sockaddr_in6 sin6;
++ 
++		bzero(&sin6, sizeof(sin6));
++		sin6.sin6_family = AF_INET6;
++		sin6.sin6_len = sizeof(sin6);
++		sin6.sin6_addr = origdst;
++
++		ia = (struct in6_ifaddr *)
++			ifa_ifwithaddr((struct sockaddr *)&sin6);
++
++		if (ia && (ia->ia6_flags & IN6_IFF_ANYCAST))
++			srcp = NULL;
++	}
++
+ 
+ 	if (srcp == NULL) {
+ 		int e;
