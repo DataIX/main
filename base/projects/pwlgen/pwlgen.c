@@ -33,11 +33,15 @@
 
 #include <stdio.h>
 
+#ifndef LEN
+	int LEN=6;
+#endif
+
 int main(void)
 {
   int cf,ce,cd,cc,cb,ca,c9,c8,c7,c6,c5,c4,c3,c2,c1,c0;
   int start=0,end=9;
-  int length=6;	/* Set to length of password to generate. */
+  int length=LEN;
 
 	if(length==16)
 		for(c0=end; c0>=start; c0--)
