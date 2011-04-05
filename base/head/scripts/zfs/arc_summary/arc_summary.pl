@@ -230,6 +230,7 @@ printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
 hline();
 
 sub _arc_summary {
+	if (!$Kstat->{"vfs.zfs.version.spa"}) { return };
 	my $spa = $Kstat->{"vfs.zfs.version.spa"};
 	my $zpl = $Kstat->{"vfs.zfs.version.zpl"};
 	my $memory_throttle_count = $Kstat->{"kstat.zfs.misc.arcstats.memory_throttle_count"};
@@ -309,6 +310,7 @@ sub _arc_summary {
 }
 
 sub _arc_efficiency {
+	if (!$Kstat->{"vfs.zfs.version.spa"}) { return };
 	my $arc_hits = $Kstat->{"kstat.zfs.misc.arcstats.hits"};
 	my $arc_misses = $Kstat->{"kstat.zfs.misc.arcstats.misses"};
 	my $demand_data_hits = $Kstat->{"kstat.zfs.misc.arcstats.demand_data_hits"};
@@ -384,6 +386,7 @@ sub _arc_efficiency {
 }
 
 sub _l2arc_summary {
+	if (!$Kstat->{"vfs.zfs.version.spa"}) { return };
 	my $l2_abort_lowmem = $Kstat->{"kstat.zfs.misc.arcstats.l2_abort_lowmem"};
 	my $l2_cksum_bad = $Kstat->{"kstat.zfs.misc.arcstats.l2_cksum_bad"};
 	my $l2_evict_lock_retry = $Kstat->{"kstat.zfs.misc.arcstats.l2_evict_lock_retry"};
@@ -473,6 +476,7 @@ sub _l2arc_summary {
 }
 
 sub _dmu_summary {
+	if (!$Kstat->{"vfs.zfs.version.spa"}) { return };
 	my $zfetch_bogus_streams = $Kstat->{"kstat.zfs.misc.zfetchstats.bogus_streams"};
 	my $zfetch_colinear_hits = $Kstat->{"kstat.zfs.misc.zfetchstats.colinear_hits"};
 	my $zfetch_colinear_misses = $Kstat->{"kstat.zfs.misc.zfetchstats.colinear_misses"};
@@ -546,6 +550,7 @@ sub _dmu_summary {
 }
 
 sub _vdev_summary {
+	if (!$Kstat->{"vfs.zfs.version.spa"}) { return };
 	my $vdev_cache_delegations = $Kstat->{"kstat.zfs.misc.vdev_cache_stats.delegations"};
 	my $vdev_cache_misses = $Kstat->{"kstat.zfs.misc.vdev_cache_stats.misses"};
 	my $vdev_cache_hits = $Kstat->{"kstat.zfs.misc.vdev_cache_stats.hits"};
