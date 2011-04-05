@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/env -iS perl
 #
 # $Id$
 #
@@ -89,16 +89,17 @@ my $kstat; # = Sun::Solaris::Kstat->new();
 STDOUT->autoflush;
 
 sub kstat_update {
-	my @k = `sysctl 'kstat.zfs.misc.arcstats'`;
+	my @k = `/sbin/sysctl -q 'kstat.zfs.misc.arcstats'`;
+	if (!@k) { exit 1 };
 
 	undef $kstat;
 
 	foreach my $k (@k) {
-	  chomp $k;
-	  my ($name,$value) = split /: /, $k;
-	  my @z = split /\./, $name;
-	  my $n = pop @z;
-	  ${kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
+		chomp $k;
+		my ($name,$value) = split /: /, $k;
+		my @z = split /\./, $name;
+	my $n = pop @z;
+	${kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
 	}
 }
 
