@@ -177,14 +177,15 @@ sub _system_memory {
 	    return $mem_round;
 	}
 
+	my $pagesize = $Kstat->{"hw.pagesize"};
 	my $mem_hw = &mem_rounded($Kstat->{"hw.physmem"});
 	my $mem_phys = $Kstat->{"hw.physmem"};
-	my $mem_all = $Kstat->{"vm.stats.vm.v_page_count"} * $Kstat->{"hw.pagesize"};
-	my $mem_wire = $Kstat->{"vm.stats.vm.v_wire_count"} * $Kstat->{"hw.pagesize"};
-	my $mem_active = $Kstat->{"vm.stats.vm.v_active_count"} * $Kstat->{"hw.pagesize"};
-	my $mem_inactive = $Kstat->{"vm.stats.vm.v_inactive_count"} * $Kstat->{"hw.pagesize"};
-	my $mem_cache = $Kstat->{"vm.stats.vm.v_cache_count"} * $Kstat->{"hw.pagesize"};
-	my $mem_free = $Kstat->{"vm.stats.vm.v_free_count"} * $Kstat->{"hw.pagesize"};
+	my $mem_all = $Kstat->{"vm.stats.vm.v_page_count"} * $pagesize;
+	my $mem_wire = $Kstat->{"vm.stats.vm.v_wire_count"} * $pagesize;
+	my $mem_active = $Kstat->{"vm.stats.vm.v_active_count"} * $pagesize;
+	my $mem_inactive = $Kstat->{"vm.stats.vm.v_inactive_count"} * $pagesize;
+	my $mem_cache = $Kstat->{"vm.stats.vm.v_cache_count"} * $pagesize;
+	my $mem_free = $Kstat->{"vm.stats.vm.v_free_count"} * $pagesize;
 
 	my $mem_gap_vm = $mem_all - ($mem_wire + $mem_active + $mem_inactive + $mem_cache + $mem_free);
 
