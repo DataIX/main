@@ -29,7 +29,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-
 # If you are having troubles when using this script from cron(8) please try
 # adjusting your PATH before reporting problems.
 #
@@ -166,15 +165,15 @@ foreach my $kstat (@Kstat_pull) {
 
 sub _system_memory {
 	sub mem_rounded {
-	    my ($mem_size) = @_;
-	    my $chip_size  = 1;
-	    my $chip_guess = ($mem_size / 8) - 1;
-	    while ($chip_guess != 0) {
-	        $chip_guess >>= 1;
-	        $chip_size <<= 1;
-	    }
-	    my $mem_round = (int($mem_size / $chip_size) + 1) * $chip_size;
-	    return $mem_round;
+		my ($mem_size) = @_;
+		my $chip_size = 1;
+		my $chip_guess = ($mem_size / 8) - 1;
+		while ($chip_guess != 0) {
+			$chip_guess >>= 1;
+			$chip_size <<= 1;
+		}
+		my $mem_round = (int($mem_size / $chip_size) + 1) * $chip_size;
+		return $mem_round;
 	}
 
 	my $pagesize = $Kstat->{"hw.pagesize"};
@@ -191,7 +190,7 @@ sub _system_memory {
 
 	my $mem_total = $mem_hw;
 	my $mem_avail = $mem_inactive + $mem_cache + $mem_free;
-	my $mem_used  = $mem_total - $mem_avail;
+	my $mem_used = $mem_total - $mem_avail;
 
 	print "System Memory:\n";
 	print "\t+-------------------------------------------------+\n";
@@ -333,7 +332,7 @@ sub _arc_efficiency {
 	my $prefetch_data_total = ($prefetch_data_hits + $prefetch_data_misses);
 	my $real_hits = ($mfu_hits + $mru_hits);
 
-	printf("ARC Efficiency:\t\t\t\t\t%s\n",	fHits($arc_accesses_total));
+	printf("ARC Efficiency:\t\t\t\t\t%s\n", fHits($arc_accesses_total));
 	printf("\tCache Hit Ratio:\t\t%s\t%s\n",
 		fPerc($arc_hits, $arc_accesses_total), fHits($arc_hits));
 	printf("\tCache Miss Ratio:\t\t%s\t%s\n",
@@ -437,7 +436,7 @@ sub _l2arc_summary {
 		printf("\tIO Errors:\t\t\t\t%s\n", fHits($l2_io_error));
 		printf("\tSPA Mismatch:\t\t\t\t%s\n", fHits($l2_write_spa_mismatch));
 		print "\n";
-	
+
 		printf("L2 ARC Size: (Adaptive)\t\t\t\t%s\n", fBytes($l2_size));
 		printf("\tHeader Size:\t\t\t%s\t%s\n",
 			fPerc($l2_hdr_size, $l2_size), fBytes($l2_hdr_size));
@@ -463,7 +462,7 @@ sub _l2arc_summary {
 		printf("\tList Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_iter));
 		printf("\tNULL List Iterations:\t\t\t%s\n", fHits($l2_write_buffer_list_null_iter));
 		print "\n";
-	
+
 		print "L2 ARC Writes:\n";
 		if ($l2_writes_done != $l2_writes_sent) {
 			printf("\tWrites Sent: (%s)\t\t\t\t%s\n",
@@ -472,7 +471,7 @@ sub _l2arc_summary {
 				fPerc($l2_writes_done, $l2_writes_sent), fHits($l2_writes_done));
 			printf("\t  Error Ratio:\t\t\t%s\t%s\n",
 				fPerc($l2_writes_error, $l2_writes_sent), fHits($l2_writes_error));
-		} else { printf("\tWrites Sent:\t\t\t%s\t%s\n",	fPerc(100), fHits($l2_writes_sent)); }
+		} else { printf("\tWrites Sent:\t\t\t%s\t%s\n", fPerc(100), fHits($l2_writes_sent)); }
 	}
 }
 
@@ -502,7 +501,7 @@ sub _dmu_summary {
 		if ($zfetch_health_count > 0) {
 			print "(DEGRADED)\n\n";
 		} else { print "(HEALTHY)\n\n"; }
-		printf("DMU Efficiency:\t\t\t\t\t%s\n",	fHits($zfetch_access_total));
+		printf("DMU Efficiency:\t\t\t\t\t%s\n", fHits($zfetch_access_total));
 		printf("\tHit Ratio:\t\t\t%s\t%s\n",
 			fPerc($zfetch_hits, $zfetch_access_total),
 			fHits($zfetch_hits));
@@ -529,9 +528,9 @@ sub _dmu_summary {
 			fHits($zfetch_stride_misses));
 		print "\n";
 
-	        if ($zfetch_health_count > 0) {
-	                printf("DMU Misc: (%s)\n", "FAULTED");
-	        } else { print "DMU Misc:\n"; }
+		if ($zfetch_health_count > 0) {
+			printf("DMU Misc: (%s)\n", "FAULTED");
+		} else { print "DMU Misc:\n"; }
 		printf("\tReclaim:\t\t\t\t%s\n", fHits($zfetch_reclaim_total));
 		printf("\t  Successes:\t\t\t%s\t%s\n",
 			fPerc($zfetch_reclaim_successes, $zfetch_reclaim_total),
@@ -622,7 +621,7 @@ if (%opt) {
 		else {
 			_call_all;
 		}
-	}	
+	}
 } else {
 	_call_all;
 }
