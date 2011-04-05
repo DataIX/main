@@ -156,7 +156,7 @@ my @Kstats = qw(
 );
 
 my $Kstat;
-my @Kstat_pull = `/sbin/sysctl @Kstats`;
+my @Kstat_pull = `/sbin/sysctl -q @Kstats`;
 foreach my $kstat (@Kstat_pull) {
 	chomp $kstat;
 	if ($kstat =~ m/^([^:]+):\s+(.+)\s*$/s) {
@@ -572,7 +572,7 @@ sub _sysctl_summary {
 			vm.kmem_size_min
 			vm.kmem_size_max
 		);
-		my @tunable = `/sbin/sysctl -e @Tunable`;
+		my @tunable = `/sbin/sysctl -qe @Tunable`;
 		print "ZFS Tunable (sysctl):\n";
 		foreach my $tunable (@tunable){
 			chomp($tunable);
