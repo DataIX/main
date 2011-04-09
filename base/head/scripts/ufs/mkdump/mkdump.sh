@@ -44,7 +44,7 @@ readonly PATH="/sbin:/usr/sbin:/bin:/usr/bin"
 # copy the whole file to your backup using something like
 # rsync(1), ssh(1), ftp(1). 
 #
-dump_devs="ad0s1a ad0s1d ad0s1f"
+dump_devs="ada0p3 ada0p4 ada0p6"
 
 #
 # Set this to the path where you wish to save your dumps.
@@ -57,14 +57,14 @@ dump_devs="ad0s1a ad0s1d ad0s1f"
 # under a directory of the same name of the machine that is
 # going to be dumped to avoid confusion or possible overwrite.
 #
-dump_path="/mnt/nfs/aptiva/exports/backup/polarity"
+dump_path="/exports/Tapes"
 
 #
 # Set this only if you know what you are doing. Live filesystem
 # flags will be added to this variable automaticly if the system
 # supports the feature (FreeBSD 5, 6, 7 / UFS2).
 #
-dump_flags="-h0 -B 2048000"
+dump_flags="-h0 -B 4194304"
 
 #
 # Set this to the uid of the user that you usually do dumps as.
@@ -89,6 +89,9 @@ trip="Please make the proper modifications to this script"
 #   Source below this point should not need to be changed.    #
 ###############################################################
 
+umask 077
+idprio 10 -$$
+
 _chkid_f(){
 	if [ -n "$trip" ]; then
 		echo "$trip before usage."
@@ -105,17 +108,17 @@ if [ `sysctl -n kern.osreldate` -ge "500000" ]; then
 fi
 
 _mkdump_purge(){
-	for _purgefile in $dump_path/$_dumpdev-level$dump_level-vol*.tape; do
+	for _purgefile in $dump_path/$_dumpdev-level$dump_lvl-vol*; do
 		if [ -f $_purgefile ]; then
 			echo -n "  DUMP: Removing stale dump file: $(basename $_purgefile)"
 			rm $_purgefile 2>/dev/null && echo -e "\t[DONE]" ||echo -e "\t[FAILED]"
 		fi
 	done
 	if [ "$dump_level" -le "8" ]; then 
-		for _stalefile in $dump_path/$_dumpdev-level$dump_str-vol*.tape; do
+		for _stalefile in $dump_path/$_dumpdev-lvl$dump_str-vol*; do
 			if [ -f $_stalefile ]; then
 				echo -n "  DUMP: Removing stale dump file: $(basename $_stalefile)"
-				rm $_stalefile 2>/dev/null && echo -e "\t[DONE]" || echo -e "\t[FAILED]"
+				rm $_stalefile 2>/dev/null && echo -e "\t[DONE]" ||echo -e "\t[FAILED]"
 			fi
 		done
         fi
@@ -124,19 +127,20 @@ _mkdump_purge(){
 _mkdump_f(){
 	for _dumpdev in $dump_devs; do
 		VOLUME='$DUMP_VOLUME'
-		PIPESTR="cat >$dump_path/$_dumpdev-level$dump_level"
-		#PIPESTR="dd if=/dev/fd/0 of=$dump_path/$_dumpdev-level$dump_level"
+		PIPESTR="cat >$dump_path/$_dumpdev-lvl$dump_level"
+		#PIPESTR="/usr/local/bin/dcfldd of=$dump_path/$_dumpdev-lvl$dump_level"
 		if [ -c /dev/$_dumpdev -a -d $dump_path ]; then
 			_mkdump_purge
 			echo "  DUMP: Performing level $dump_level dump for: $_dumpdev"
-			dump $dump_flags -${dump_level}u -P "''$PIPESTR-vol$VOLUME.tape''" /dev/$_dumpdev
+			dump $dump_flags -${dump_level}u -P "''$PIPESTR-vol$VOLUME''" /dev/$_dumpdev
+			echo
 		else
 			echo -e "\nError on device $_dumpdev at level $dump_level."
 			echo "Dump device or the dump path was specified incorrectly."
 			exit 3
 		fi
-		
 	done
+	cp -f /etc/dumpdates $dump_path
 }
 
 _mkdump_read_f(){
