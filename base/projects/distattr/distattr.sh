@@ -30,7 +30,9 @@
 # see also sh(1), stat(1), echo(1), md5(1), sha256(1)
 #
 
-if [ -z "$@" ]; then
+FILESPACE="$@"
+
+if [ -z "$FILESPACE" ]; then
 	echo "Usage: distattr file1 [file2 file3 ...] [/path/to/files*]"
 	exit 1
 fi
@@ -42,47 +44,88 @@ case $(id -u) in
 	   MESGSPACE="USER:   "
 esac
 
-echo "Using namespace \"$NAMESPACE\" to store extattr(9)"
+echo -e "\nUsing namespace \"$NAMESPACE\" to store extattr(9)"
 SETATTR="setextattr ${NAMESPACE}"
 NOW="`date`"
 
-for file in $@; do
-	if [ -r $file -a -f $file ]; then
+for file in $FILESPACE; do
+	if [ -f $file -a -r $file ]; then
 		[ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
 
 		echo -e "FILE:\t$file"
 		echo -n "${MESGSPACE}Setting "
 
 		echo -n "NAME"
-		$SETATTR NAME "$file" $file ||\
+		$SETATTR NAME "$file" $file 2>/dev/null ||\
 			export NAERR="$NAERR $file"
 
 		if [ -x /sbin/md5 ]; then
 			echo -n ", MD5"
-			$SETATTR MD5 `/sbin/md5 -q $file` $file ||\
+			$SETATTR MD5 `/sbin/md5 -q $file` $file 2>/dev/null ||\
 				export MDERR="$MDERR $file"
 		fi
 		if [ -x /sbin/sha256 ]; then
 			echo -n ", SHA256"
-			$SETATTR SHA256 `/sbin/sha256 -q $file` $file ||\
+			$SETATTR SHA256 `/sbin/sha256 -q $file` $file 2>/dev/null ||\
 				export SHERR="$SHERR $file"
 		fi
-		if [ ! -z "$st_size" ]; then
+		if [ -n "$st_size" ]; then
 			echo -n ", SIZE"
-			$SETATTR SIZE $st_size $file ||\
+			$SETATTR SIZE $st_size $file 2>/dev/null ||\
 				export SIERR="$SIERR $file"
 		fi
-		if [ ! -z "$st_birthtime" ]; then 
+		if [ -n "$st_birthtime" ]; then 
 			echo -n ", CREATED"
-			$SETATTR CREATED "`date -j -r $st_birthtime`" $file ||\
+			$SETATTR CREATED "`date -j -r $st_birthtime`" $file 2>/dev/null ||\
 				export CRERR="$CRERR $file"
 		fi
-		if [ ! -z "$NOW" ]; then
+		if [ -n "$NOW" ]; then
 			echo -n ", TIMESTAMP" && \
-				$SETATTR TIMESTAMP "`date`" $file ||\
+				$SETATTR TIMESTAMP "`date`" $file 2>/dev/null ||\
 				export TSERR="$TSERR $file"
 		fi
-
 		echo "... [DONE]"
 	fi
-done
+done; echo
+
+if [ -n "$NAERR" ]; then
+	echo "Namespace errors setting attribute: NAME"
+	for file in $NAERR; do
+		echo $file
+	done |column -x -c80
+fi
+
+if [ -n "$MDERR" ]; then
+	echo "Namespace errors setting attribute: MD5"
+	for file in $MDERR; do
+		echo $file
+	done |column -x -c80
+fi
+
+if [ -n "$SHERR" ]; then
+	echo "Namespace errors setting attribute: SHA256"
+	for file in $SHERR; do
+		echo $file
+	done |column -x -c80
+fi
+
+if [ -n "$SIERR" ]; then
+	echo "Namespace errors setting attribute: SIZE"
+	for file in $SIERR; do
+		echo $file
+	done |column -x -c80
+fi
+
+if [ -n "$CRERR" ]; then
+	echo "Namespace errors setting attribute: CREATED"
+	for file in $CRERR; do
+		echo $file
+	done |column -x -c80
+fi
+
+if [ -n "$TSERR" ]; then
+	echo "Namespace errors setting attribute: TIMESTAMP"
+	for file in $TSERR; do
+		echo $file
+	done |column -x -c80
+fi
