@@ -59,14 +59,11 @@ case $OURUSERID in
 esac; readonly NAMESPACE MESGSPACE
 
 echo -e "\nUsing namespace \"$NAMESPACE\" to store extattr(9)"
-SETATTR="setextattr ${NAMESPACE}"
-NOW="`date`"
-
-readonly SETATTR NOW
+SETATTR="setextattr ${NAMESPACE}" ;readonly SETATTR
 
 for file in $FILESLIST; do
 	if [ -f $file -a -r $file ]; then
-		[ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
+		export `stat -s $file`
 
 		echo -e "FILE:\t$file"
 		echo -n "${MESGSPACE}Setting "
@@ -75,31 +72,30 @@ for file in $FILESLIST; do
 		$SETATTR NAME "$file" $file 2>/dev/null ||\
 			export NAERR="$NAERR $file"
 
-		if [ -x /sbin/md5 ]; then
-			echo -n ", MD5"
-			$SETATTR MD5 `/sbin/md5 -q $file` $file 2>/dev/null ||\
-				export MDERR="$MDERR $file"
-		fi
-		if [ -x /sbin/sha256 ]; then
-			echo -n ", SHA256"
-			$SETATTR SHA256 `/sbin/sha256 -q $file` $file 2>/dev/null ||\
-				export SHERR="$SHERR $file"
-		fi
+		echo -n ", MD5"
+		$SETATTR MD5 `md5 -q $file` $file 2>/dev/null ||\
+			export MDERR="$MDERR $file"
+
+		echo -n ", SHA256"
+		$SETATTR SHA256 `sha256 -q $file` $file 2>/dev/null ||\
+			export SHERR="$SHERR $file"
+
 		if [ -n "$st_size" ]; then
 			echo -n ", SIZE"
 			$SETATTR SIZE $st_size $file 2>/dev/null ||\
 				export SIERR="$SIERR $file"
 		fi
+
 		if [ -n "$st_birthtime" ]; then 
 			echo -n ", CREATED"
 			$SETATTR CREATED "`date -j -r $st_birthtime`" $file 2>/dev/null ||\
 				export CRERR="$CRERR $file"
 		fi
-		if [ -n "$NOW" ]; then
-			echo -n ", TIMESTAMP" && \
-				$SETATTR TIMESTAMP "`date`" $file 2>/dev/null ||\
-				export TSERR="$TSERR $file"
-		fi
+
+		echo -n ", TIMESTAMP"
+		$SETATTR TIMESTAMP "`date`" $file 2>/dev/null ||\
+			export TSERR="$TSERR $file"
+
 		echo "... [DONE]"
 	fi
 done; echo
