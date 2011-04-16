@@ -42,7 +42,7 @@ if [ -z "$FILESPACE" ]; then
 	exit 1
 else
 	for file in $FILESPACE; do
-		if [ "$OURUSERID" != "0" -a ! -O $file -a ! -G $file -o ! -w $file ]; then
+		if [ "$OURUSERID" != "0" -a ! -O $file -a ! -G $file ]; then
 			NOOPFILES="$NOOPFILES $file"
 		else
 			FILESLIST="$FILESLIST $file"
@@ -58,7 +58,7 @@ case $OURUSERID in
 	   MESGSPACE="USER:   "
 esac; readonly NAMESPACE MESGSPACE
 
-echo -e "\nUsing namespace \"$NAMESPACE\" to store extattr(9)"
+echo -e "\nUsing namespace \"$NAMESPACE\" to set extattr(9)"
 SETATTR="setextattr ${NAMESPACE}" ;readonly SETATTR
 
 for file in $FILESLIST; do
@@ -70,74 +70,48 @@ for file in $FILESLIST; do
 
 		echo -n "NAME"
 		$SETATTR NAME "$file" $file 2>/dev/null ||\
-			export NAERR="$NAERR $file"
+			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", MD5"
 		$SETATTR MD5 `md5 -q $file` $file 2>/dev/null ||\
-			export MDERR="$MDERR $file"
+			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", SHA256"
 		$SETATTR SHA256 `sha256 -q $file` $file 2>/dev/null ||\
-			export SHERR="$SHERR $file"
+			export ERRATTR="$ERRATTR $file"
 
 		if [ -n "$st_size" ]; then
 			echo -n ", SIZE"
 			$SETATTR SIZE $st_size $file 2>/dev/null ||\
-				export SIERR="$SIERR $file"
+				export ERRATTR="$ERRATTR $file"
 		fi
 
 		if [ -n "$st_birthtime" ]; then 
 			echo -n ", CREATED"
 			$SETATTR CREATED "`date -j -r $st_birthtime`" $file 2>/dev/null ||\
-				export CRERR="$CRERR $file"
+				export ERRATTR="$ERRATTR $file"
 		fi
 
 		echo -n ", TIMESTAMP"
 		$SETATTR TIMESTAMP "`date`" $file 2>/dev/null ||\
-			export TSERR="$TSERR $file"
+			export ERRATTR="$ERRATTR $file"
 
 		echo "... [DONE]"
 	fi
 done; echo
 
-if [ -n "$NAERR" ]; then
-	echo "Namespace errors setting attribute: NAME"
-	for file in $NAERR; do
+if [ -n "$ERRATTR" ]; then
+	echo "Namespace errors setting extattr(9):"
+	for file in $ERRATTR; do
 		echo $file
-	done |column -x -c80
+	done |sort |uniq |column -x -c80
+	echo
 fi
 
-if [ -n "$MDERR" ]; then
-	echo "Namespace errors setting attribute: MD5"
-	for file in $MDERR; do
+if [ -n "$NOOPFILES" ]; then
+	echo "Namespace errors uid/gid permission denied:"
+	for file in $NOOPFILES; do
 		echo $file
-	done |column -x -c80
-fi
-
-if [ -n "$SHERR" ]; then
-	echo "Namespace errors setting attribute: SHA256"
-	for file in $SHERR; do
-		echo $file
-	done |column -x -c80
-fi
-
-if [ -n "$SIERR" ]; then
-	echo "Namespace errors setting attribute: SIZE"
-	for file in $SIERR; do
-		echo $file
-	done |column -x -c80
-fi
-
-if [ -n "$CRERR" ]; then
-	echo "Namespace errors setting attribute: CREATED"
-	for file in $CRERR; do
-		echo $file
-	done |column -x -c80
-fi
-
-if [ -n "$TSERR" ]; then
-	echo "Namespace errors setting attribute: TIMESTAMP"
-	for file in $TSERR; do
-		echo $file
-	done |column -x -c80
+	done |sort |uniq |column -x -c80
+	echo
 fi
