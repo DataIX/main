@@ -30,34 +30,59 @@
 # see also sh(1), stat(1), echo(1), md5(1), sha256(1)
 #
 
+if [ -z "$@" ]; then
+	echo "Usage: distattr file1 [file2 file3 ...] [/path/to/files*]"
+	exit 1
+fi
+
 case $(id -u) in
-        0) NAMESPACE="system"
-           MESGSPACE="SYSTEM: ";;
-        *) NAMESPACE="user"
-           MESGSPACE="USER:   "
+	0) NAMESPACE="system"
+	   MESGSPACE="SYSTEM: ";;
+	*) NAMESPACE="user"
+	   MESGSPACE="USER:   "
 esac
 
-echo -e "Using namespace \"$NAMESPACE\" to store extattr(9)"
+echo "Using namespace \"$NAMESPACE\" to store extattr(9)"
 SETATTR="setextattr ${NAMESPACE}"
 NOW="`date`"
 
 for file in $@; do
 	if [ -r $file -a -f $file ]; then
 		[ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
-		echo -e "FILE:   $file"
+
+		echo -e "FILE:\t$file"
 		echo -n "${MESGSPACE}Setting "
+
 		echo -n "NAME"
-		[ x"$file" != x"" ] && $SETATTR NAME "$file" $file
-		echo -n ", MD5"
-		[ -x /sbin/md5 ] && $SETATTR MD5 `/sbin/md5 -q $file` $file
-		echo -n ", SHA256"
-		[ -x /sbin/sha256 ] && $SETATTR SHA256 `/sbin/sha256 -q $file` $file
-		echo -n ", SIZE"
-		[ x"$st_size" != x"" ] && $SETATTR SIZE $st_size $file
-		echo -n ", CREATED"
-		[ x"$st_birthtime" != x"" ] && $SETATTR CREATED "`date -j -r $st_birthtime`" $file
-		echo -n ", TIMESTAMP"
-		[ x"$NOW" != x"" ] && $SETATTR TIMESTAMP "`date`" $file
+		$SETATTR NAME "$file" $file ||\
+			export NAERR="$NAERR $file"
+
+		if [ -x /sbin/md5 ]; then
+			echo -n ", MD5"
+			$SETATTR MD5 `/sbin/md5 -q $file` $file ||\
+				export MDERR="$MDERR $file"
+		fi
+		if [ -x /sbin/sha256 ]; then
+			echo -n ", SHA256"
+			$SETATTR SHA256 `/sbin/sha256 -q $file` $file ||\
+				export SHERR="$SHERR $file"
+		fi
+		if [ ! -z "$st_size" ]; then
+			echo -n ", SIZE"
+			$SETATTR SIZE $st_size $file ||\
+				export SIERR="$SIERR $file"
+		fi
+		if [ ! -z "$st_birthtime" ]; then 
+			echo -n ", CREATED"
+			$SETATTR CREATED "`date -j -r $st_birthtime`" $file ||\
+				export CRERR="$CRERR $file"
+		fi
+		if [ ! -z "$NOW" ]; then
+			echo -n ", TIMESTAMP" && \
+				$SETATTR TIMESTAMP "`date`" $file ||\
+				export TSERR="$TSERR $file"
+		fi
+
 		echo "... [DONE]"
 	fi
 done
