@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env -iS -P /bin sh
 #
 # Copyright (c) 2006-2011 J. Hellenthal <jhell@DataIX.net>,
 # All rights reserved.
@@ -29,26 +29,42 @@
 #
 # see also sh(1), stat(1), echo(1), md5(1), sha256(1)
 #
+PATH=/sbin:/bin:/usr/sbin:/usr/bin ;readonly PATH
 
-FILESPACE="$@"
+renice 5 -p $$ 2>/dev/null
+OURUSERID="`id -u`" 
+FILESPACE="$@" 
+
+readonly OURUSERID FILESPACE
 
 if [ -z "$FILESPACE" ]; then
 	echo "Usage: distattr file1 [file2 file3 ...] [/path/to/files*]"
 	exit 1
+else
+	for file in $FILESPACE; do
+		if [ "$OURUSERID" != "0" -a ! -O $file -a ! -G $file -o ! -w $file ]; then
+			NOOPFILES="$NOOPFILES $file"
+		else
+			FILESLIST="$FILESLIST $file"
+		fi
+	done
+	readonly NOOPFILES FILESLIST
 fi
 
-case $(id -u) in
+case $OURUSERID in
 	0) NAMESPACE="system"
 	   MESGSPACE="SYSTEM: ";;
 	*) NAMESPACE="user"
 	   MESGSPACE="USER:   "
-esac
+esac; readonly NAMESPACE MESGSPACE
 
 echo -e "\nUsing namespace \"$NAMESPACE\" to store extattr(9)"
 SETATTR="setextattr ${NAMESPACE}"
 NOW="`date`"
 
-for file in $FILESPACE; do
+readonly SETATTR NOW
+
+for file in $FILESLIST; do
 	if [ -f $file -a -r $file ]; then
 		[ -x /usr/bin/stat ] && export `/usr/bin/stat -s $file`
 
