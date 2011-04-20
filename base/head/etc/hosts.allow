@@ -1,0 +1,45 @@
+#
+# hosts.allow access control file for "tcp wrapped" applications.
+# $Id$
+#
+# NOTE: The hosts.deny file is deprecated.
+#       Place both 'allow' and 'deny' rules in the hosts.allow file.
+#	See hosts_options(5) for the format of this file.
+#	hosts_access(5) no longer fully applies.
+
+ftpd    : ALL \
+        : spawn (echo -e "Conn\: $(uptime|xargs)\nServ\: %N[%A]\n\nUser\:"\
+        "%u\nHost\: %h\nAddr\: %a\nArgv\: %d\nProc\: %p" \
+        | /usr/bin/mail -s "Ftp connection from %a" root) & \
+        : allow
+
+telnetd : ALL \
+        : spawn (echo -e "Conn\: $(uptime|xargs)\nServ\: %N[%A]\n\nUser\:"\
+        "%u\nHost\: %h\nAddr\: %a\nArgv\: %d\nProc\: %p" \
+        | /usr/bin/mail -s "Telnet connection from %a" root) & \
+        : allow
+
+fingerd : ALL \
+        : spawn (echo -e "Conn\: $(uptime|xargs)\nServ\: %N[%A]\n\nUser\:"\
+        "%u\nHost\: %h\nAddr\: %a\nArgv\: %d\nProc\: %p" \
+        | /usr/bin/mail -s "Finger connection from %a" root) & \
+        : allow
+
+sshd    : ALL \
+        : spawn (echo -e "Conn\: $(uptime|xargs)\nServ\: %N[%A]\n\nUser\:"\
+        "%u\nHost\: %h\nAddr\: %a\nArgv\: %d\nProc\: %p" \
+        | /usr/bin/mail -s "OpenSSH connection from %a" root) & \
+        : allow
+
+# Protect against simple DNS spoofing attacks by checking that the
+# forward and reverse records for the remote host match. If a mismatch
+# occurs, access is denied, and any positive ident response within
+# 20 seconds is logged. No protection is afforded against DNS poisoning,
+# IP spoofing or more complicated attacks. Hosts with no reverse DNS
+# pass this rule.
+#ALL : PARANOID : RFC931 20 : deny
+
+# Start by allowing everything (this prevents the rest of the file
+# from working, so remove it when you need protection).
+# The rules here work on a "First match wins" basis.
+ALL : ALL : allow
