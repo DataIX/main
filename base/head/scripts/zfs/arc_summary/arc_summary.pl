@@ -53,14 +53,14 @@ sub hline {
 }
 
 sub fBytes {
-	my $kbytes = (1024);
-	my $mbytes = ($kbytes * $kbytes);
-	my $gbytes = ($mbytes * $kbytes);
-	my $tbytes = ($gbytes * $kbytes);
-	my $pbytes = ($tbytes * $kbytes);
-	my $ebytes = ($pbytes * $kbytes);
-	my $zbytes = ($ebytes * $kbytes);
-	my $ybytes = ($zbytes * $kbytes);
+	my $kbytes = (2**10);
+	my $mbytes = (2**20);
+	my $gbytes = (2**30);
+	my $tbytes = (2**40);
+	my $pbytes = (2**50);
+	my $ebytes = (2**60);
+	my $zbytes = (2**70);
+	my $ybytes = (2**80);
 
 	my $Bytes = $_[0] || 0;
 	defined($Bytes) or $Bytes = 0;
@@ -89,14 +89,14 @@ sub fBytes {
 }
 
 sub fHits {
-	my $khits = (1000);
-	my $mhits = ($khits * $khits);
-	my $bhits = ($mhits * $khits);
-	my $thits = ($bhits * $khits);
-	my $qhits = ($thits * $khits);
-	my $Qhits = ($qhits * $khits);
-	my $shits = ($Qhits * $khits);
-	my $Shits = ($shits * $khits);
+	my $khits = (10**3);
+	my $mhits = (10**6);
+	my $bhits = (10**9);
+	my $thits = (10**12);
+	my $qhits = (10**15);
+	my $Qhits = (10**18);
+	my $shits = (10**21);
+	my $Shits = (10**24);
 
 	my $Hits = $_[0] || 0;
 	defined($Hits) or $Hits = 0;
