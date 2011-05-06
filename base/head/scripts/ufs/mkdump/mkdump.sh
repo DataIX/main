@@ -128,7 +128,7 @@ _mkdump_f(){
 	for _dumpdev in $dump_devs; do
 		VOLUME='$DUMP_VOLUME'
 		PIPESTR="cat >$dump_path/$_dumpdev-lvl$dump_level"
-		#PIPESTR="/usr/local/bin/dcfldd of=$dump_path/$_dumpdev-lvl$dump_level"
+		#PIPESTR="dd of=$dump_path/$_dumpdev-lvl$dump_level"
 		if [ -c /dev/$_dumpdev -a -d $dump_path ]; then
 			_mkdump_purge
 			echo "  DUMP: Performing level $dump_level dump for: $_dumpdev"
