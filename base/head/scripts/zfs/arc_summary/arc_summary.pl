@@ -216,12 +216,15 @@ sub _system_memory {
 	my $kmem = ($ktext + $kdata);
 	my $kmem_map_size = $Kstat->{"vm.kmem_map_size"};
 	my $kmem_map_free = $Kstat->{"vm.kmem_map_free"};
+	my $kmem_map_total = ($kmem_map_size + $kmem_map_free);
 
 	printf("Kernel Memory:\t\t\t\t\t%s\n", fBytes($kmem));
-	printf("\tDATA:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
-	printf("\tTEXT:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
-	printf("\tKMAP:\t\t\t\t\t%s\n", fBytes($kmem_map_size));
-	printf("\tFREE:\t\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_size), fBytes($kmem_map_free));
+	printf("\tData:\t\t\t\t%s\t%s\n", fPerc($kdata, $kmem), fBytes($kdata));
+	printf("\tText:\t\t\t\t%s\t%s\n\n", fPerc($ktext, $kmem), fBytes($ktext));
+
+	printf("Kernel Memory Map:\t\t\t\t%s\n", fBytes($kmem_map_total));
+	printf("\tSize:\t\t\t\t%s\t%s\n", fPerc($kmem_map_size, $kmem_map_total), fBytes($kmem_map_size));
+	printf("\tFree:\t\t\t\t%s\t%s\n", fPerc($kmem_map_free, $kmem_map_total), fBytes($kmem_map_free));
 }
 
 my $daydate = localtime; chomp $daydate;
