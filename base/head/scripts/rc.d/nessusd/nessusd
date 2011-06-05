@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# $Id$
+#
+
+# PROVIDE: nessusd
+# REQUIRE: LOGIN cleanvar
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="nessusd"
+rcvar=`set_rcvar`
+
+load_rc_config ${name}
+
+: ${nessusd_enable:="YES"}
+: ${nessusd_flags:="-D -q"}
+
+pidfile="/usr/local/nessus/var/nessus/nessus-service.pid"
+command="/usr/local/nessus/sbin/nessus-service"
+
+stop_postcmd(){ [ -f "$pidfile" ] && rm -f "$pidfile"; }
+stop_postcmd="stop_postcmd"
+
+run_rc_command "$1"
