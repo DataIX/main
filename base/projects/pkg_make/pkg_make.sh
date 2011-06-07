@@ -27,9 +27,22 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-cd /exports/packages ||exit
-ls /var/db/pkg/ |sed s/'pkgdb.db'// >pkg_list
-for package_name in `sort pkg_list`; do
-	[ ! -f $package_name.tbz ] && pkg_create -v -b $package_name
+
+trap 'exit 1' 2
+
+PKG_DIST="/exports/packages"
+PKG_DATA="/var/db/pkg"
+
+cd $PKG_DIST/ ||exit
+ls $PKG_DATA/ |sed -e 's/^pkgdb\.db//' -e 's/^\.hg//' >.pkg_list
+
+for _pkg_name in `sort .pkg_list`; do
+	[ ! -f $_pkg_name.tbz ] && pkg_create -v -b $_pkg_name
 done
-rm pkg_list
+
+ls $PKG_DIST/ |sed 's/\.tbz//' |fgrep -vf .pkg_list >.pkg_remove
+for _pkg_name in `sort .pkg_remove`; do
+	rm -if $_pkg_name.tbz ||echo "Failed to remove $_pkg_name.tbz"
+done
+
+rm -f .pkg_list .pkg_remove
