@@ -32,7 +32,7 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin ;readonly PATH
 
 renice 5 -p $$ 2>/dev/null
-OURUSERID="`id -u`" 
+OURUSERID="$(id -u)" 
 FILESPACE="$@" 
 
 readonly OURUSERID FILESPACE
@@ -63,7 +63,7 @@ SETATTR="setextattr ${NAMESPACE}" ;readonly SETATTR
 
 for file in $FILESLIST; do
 	if [ -f $file -a -r $file ]; then
-		export `stat -s $file`
+		export $(stat -s $file)
 
 		echo -e "FILE:\t$file"
 		echo -n "${MESGSPACE}Setting "
@@ -77,11 +77,11 @@ for file in $FILESLIST; do
 			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", MD5"
-		$SETATTR MD5 `md5 -q $file` $file 2>/dev/null ||\
+		$SETATTR MD5 $(md5 -q $file) $file 2>/dev/null ||\
 			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", SHA256"
-		$SETATTR SHA256 `sha256 -q $file` $file 2>/dev/null ||\
+		$SETATTR SHA256 $(sha256 -q $file) $file 2>/dev/null ||\
 			export ERRATTR="$ERRATTR $file"
 
 		if [ -n "$st_size" ]; then
@@ -92,12 +92,12 @@ for file in $FILESLIST; do
 
 		if [ -n "$st_birthtime" ]; then 
 			echo -n ", CREATED"
-			$SETATTR CREATED "`date -j -r $st_birthtime`" $file 2>/dev/null ||\
+			$SETATTR CREATED "$(date -j -r $st_birthtime)" $file 2>/dev/null ||\
 				export ERRATTR="$ERRATTR $file"
 		fi
 
 		echo -n ", TIMESTAMP"
-		$SETATTR TIMESTAMP "`date`" $file 2>/dev/null ||\
+		$SETATTR TIMESTAMP "$(date)" $file 2>/dev/null ||\
 			export ERRATTR="$ERRATTR $file"
 
 		echo "... [DONE]"
