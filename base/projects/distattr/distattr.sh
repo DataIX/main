@@ -69,7 +69,11 @@ for file in $FILESLIST; do
 		echo -n "${MESGSPACE}Setting "
 
 		echo -n "NAME"
-		$SETATTR NAME "$file" $file 2>/dev/null ||\
+		$SETATTR NAME "$(basename $file)" $file 2>/dev/null ||\
+			export ERRATTR="$ERRATTR $file"
+
+		echo -n "PATH"
+		$SETATTR PATH "echo $(dirname $(realpath $file))" $file 2>/dev/null ||
 			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", MD5"
