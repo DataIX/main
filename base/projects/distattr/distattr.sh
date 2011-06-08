@@ -72,7 +72,7 @@ for file in $FILESLIST; do
 		$SETATTR NAME "$(basename $file)" $file 2>/dev/null ||\
 			export ERRATTR="$ERRATTR $file"
 
-		echo -n "PATH"
+		echo -n ", PATH"
 		$SETATTR PATH "echo $(dirname $(realpath $file))" $file 2>/dev/null ||
 			export ERRATTR="$ERRATTR $file"
 
