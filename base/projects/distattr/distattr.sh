@@ -73,7 +73,7 @@ for file in $FILESLIST; do
 			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", PATH"
-		$SETATTR PATH "$(dirname $(realpath $file))" $file 2>/dev/null ||
+		$SETATTR PATH "$(dirname $(realpath $file))" $file 2>/dev/null ||\
 			export ERRATTR="$ERRATTR $file"
 
 		echo -n ", MD5"
