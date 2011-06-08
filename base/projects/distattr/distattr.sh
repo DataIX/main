@@ -100,9 +100,9 @@ for file in $FILESLIST; do
 		$SETATTR TIMESTAMP "$(date)" $file 2>/dev/null ||\
 			export ERRATTR="$ERRATTR $file"
 
-		echo "... [DONE]"
+		echo "... [DONE]"; echo
 	fi
-done; echo
+done
 
 if [ -n "$ERRATTR" ]; then
 	echo "Namespace errors setting extattr(9):"
