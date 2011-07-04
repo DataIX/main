@@ -50,9 +50,16 @@ my $usetunable = 1;			# Change to 0 to disable sysctl MIB spill.
 my $show_sysctl_descriptions = 0;	# Change to 1 (or use the -d flag) to show sysctl descriptions.
 my $alternate_sysctl_layout = 0;	# Change to 1 (or use the -a flag) to align the -d output
 
-sub hline {
-	print "\n------------------------------------------------------------------------\n\n";
+sub div1 {
+	print "\n";
+	my $i = 1; my $l = 18;
+	while ( $i <= $l ) {
+		print "----"; $i++;
+	}
+	print "\n";
 }
+
+sub div2 { div1; print "\n"; }
 
 sub fBytes {
 	my $kbytes = (2**10);
@@ -229,9 +236,9 @@ sub _system_memory {
 }
 
 my $daydate = localtime; chomp $daydate;
-print "\n------------------------------------------------------------------------\n";
+div1;
 printf("ZFS Subsystem Report\t\t\t\t%s", $daydate);
-hline();
+div2;
 
 sub _arc_summary {
 	if (!$Kstat->{"vfs.zfs.version.spa"}) { return };
@@ -618,10 +625,10 @@ sub _call_all {
 	foreach my $unsub (@unSub) {
 		eval $unsub &&
 		printf("\t\t\t\t\t\t\t\tPage: %2d", $page) &&
-		hline; ++$page;
+		div2; ++$page;
 	}
 	printf("\t\t\t\t\t\t\t\tPage: %2d", --$page);
-	hline;
+	div2;
 }
 
 my %opt;
@@ -630,13 +637,13 @@ if (%opt) {
 	$alternate_sysctl_layout = 1 if $opt{a};
 	$show_sysctl_descriptions = 1 if $opt{d};
 	switch($opt{p}) {
-		case 1 { eval $unSub[0]; hline; }
-		case 2 { eval $unSub[1]; hline; }
-		case 3 { eval $unSub[2]; hline; }
-		case 4 { eval $unSub[3]; hline; }
-		case 5 { eval $unSub[4]; hline; }
-		case 6 { eval $unSub[5]; hline; }
-		case 7 { eval $unSub[6]; hline; }
+		case 1 { eval $unSub[0]; div2; }
+		case 2 { eval $unSub[1]; div2; }
+		case 3 { eval $unSub[2]; div2; }
+		case 4 { eval $unSub[3]; div2; }
+		case 5 { eval $unSub[4]; div2; }
+		case 6 { eval $unSub[5]; div2; }
+		case 7 { eval $unSub[6]; div2; }
 		else {
 			_call_all;
 		}
