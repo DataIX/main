@@ -576,11 +576,11 @@ sub _sysctl_summary {
 	return unless $usetunable;
 	my @Tunable = qw(
 		kern.maxusers
-		vfs.zfs
 		vm.kmem_size
 		vm.kmem_size_scale
 		vm.kmem_size_min
 		vm.kmem_size_max
+		vfs.zfs
 	);
 	my %sysctl_descriptions;
 	if ($show_sysctl_descriptions) {
