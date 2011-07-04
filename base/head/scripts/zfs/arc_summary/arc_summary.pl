@@ -48,7 +48,7 @@ use Switch 'Perl5', 'Perl6';
 
 my $usetunable = 1;			# Change to 0 to disable sysctl MIB spill.
 my $show_sysctl_descriptions = 0;	# Change to 1 (or use the -d flag) to show sysctl descriptions.
-my $alternate_sysctl_layout = 0;	# Change to 1 (or use the -a flag) to align the -d output
+my $alternate_sysctl_layout = 0;	# Change to 1 (or use the -a flag) for alternate output.
 
 sub div1 {
 	print "\n";
