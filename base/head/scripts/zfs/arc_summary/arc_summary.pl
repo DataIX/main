@@ -46,7 +46,8 @@ use strict;
 use Getopt::Std;
 use Switch 'Perl5', 'Perl6';
 
-my $usetunable = 1;	# Change to 0 to disable sysctl MIB spill.
+my $usetunable = 1;			# Change to 0 to disable sysctl MIB spill.
+my $show_sysctl_descriptions = 0;	# Change to 1 (or use the -d flag) to show sysctl descriptions.
 
 sub hline {
 	print "\n------------------------------------------------------------------------\n\n";
@@ -571,19 +572,32 @@ sub _vdev_summary {
 }
 
 sub _sysctl_summary {
-	if ($usetunable != 0) {
-		my @Tunable = qw(
-			kern.maxusers
-			vfs.zfs
-			vm.kmem_size
-			vm.kmem_size_scale
-			vm.kmem_size_min
-			vm.kmem_size_max
-		);
-		my @tunable = `/sbin/sysctl -qe @Tunable`;
-		print "ZFS Tunable (sysctl):\n";
-		foreach my $tunable (@tunable){
-			chomp($tunable);
+	return unless $usetunable;
+	my @Tunable = qw(
+		kern.maxusers
+		vfs.zfs
+		vm.kmem_size
+		vm.kmem_size_scale
+		vm.kmem_size_min
+		vm.kmem_size_max
+	);
+	my %sysctl_descriptions;
+	if ($show_sysctl_descriptions) {
+		foreach my $tunable (`/sbin/sysctl -qde @Tunable`){
+			chomp $tunable;
+			my ($name, $description) = split(/=/, $tunable, 2);
+			$description = "Description unavailable" unless $description;
+			$sysctl_descriptions{$name}=$description;
+		}
+	}
+	my @tunable = `/sbin/sysctl -qe @Tunable`;
+	print "ZFS Tunable (sysctl):\n";
+	foreach my $tunable (@tunable){
+		chomp($tunable);
+		my ($name, $value) = split(/=/, $tunable, 2);
+		if ($show_sysctl_descriptions) {
+			printf("\t\# %s\n\t%s=%d\n", $sysctl_descriptions{$name}, $name, $value);
+		} else {
 			print "\t$tunable\n";
 		}
 	}
@@ -611,8 +625,9 @@ sub _call_all {
 }
 
 my %opt;
-getopt("p:", \%opt);
+getopts("dp:", \%opt);
 if (%opt) {
+	$show_sysctl_descriptions = 1 if $opt{d};
 	switch($opt{p}) {
 		case 1 { eval $unSub[0]; hline; }
 		case 2 { eval $unSub[1]; hline; }
