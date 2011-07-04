@@ -195,22 +195,21 @@ sub _system_memory {
 	my $mem_used = $mem_total - $mem_avail;
 
 	print "System Memory:\n";
-	print "\t+-------------------------------------------------+\n";
+	print "\n";
 	printf("\t%s\t%s Active,\t", fPerc($mem_active, $mem_all), fBytes($mem_active));
 	printf("%s\t%s Inact\n", fPerc($mem_inactive, $mem_all), fBytes($mem_inactive));
 	printf("\t%s\t%s Wired,\t", fPerc($mem_wire, $mem_all), fBytes($mem_wire));
 	printf("%s\t%s Cache\n", fPerc($mem_cache, $mem_all), fBytes($mem_cache));
 	printf("\t%s\t%s Free,\t", fPerc($mem_free, $mem_all), fBytes($mem_free));
 	printf("%s\t%s Gap\n", fPerc($mem_gap_vm, $mem_all), fBytes($mem_gap_vm));
-	print "\t+-------------------------------------------------+\n";
+	print "\n";
 	printf("\tReal Installed:\t\t\t\t%s\n", fBytes($mem_hw));
 	printf("\tReal Available:\t\t\t%s\t%s\n", fPerc($mem_phys, $mem_hw), fBytes($mem_phys));
 	printf("\tReal Managed:\t\t\t%s\t%s\n", fPerc($mem_all, $mem_phys), fBytes($mem_all));
-	print "\t+-------------------------------------------------+\n";
+	print "\n";
 	printf("\tLogical Total:\t\t\t\t%s\n", fBytes($mem_total));
 	printf("\tLogical Used:\t\t\t%s\t%s\n", fPerc($mem_used, $mem_total), fBytes($mem_used));
 	printf("\tLogical Free:\t\t\t%s\t%s\n", fPerc($mem_avail, $mem_total), fBytes($mem_avail));
-	print "\t+-------------------------------------------------+\n";
 	print "\n";
 
 	my $ktext = `/sbin/kldstat |/usr/bin/awk \'BEGIN {print "16i 0";} NR>1 {print toupper(\$4) "+"} END {print "p"}\' |/usr/bin/dc`;
