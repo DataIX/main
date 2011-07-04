@@ -48,6 +48,7 @@ use Switch 'Perl5', 'Perl6';
 
 my $usetunable = 1;			# Change to 0 to disable sysctl MIB spill.
 my $show_sysctl_descriptions = 0;	# Change to 1 (or use the -d flag) to show sysctl descriptions.
+my $alternate_sysctl_layout = 0;	# Change to 1 (or use the -a flag) to align the -d output
 
 sub hline {
 	print "\n------------------------------------------------------------------------\n\n";
@@ -595,11 +596,11 @@ sub _sysctl_summary {
 	foreach my $tunable (@tunable){
 		chomp($tunable);
 		my ($name, $value) = split(/=/, $tunable, 2);
-		if ($show_sysctl_descriptions) {
-			printf("\t\# %s\n\t%s=%d\n", $sysctl_descriptions{$name}, $name, $value);
-		} else {
-			print "\t$tunable\n";
+		my $format = $alternate_sysctl_layout ? "\t%s=%d\n" : "\t%-40s%d\n";
+		if ($show_sysctl_descriptions != 0){
+			printf("\t\# %s\n", $sysctl_descriptions{$name});
 		}
+		printf($format, $name, $value);
 	}
 }
 
@@ -625,8 +626,9 @@ sub _call_all {
 }
 
 my %opt;
-getopts("dp:", \%opt);
+getopts("adp:", \%opt);
 if (%opt) {
+	$alternate_sysctl_layout = 1 if $opt{a};
 	$show_sysctl_descriptions = 1 if $opt{d};
 	switch($opt{p}) {
 		case 1 { eval $unSub[0]; hline; }
