@@ -54,7 +54,7 @@ sub div1 {
 	print "\n";
 	my $i = 1; my $l = 18;
 	while ( $i <= $l ) {
-		print "----"; $i++;
+		printf("%s", "----"); $i++;
 	}
 	print "\n";
 }
