@@ -96,7 +96,7 @@ sub kstat_update {
 
 	foreach my $k (@k) {
 		chomp $k;
-		my ($name,$value) = split /: /, $k;
+		my ($name,$value) = split /:\s*/, $k;
 		my @z = split /\./, $name;
 	my $n = pop @z;
 	${kstat}->{zfs}->{0}->{arcstats}->{$n} = $value;
