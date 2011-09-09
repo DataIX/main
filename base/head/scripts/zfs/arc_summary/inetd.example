@@ -1,0 +1,8 @@
+inetd.conf (Using user nobody for security purposes):
+tcpmux 			stream	tcp	nowait	nobody	internal
+tcpmux/arc_summary	stream	tcp	nowait	nobody	/bin/arc_summary arc_summary
+
+From your shell or script:
+$ echo arc_summary |nc hostname 1
+
+Here we use random names in place of 'arc_summary' to make the service harder to guess internally and then stick the random names in a script with some error checking. Using the version of the script may come in handy '388-e27800740aa2' for example may help you track the version at a later point.
