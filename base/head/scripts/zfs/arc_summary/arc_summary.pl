@@ -44,7 +44,6 @@
 
 use strict;
 use Getopt::Std;
-use Switch 'Perl5', 'Perl6';
 
 my $usetunable = 1;			# Change to 0 to disable sysctl MIB spill.
 my $show_sysctl_descriptions = 0;	# Change to 1 (or use the -d flag) to show sysctl descriptions.
@@ -636,20 +635,23 @@ getopts("adp:", \%opt);
 if (%opt) {
 	$alternate_sysctl_layout = 1 if $opt{a};
 	$show_sysctl_descriptions = 1 if $opt{d};
-	switch($opt{p}) {
-		case 1 { eval $unSub[0]; div2; }
-		case 2 { eval $unSub[1]; div2; }
-		case 3 { eval $unSub[2]; div2; }
-		case 4 { eval $unSub[3]; div2; }
-		case 5 { eval $unSub[4]; div2; }
-		case 6 { eval $unSub[5]; div2; }
-		case 7 { eval $unSub[6]; div2; }
-		else {
-			_call_all;
-		}
+	if (($opt{p} gt 0) && ($opt{p} lt 8)) {
+		my $page = $opt{p};
+		eval $unSub[0] if ($opt{p} == 1);
+		eval $unSub[1] if ($opt{p} == 2);
+		eval $unSub[2] if ($opt{p} == 3);
+		eval $unSub[3] if ($opt{p} == 4);
+		eval $unSub[4] if ($opt{p} == 5);
+		eval $unSub[5] if ($opt{p} == 6);
+		eval $unSub[6] if ($opt{p} == 7);
+		printf("\t\t\t\t\t\t\t\tPage: %2d", $page);
+		div2;
+	} else {
+		_call_all;
 	}
 } else {
 	_call_all;
 }
+
 
 __END__
