@@ -4,7 +4,7 @@
  *
  * 1 -> 16 byte 9090 PWL Generator (numeric)
  *
- * Copyright (c) 2010-2011 Jason J. Hellenthal <jhell@DataIX.net>,
+ * Copyright (c) 2010-2012 Jason J. Hellenthal <jhell@DataIX.net>,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
