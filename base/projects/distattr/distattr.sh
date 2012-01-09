@@ -1,6 +1,6 @@
 #!/usr/bin/env -iS -P /bin sh
 #
-# Copyright (c) 2006-2011 J. Hellenthal <jhell@DataIX.net>,
+# Copyright (c) 2006-2012 J. Hellenthal <jhell@DataIX.net>,
 # All rights reserved.
 #
 # $Id$

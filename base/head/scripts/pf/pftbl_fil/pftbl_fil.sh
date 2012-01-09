@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Copyright (c) 2009-2011 Jason J. Hellenthal <jhell@DataIX.net>,
+# Copyright (c) 2009-2012 Jason J. Hellenthal <jhell@DataIX.net>,
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
