@@ -1,4 +1,3 @@
-﻿#labels Featured
 From the blog of realneal: http://blogs.sun.com/realneel/entry/zfs_arc_statistics
 
 ZFS ARC Statistics
