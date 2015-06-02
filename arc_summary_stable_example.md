@@ -1,5 +1,3 @@
-﻿{{{
-
 ---
 
 System Summary				Sat Apr 24 17:18:57 2010
@@ -156,5 +154,4 @@ ZFS Tunable (sysctl):
 > vm.kmem\_size\_max=536870912
 
 ---
-}}}
 ```
