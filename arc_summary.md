@@ -1,6 +1,3 @@
-﻿#summary FreeBSD ZFS ARC Summary Perl Script
-#labels FreeBSD,SunOS,Solaris,OpenSolaris,CuddleTech,Featured,ZFS,Memory,L2ARC,ARC,Perl,Summary
-
 # News #
 
 _Sat Sep  3 18:22:49 UTC 2011_
