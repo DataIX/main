@@ -1,7 +1,7 @@
 
-LEN?=		6
-CC=		cc
-CFLAGS:=	-O2 -pipe -fno-strict-aliasing
+LEN?=		8
+CC=		clang
+CFLAGS:=	-O3 -pipe -fno-strict-aliasing
 CFLAGS+=	-DLEN=${LEN}
 
 SRCS=		pwlgen.c
