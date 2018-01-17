@@ -26,5 +26,7 @@ int main(int argc, char *argv[]){
 
 	int e = (r % l);
 
-	return e;
+	printf("%d", e);
+
+	return 0;
 }
